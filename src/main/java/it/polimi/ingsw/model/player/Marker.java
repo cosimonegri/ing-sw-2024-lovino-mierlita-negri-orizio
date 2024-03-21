@@ -1,4 +1,4 @@
-package module.player;
+package it.polimi.ingsw.model.player;
 
 /**
  *  Colored token for each player

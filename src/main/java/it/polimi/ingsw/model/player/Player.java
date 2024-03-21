@@ -1,7 +1,7 @@
-package module.player;
+package it.polimi.ingsw.model.player;
 
-import module.deck.card.objectivecard.ObjectiveCard;
-import module.deck.card.playablecard.PlayableCard;
+import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
+import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
 
 import java.util.ArrayList;
 import java.util.NoSuchElementException;

@@ -1,4 +1,4 @@
-package module.deck.card;
+package it.polimi.ingsw.model.deck.card;
 
 /**
  *

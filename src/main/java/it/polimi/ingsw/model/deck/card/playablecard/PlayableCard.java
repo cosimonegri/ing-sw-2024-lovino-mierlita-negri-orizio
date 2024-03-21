@@ -1,10 +1,9 @@
-package module.deck.card.playablecard;
+package it.polimi.ingsw.model.deck.card.playablecard;
 
-import module.deck.card.Card;
-import module.deck.card.playablecard.corner.Corner;
-import module.deck.card.playablecard.corner.CornerPos;
-import module.deck.card.playablecard.corner.Resource;
-import module.player.Player;
+import it.polimi.ingsw.model.deck.card.Card;
+import it.polimi.ingsw.model.deck.card.playablecard.corner.Corner;
+import it.polimi.ingsw.model.deck.card.playablecard.corner.CornerPos;
+import it.polimi.ingsw.model.deck.card.playablecard.corner.Resource;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
-package module.deck.card.objectivecard;
+package it.polimi.ingsw.model.deck.card.objectivecard;
 
-import module.deck.card.Card;
+import it.polimi.ingsw.model.deck.card.Card;
 
 public abstract class ObjectiveCard extends Card {
 

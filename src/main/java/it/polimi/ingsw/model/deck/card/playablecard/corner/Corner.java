@@ -1,4 +1,4 @@
-package module.deck.card.playablecard.corner;
+package it.polimi.ingsw.model.deck.card.playablecard.corner;
 
 /**
  *

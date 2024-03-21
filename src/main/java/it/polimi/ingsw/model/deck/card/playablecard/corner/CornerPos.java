@@ -1,9 +1,5 @@
-package module.deck.card.playablecard.corner;
+package it.polimi.ingsw.model.deck.card.playablecard.corner;
 
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Position of the card's corner (both back and front)
