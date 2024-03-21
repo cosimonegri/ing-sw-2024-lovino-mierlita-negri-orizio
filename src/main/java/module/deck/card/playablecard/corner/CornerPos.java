@@ -18,7 +18,7 @@ public enum CornerPos {
      *
      * @return an ArrayList containing all the enum constants
      */
-    public static List<CornerPos> getListCornerPos() {
+    public static List<CornerPos> getValues() {
         return new ArrayList<>(Arrays.asList(CornerPos.values()));
     }
 }
