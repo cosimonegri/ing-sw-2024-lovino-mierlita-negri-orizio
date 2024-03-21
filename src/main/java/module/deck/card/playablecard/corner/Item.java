@@ -1,2 +1,2 @@
-package module.board.cards.playablecard.corner;public enum Item {
+package module.deck.card.playablecard.corner;public enum Item {
 }

@@ -1,4 +1,4 @@
-package module.board.cards.playablecard.corner;
+package module.deck.card.playablecard.corner;
 
 public enum Resource {
 }
