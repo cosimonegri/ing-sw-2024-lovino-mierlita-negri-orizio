@@ -30,7 +30,7 @@ public class PlayableCard extends Card {
                         String frontImage,
                         String backImage,
                         List<Corner> corners,
-                        List<Resource> backResources) throws NullPointerException {
+                        List<Resource> backResources) throws NullPointerException, IllegalArgumentException {
         // call the parent constructor
         super(points, frontImage, backImage);
         if (corners == null) throw new NullPointerException("List of corners cannot be null");
