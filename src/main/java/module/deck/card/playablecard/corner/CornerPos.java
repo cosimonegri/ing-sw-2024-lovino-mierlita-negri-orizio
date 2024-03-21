@@ -9,16 +9,14 @@ import java.util.List;
  * Position of the card's corner (both back and front)
  */
 public enum CornerPos {
-    TOPLEFT,
-    TOPRIGHT,
-    BOTTOMLEFT,
-    BOTTOMRIGHT;
+    TOPLEFT(0),
+    TOPRIGHT(1),
+    BOTTOMLEFT(2),
+    BOTTOMRIGHT(3);
 
-    /**
-     *
-     * @return an ArrayList containing all the enum constants
-     */
-    public static List<CornerPos> getValues() {
-        return new ArrayList<>(Arrays.asList(CornerPos.values()));
+    public final int val;
+
+    CornerPos(int val) {
+        this.val = val;
     }
 }

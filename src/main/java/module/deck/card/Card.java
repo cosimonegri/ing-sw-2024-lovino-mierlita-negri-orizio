@@ -19,7 +19,9 @@ public abstract class Card {
      * @throws NullPointerException: when a path is null
      * @throws IllegalArgumentException: if points is a negative number
      */
-    public Card(int points, String frontImage, String backImage) throws NullPointerException, IllegalArgumentException {
+    public Card(int points,
+                String frontImage,
+                String backImage) throws NullPointerException, IllegalArgumentException {
         if ((frontImage == null) || (backImage == null)) throw new NullPointerException("String cannot be null");
         if (points < 0) throw new IllegalArgumentException("Points must be a positive integer");
         this.points = points;

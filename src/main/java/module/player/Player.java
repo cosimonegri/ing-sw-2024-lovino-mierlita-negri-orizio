@@ -24,9 +24,9 @@ public class Player {
     /**
      * Create a new player
      *
-     * @param username: the username chosen by the player
-     * @param marker: the token assigned/chosen by the player
-     * @throws NullPointerException: if the username or the marker are null
+     * @param username the username chosen by the player
+     * @param marker the token assigned/chosen by the player
+     * @throws NullPointerException if the username or the marker are null
      */
     public Player(String username, Marker marker) throws NullPointerException {
         if (username == null) throw new NullPointerException("Cannot create player with null username");
@@ -43,8 +43,8 @@ public class Player {
     /**
      * Set the new private objective for the player
      *
-     * @param objCard: the player's personal objective card
-     * @throws NullPointerException: if the parameter is null
+     * @param objCard the player's personal objective card
+     * @throws NullPointerException if the parameter is null
      */
     public void setObjCard(ObjectiveCard objCard) throws NullPointerException {
         if (objCard == null) throw new NullPointerException("ObjectiveCard is null");
@@ -54,8 +54,8 @@ public class Player {
     /**
      * Change the player score. It should only increase
      *
-     * @param newPoints: the points to add (>=0)
-     * @throws IllegalArgumentException: the value can only increase
+     * @param newPoints the points to add (>=0)
+     * @throws IllegalArgumentException the value can only increase
      */
     public void increaseScore(int newPoints) throws IllegalArgumentException {
         // Check if >= 0
@@ -67,9 +67,9 @@ public class Player {
     /**
      * Take a new card. Maximum three cards
      *
-     * @param newCard: the new card to add to the player's hand
-     * @throws NullPointerException: the new card is a null pointer
-     * @throws IllegalStateException: the player already has three card
+     * @param newCard the new card to add to the player's hand
+     * @throws NullPointerException the new card is a null pointer
+     * @throws IllegalStateException the player already has three card
      */
     public void addToHand(PlayableCard newCard) throws NullPointerException, IllegalStateException {
         // If the card is null
@@ -88,9 +88,9 @@ public class Player {
     /**
      * Remove a card from the hand
      *
-     * @param oldCard: the card that is to be removed
-     * @throws NullPointerException: the parameter is null
-     * @throws NoSuchElementException: the oldCard is not in the player's hand
+     * @param oldCard the card that is to be removed
+     * @throws NullPointerException the parameter is null
+     * @throws NoSuchElementException the oldCard is not in the player's hand
      */
     public void removeFromHand(PlayableCard oldCard) throws NullPointerException, NoSuchElementException {
         // If the card is null

@@ -12,9 +12,9 @@ public class Corner {
 
     /**
      *
-     * @param type: the type of angle: HIDDEN, VISIBLE
-     * @param symbol: the symbol, if present, on the corner
-     * @throws NullPointerException: the type cant be null
+     * @param type the type of angle: HIDDEN, VISIBLE
+     * @param symbol the symbol, if present, on the corner
+     * @throws NullPointerException the type cant be null
      */
     public Corner(CornerType type, Symbol symbol) throws NullPointerException {
         if (type == null) throw new NullPointerException("CornerType cannot be null");
