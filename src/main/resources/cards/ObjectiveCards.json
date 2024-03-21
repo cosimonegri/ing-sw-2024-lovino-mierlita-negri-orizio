@@ -1,0 +1,228 @@
+[
+  {
+    "points": 2,
+    "type": "pattern",
+    "pattern": [
+      {
+        "color": "fungi",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "color": "fungi",
+        "dx": 1,
+        "dy": 1
+      },
+      {
+        "color": "fungi",
+        "dx": 2,
+        "dy": 2
+      }
+    ]
+  },
+  {
+    "points": 2,
+    "type": "pattern",
+    "pattern": [
+      {
+        "color": "plant",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "color": "plant",
+        "dx": 1,
+        "dy": -1
+      },
+      {
+        "color": "plant",
+        "dx": 2,
+        "dy": -2
+      }
+    ]
+  },
+  {
+    "points": 2,
+    "type": "pattern",
+    "pattern": [
+      {
+        "color": "animal",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "color": "animal",
+        "dx": 1,
+        "dy": 1
+      },
+      {
+        "color": "animal",
+        "dx": 2,
+        "dy": 2
+      }
+    ]
+  },
+  {
+    "points": 2,
+    "type": "pattern",
+    "pattern": [
+      {
+        "color": "insect",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "color": "insect",
+        "dx": 1,
+        "dy": -1
+      },
+      {
+        "color": "insect",
+        "dx": 2,
+        "dy": -2
+      }
+    ]
+  },
+  {
+    "points": 3,
+    "type": "pattern",
+    "pattern": [
+      {
+        "color": "fungi",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "color": "fungi",
+        "dx": 0,
+        "dy": -2
+      },
+      {
+        "color": "plant",
+        "dx": 1,
+        "dy": -3
+      }
+    ]
+  },
+  {
+    "points": 3,
+    "type": "pattern",
+    "pattern": [
+      {
+        "color": "plant",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "color": "plant",
+        "dx": 0,
+        "dy": -2
+      },
+      {
+        "color": "insect",
+        "dx": -1,
+        "dy": -3
+      }
+    ]
+  },
+  {
+    "points": 3,
+    "type": "pattern",
+    "pattern": [
+      {
+        "color": "animal",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "color": "animal",
+        "dx": 0,
+        "dy": 2
+      },
+      {
+        "color": "fungi",
+        "dx": 1,
+        "dy": 3
+      }
+    ]
+  },
+  {
+    "points": 3,
+    "type": "pattern",
+    "pattern": [
+      {
+        "color": "insect",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "color": "insect",
+        "dx": 0,
+        "dy": 2
+      },
+      {
+        "color": "animal",
+        "dx": -1,
+        "dy": 3
+      }
+    ]
+  },
+  {
+    "points": 2,
+    "type": "symbols",
+    "symbols": {
+      "fungi": 3
+    }
+  },
+  {
+    "points": 2,
+    "type": "symbols",
+    "symbols": {
+      "plant": 3
+    }
+  },
+  {
+    "points": 2,
+    "type": "symbols",
+    "symbols": {
+      "animal": 3
+    }
+  },
+  {
+    "points": 2,
+    "type": "symbols",
+    "symbols": {
+      "insect": 3
+    }
+  },
+  {
+    "points": 3,
+    "type": "symbols",
+    "symbols": {
+      "quill": 1,
+      "inkwell": 1,
+      "manuscript": 1
+    }
+  },
+  {
+    "points": 2,
+    "type": "symbols",
+    "symbols": {
+      "quill": 2
+    }
+  },
+  {
+    "points": 2,
+    "type": "symbols",
+    "symbols": {
+      "inkwell": 2
+    }
+  },
+  {
+    "points": 2,
+    "type": "symbols",
+    "symbols": {
+      "manuscript": 2
+    }
+  }
+]

@@ -1,0 +1,331 @@
+[
+  {
+    "color": "fungi",
+    "points": 0,
+    "top-left": "fungi",
+    "top-right": "empty",
+    "bottom-left": "fungi",
+    "bottom-right": null
+  },
+  {
+    "color": "fungi",
+    "points": 0,
+    "top-left": "fungi",
+    "top-right": "fungi",
+    "bottom-left": null,
+    "bottom-right": "empty"
+  },
+  {
+    "color": "fungi",
+    "points": 0,
+    "top-left": "empty",
+    "top-right": null,
+    "bottom-left": "fungi",
+    "bottom-right": "fungi"
+  },
+  {
+    "color": "fungi",
+    "points": 0,
+    "top-left": null,
+    "top-right": "fungi",
+    "bottom-left": "empty",
+    "bottom-right": "fungi"
+  },
+  {
+    "color": "fungi",
+    "points": 0,
+    "top-left": null,
+    "top-right": "quill",
+    "bottom-left": "plant",
+    "bottom-right": "fungi"
+  },
+  {
+    "color": "fungi",
+    "points": 0,
+    "top-left": "inkwell",
+    "top-right": "fungi",
+    "bottom-left": null,
+    "bottom-right": "animal"
+  },
+  {
+    "color": "fungi",
+    "points": 0,
+    "top-left": "fungi",
+    "top-right": "insect",
+    "bottom-left": "manuscript",
+    "bottom-right": "empty"
+  },
+  {
+    "color": "fungi",
+    "points": 1,
+    "top-left": "empty",
+    "top-right": "fungi",
+    "bottom-left": "empty",
+    "bottom-right": null
+  },
+  {
+    "color": "fungi",
+    "points": 1,
+    "top-left": "fungi",
+    "top-right": null,
+    "bottom-left": "empty",
+    "bottom-right": "empty"
+  },
+  {
+    "color": "fungi",
+    "points": 1,
+    "top-left": null,
+    "top-right": "empty",
+    "bottom-left": "fungi",
+    "bottom-right": "empty"
+  },
+
+
+
+  {
+    "color": "plant",
+    "points": 0,
+    "top-left": "plant",
+    "top-right": "empty",
+    "bottom-left": "plant",
+    "bottom-right": null
+  },
+  {
+    "color": "plant",
+    "points": 0,
+    "top-left": "plant",
+    "top-right": "plant",
+    "bottom-left": null,
+    "bottom-right": "empty"
+  },
+  {
+    "color": "plant",
+    "points": 0,
+    "top-left": "empty",
+    "top-right": null,
+    "bottom-left": "plant",
+    "bottom-right": "plant"
+  },
+  {
+    "color": "plant",
+    "points": 0,
+    "top-left": null,
+    "top-right": "plant",
+    "bottom-left": "empty",
+    "bottom-right": "plant"
+  },
+  {
+    "color": "plant",
+    "points": 0,
+    "top-left": null,
+    "top-right": "insect",
+    "bottom-left": "quill",
+    "bottom-right": "plant"
+  },
+  {
+    "color": "plant",
+    "points": 0,
+    "top-left": "fungi",
+    "top-right": "plant",
+    "bottom-left": null,
+    "bottom-right": "inkwell"
+  },
+  {
+    "color": "plant",
+    "points": 0,
+    "top-left": "manuscript",
+    "top-right": null,
+    "bottom-left": "plant",
+    "bottom-right": "animal"
+  },
+  {
+    "color": "plant",
+    "points": 1,
+    "top-left": "empty",
+    "top-right": "empty",
+    "bottom-left": "plant",
+    "bottom-right": null
+  },
+  {
+    "color": "plant",
+    "points": 1,
+    "top-left": "empty",
+    "top-right": "empty",
+    "bottom-left": null,
+    "bottom-right": "plant"
+  },
+  {
+    "color": "plant",
+    "points": 1,
+    "top-left": null,
+    "top-right": "plant",
+    "bottom-left": "empty",
+    "bottom-right": "empty"
+  },
+
+
+
+  {
+    "color": "animal",
+    "points": 0,
+    "top-left": "animal",
+    "top-right": "animal",
+    "bottom-left": "empty",
+    "bottom-right": null
+  },
+  {
+    "color": "animal",
+    "points": 0,
+    "top-left": null,
+    "top-right": "empty",
+    "bottom-left": "animal",
+    "bottom-right": "animal"
+  },
+  {
+    "color": "animal",
+    "points": 0,
+    "top-left": "animal",
+    "top-right": null,
+    "bottom-left": "animal",
+    "bottom-right": "empty"
+  },
+  {
+    "color": "animal",
+    "points": 0,
+    "top-left": "empty",
+    "top-right": "animal",
+    "bottom-left": null,
+    "bottom-right": "animal"
+  },
+  {
+    "color": "animal",
+    "points": 0,
+    "top-left": null,
+    "top-right": "insect",
+    "bottom-left": "inkwell",
+    "bottom-right": "animal"
+  },
+  {
+    "color": "animal",
+    "points": 0,
+    "top-left": "plant",
+    "top-right": "animal",
+    "bottom-left": null,
+    "bottom-right": "manuscript"
+  },
+  {
+    "color": "animal",
+    "points": 0,
+    "top-left": "quill",
+    "top-right": null,
+    "bottom-left": "animal",
+    "bottom-right": "fungi"
+  },
+  {
+    "color": "animal",
+    "points": 1,
+    "top-left": null,
+    "top-right": "empty",
+    "bottom-left": "animal",
+    "bottom-right": "empty"
+  },
+  {
+    "color": "animal",
+    "points": 1,
+    "top-left": "empty",
+    "top-right": null,
+    "bottom-left": "empty",
+    "bottom-right": "animal"
+  },
+  {
+    "color": "animal",
+    "points": 1,
+    "top-left": "empty",
+    "top-right": "animal",
+    "bottom-left": "empty",
+    "bottom-right": null
+  },
+
+
+
+  {
+    "color": "insect",
+    "points": 0,
+    "top-left": "insect",
+    "top-right": "insect",
+    "bottom-left": "empty",
+    "bottom-right": null
+  },
+  {
+    "color": "insect",
+    "points": 0,
+    "top-left": null,
+    "top-right": "empty",
+    "bottom-left": "insect",
+    "bottom-right": "insect"
+  },
+  {
+    "color": "insect",
+    "points": 0,
+    "top-left": "insect",
+    "top-right": null,
+    "bottom-left": "insect",
+    "bottom-right": "empty"
+  },
+  {
+    "color": "insect",
+    "points": 0,
+    "top-left": "empty",
+    "top-right": "insect",
+    "bottom-left": null,
+    "bottom-right": "insect"
+  },
+  {
+    "color": "insect",
+    "points": 0,
+    "top-left": null,
+    "top-right": "quill",
+    "bottom-left": "animal",
+    "bottom-right": "insect"
+  },
+  {
+    "color": "insect",
+    "points": 0,
+    "top-left": "manuscript",
+    "top-right": "insect",
+    "bottom-left": null,
+    "bottom-right": "fungi"
+  },
+  {
+    "color": "insect",
+    "points": 0,
+    "top-left": "insect",
+    "top-right": "plant",
+    "bottom-left": "inkwell",
+    "bottom-right": null
+  },
+  {
+    "color": "insect",
+    "points": 1,
+    "top-left": "insect",
+    "top-right": null,
+    "bottom-left": "empty",
+    "bottom-right": "empty"
+  },
+  {
+    "color": "insect",
+    "points": 1,
+    "top-left": "empty",
+    "top-right": "empty",
+    "bottom-left": null,
+    "bottom-right": "insect"
+  },
+  {
+    "color": "insect",
+    "points": 1,
+    "top-left": null,
+    "top-right": "insect",
+    "bottom-left": "empty",
+    "bottom-right": "empty"
+  }
+]
