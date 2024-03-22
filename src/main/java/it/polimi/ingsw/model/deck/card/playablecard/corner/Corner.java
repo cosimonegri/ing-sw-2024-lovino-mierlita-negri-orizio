@@ -1,32 +1,25 @@
 package it.polimi.ingsw.model.deck.card.playablecard.corner;
 
-/**
- *
- * @author Orizio Davide
- *
- * This class holds all the information about a single corner
- */
-public class Corner {
-    private final CornerType type;
-    private final Symbol symbol;
+import java.util.Objects;
 
+/**
+ * This class holds all the information about a single corner
+ *
+ */
+public record Corner(CornerType type, Symbol symbol) {
     /**
-     *
-     * @param type the type of angle: HIDDEN, VISIBLE
+     * @param type   the type of angle: HIDDEN, VISIBLE
      * @param symbol the symbol, if present, on the corner
      * @throws NullPointerException the type cant be null
      */
-    public Corner(CornerType type, Symbol symbol) throws NullPointerException {
+    public Corner {
         if (type == null) throw new NullPointerException("CornerType cannot be null");
-        this.type = type;
-        this.symbol = symbol;
     }
 
-    public CornerType getType() {
-        return type;
-    }
-
-    public Symbol getSymbol() {
-        return symbol;
+    @Override
+    public String toString() {
+        return "Corner[" +
+                "type=" + type + ", " +
+                "symbol=" + symbol + ']';
     }
 }

@@ -3,22 +3,24 @@ package it.polimi.ingsw.model.deck.card.playablecard;
 import it.polimi.ingsw.model.deck.card.Card;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Corner;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.CornerPos;
-import it.polimi.ingsw.model.deck.card.playablecard.corner.Resource;
+import it.polimi.ingsw.model.deck.card.playablecard.corner.Symbol;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
- * @author Orizio Davide
  *
  * This card represent a resource, gold or starter card
  */
 public class PlayableCard extends Card {
+
     private final List<Corner> corners;
-    private final List<Resource> backResources;
+    private final List<Symbol> backResources;
 
     /**
      *
      * @param points added if the card is played
+     * @param id the card identifier
      * @param frontImage path to front image
      * @param backImage path to back image
      * @param corners list of 8 corners
@@ -26,12 +28,13 @@ public class PlayableCard extends Card {
      * @throws NullPointerException if a parameter is null
      */
     public PlayableCard(int points,
+                        int id,
                         String frontImage,
                         String backImage,
                         List<Corner> corners,
-                        List<Resource> backResources) throws NullPointerException, IllegalArgumentException {
+                        List<Symbol> backResources) {
         // call the parent constructor
-        super(points, frontImage, backImage);
+        super(points, id, frontImage, backImage);
         if (corners == null) throw new NullPointerException("List of corners cannot be null");
         this.corners = corners;
         if (backResources == null) throw new NullPointerException("List of back resources cannot be null");
@@ -60,10 +63,17 @@ public class PlayableCard extends Card {
     }
 
     public List<Corner> getCorners() {
-        return this.corners;
+        return Collections.unmodifiableList(corners);
     }
 
-    public List<Resource> getBackResources() {
-        return this.backResources;
+    public List<Symbol> getBackResources() {
+        return Collections.unmodifiableList(backResources);
+    }
+    @Override
+    public String toString() {
+        return "PlayableCard{" +
+                "corners=" + corners +
+                ", backResources=" + backResources +
+                '}';
     }
 }
