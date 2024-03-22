@@ -38,9 +38,9 @@ public abstract class GoldCard extends PlayableCard{
                     List<Resource> backResources,
                     Map<Resource, Integer> resourcesNeeded){
         super(points, frontImage, backImage, corners, backResources);
-        if(frontImage == null &&
-            backImage == null &&
-            corners == null &&
+        if(frontImage == null ||
+            backImage == null ||
+            corners == null ||
             resourcesNeeded == null) throw new NullPointerException("Attributes cannot be null");
         if(points < 0 ) throw new IllegalArgumentException("Value of points cannot be negative");
         this.resourcesNeeded = new HashMap<>(resourcesNeeded);
@@ -52,7 +52,7 @@ public abstract class GoldCard extends PlayableCard{
      */
     public boolean hasResourcesNeeded(Field field){
         for(Resource key : this.resourcesNeeded.keySet()) {
-            if(field.getSymbolCounts(key) < this.resourcesNeeded.get(key)) return false;
+            if(field.getSymbolCount(key) < this.resourcesNeeded.get(key)) return false;
         }
         return true;
     }
