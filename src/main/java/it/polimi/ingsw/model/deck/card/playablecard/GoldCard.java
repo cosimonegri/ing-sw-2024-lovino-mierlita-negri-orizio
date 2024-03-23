@@ -1,8 +1,8 @@
 package it.polimi.ingsw.model.deck.card.playablecard;
 
+import it.polimi.ingsw.model.deck.card.playablecard.corner.Symbol;
 import it.polimi.ingsw.model.player.Field;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Corner;
-import it.polimi.ingsw.model.deck.card.playablecard.corner.Resource;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -10,18 +10,18 @@ import java.util.Map;
 
 /**
  * GoldCard abstract class to represent all the common attributes and methods of all gold cards
- * @author Alexandru Cezar Mierlita
  */
 public abstract class GoldCard extends PlayableCard{
     /**
      * attribute defining types and amounts of the card's resource cost
      */
-    private final Map<Resource, Integer> resourcesNeeded;
+    private final Map<Symbol, Integer> resourcesNeeded;
 
     /**
      * Constructor of the class
      *
      * @param points added if the card is played
+     * @param id identifier number of the card
      * @param frontImage path to front image
      * @param backImage path to back image
      * @param corners list of 8 corners
@@ -32,12 +32,13 @@ public abstract class GoldCard extends PlayableCard{
      */
 
     public GoldCard(int points,
+                    int id,
                     String frontImage,
                     String backImage,
                     List<Corner> corners,
-                    List<Resource> backResources,
-                    Map<Resource, Integer> resourcesNeeded){
-        super(points, frontImage, backImage, corners, backResources);
+                    List<Symbol> backResources,
+                    Map<Symbol, Integer> resourcesNeeded){
+        super(points, id, frontImage, backImage, corners, backResources);
         if(frontImage == null ||
             backImage == null ||
             corners == null ||
@@ -51,13 +52,13 @@ public abstract class GoldCard extends PlayableCard{
      * @return the possibility to satisfy the card's cost
      */
     public boolean hasResourcesNeeded(Field field){
-        for(Resource key : this.resourcesNeeded.keySet()) {
+        for(Symbol key : this.resourcesNeeded.keySet()) {
             if(field.getSymbolCount(key) < this.resourcesNeeded.get(key)) return false;
         }
         return true;
     }
 
-    public Map<Resource, Integer> getResourcesNeeded() {
+    public Map<Symbol, Integer> getResourcesNeeded() {
         return Collections.unmodifiableMap(this.resourcesNeeded);
     }
 

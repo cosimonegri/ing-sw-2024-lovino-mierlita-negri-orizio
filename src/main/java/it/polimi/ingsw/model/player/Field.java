@@ -10,7 +10,6 @@ import it.polimi.ingsw.model.exceptions.CoordinatesAreNotValidException;
 /**
  * Field class to represent the placed cards of a player.
  *
- * @author Cosimo Givanni Negri
  */
 public class Field {
     /**
@@ -113,7 +112,7 @@ public class Field {
                 boolean flipped = this.placedCards[x][y].flipped();
                 // if the card is placed on its back, analyze the back resources
                 if (flipped) {
-                    for (Resource resource : card.getBackResources()) {
+                    for (Symbol resource : card.getBackResources()) {
                         if (resource == symbol) {
                             count++;
                         }
@@ -121,7 +120,7 @@ public class Field {
                 }
                 for (CornerPos cornerPos : CornerPos.values()) {
                     // if the symbol on a corner is different, don't count it
-                    if (card.getCorner(cornerPos, flipped).getSymbol() != symbol) {
+                    if (card.getCorner(cornerPos, flipped).symbol() != symbol) {
                         continue;
                     }
                     // if the symbol on a corner is the same, count it only if it is not covered
@@ -178,7 +177,7 @@ public class Field {
                 PlayableCard neighborCard = this.placedCards[x + dx][y + dy].card();
                 boolean neighborFlipped = this.placedCards[x + dx][y + dy].flipped();
                 CornerPos neighborCornerPos = getCornerPosOfNeighbor(dx, dy);
-                if (neighborCard.getCorner(neighborCornerPos, neighborFlipped).getType() == CornerType.VISIBLE) {
+                if (neighborCard.getCorner(neighborCornerPos, neighborFlipped).type() == CornerType.VISIBLE) {
                     visibleAdjacentCorners++;
                 } else {
                     hiddenAdjacentCorners++;
@@ -238,5 +237,39 @@ public class Field {
         else {
             return new Coordinates(x + 1, y - 1);
         }
+    }
+
+    /**
+     * Get the coordinates of the required card
+     *
+     * @param id of the card
+     * @return the coordinates of the card
+     */
+    public Coordinates findCard(int id) {
+        for (int x = 0; x < SIZE; x++) {
+            for (int y = 0; y < SIZE; y++) {
+                if (this.placedCards[x][y] != null && this.placedCards[x][y].card().getId() == id) return new Coordinates(x, y);
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * @param coords of the given position
+     * @return the number of cards around the given position
+     */
+
+    public int numOfNeighbors(Coordinates coords){
+        int i = 0;
+        if(!areCoordsOutOfBound(coords.x() + 1, coords.y() + 1) && this.placedCards[coords.x() + 1][coords.y() + 1] != null){
+            i++;}
+        else if(!areCoordsOutOfBound(coords.x() + 1, coords.y() - 1) && this.placedCards[coords.x() + 1][coords.y() - 1] != null){
+            i++;}
+        else if(!areCoordsOutOfBound(coords.x() - 1, coords.y() - 1) && this.placedCards[coords.x() - 1][coords.y() - 1] != null){
+            i++;}
+        else if(!areCoordsOutOfBound(coords.x() - 1, coords.y() + 1) && this.placedCards[coords.x() - 1][coords.y() + 1] != null){
+            i++;}
+        return i;
     }
 }
