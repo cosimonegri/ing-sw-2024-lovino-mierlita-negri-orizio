@@ -49,6 +49,6 @@ public class ItemGoldCard extends GoldCard{
      */
     @Override
     public int getTotalPoints(Field field){
-        return field.getSymbolCount(this.item);
+        return field.getSymbolCount(this.item) * this.getPoints();
     }
 }

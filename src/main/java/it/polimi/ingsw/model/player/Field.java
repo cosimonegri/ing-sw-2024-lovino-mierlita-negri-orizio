@@ -18,7 +18,7 @@ public class Field {
     static final int SIZE = 81;
     /**
      * The field is a matrix of placed cards. To get the cards attached to a given card,
-     * have to look in the 4 diagonal directions.
+     * you have to look in the 4 diagonal directions.
      */
     private final PlacedCard[][] placedCards;
     /**
@@ -69,8 +69,13 @@ public class Field {
     /**
      * @param coords x and y coordinates
      * @return the placed card at the given coordinates
+     * @throws IllegalArgumentException when the coordinates are null
+     * @throws ArrayIndexOutOfBoundsException when the coordinates are out of bound
      */
     public PlacedCard getPlacedCard(Coordinates coords) {
+        if (coords == null) {
+            throw new IllegalArgumentException("The coordinates cannot be null");
+        }
         if (areCoordsOutOfBound(coords.x(), coords.y())) {
             throw new ArrayIndexOutOfBoundsException("The coordinates are out of bound.");
         }
@@ -242,12 +247,13 @@ public class Field {
     /**
      * Get the coordinates of the required card
      *
-     * @param id of the card
-     * @return the coordinates of the card
+     * @param id id of the card
+     * @return the coordinates of the card if it exists in the field, otherwise null
      */
     public Coordinates findCard(int id) {
         for (int x = 0; x < SIZE; x++) {
             for (int y = 0; y < SIZE; y++) {
+                // if the ids match
                 if (this.placedCards[x][y] != null && this.placedCards[x][y].card().getId() == id) return new Coordinates(x, y);
             }
         }
@@ -259,17 +265,15 @@ public class Field {
      * @param coords of the given position
      * @return the number of cards around the given position
      */
-
     public int numOfNeighbors(Coordinates coords){
-        int i = 0;
-        if(!areCoordsOutOfBound(coords.x() + 1, coords.y() + 1) && this.placedCards[coords.x() + 1][coords.y() + 1] != null){
-            i++;}
-        else if(!areCoordsOutOfBound(coords.x() + 1, coords.y() - 1) && this.placedCards[coords.x() + 1][coords.y() - 1] != null){
-            i++;}
-        else if(!areCoordsOutOfBound(coords.x() - 1, coords.y() - 1) && this.placedCards[coords.x() - 1][coords.y() - 1] != null){
-            i++;}
-        else if(!areCoordsOutOfBound(coords.x() - 1, coords.y() + 1) && this.placedCards[coords.x() - 1][coords.y() + 1] != null){
-            i++;}
-        return i;
+        int neighborsCount = 0;
+        for (int dx = -1; dx <= 1; dx += 2) {
+            for (int dy = -1; dy <= 1; dy += 2) {
+                if (!areCoordsOutOfBound(coords.x() + dx, coords.y() + dy) && this.placedCards[coords.x() + dx][coords.y() + dy] != null) {
+                    neighborsCount++;
+                }
+            }
+        }
+        return neighborsCount;
     }
 }
