@@ -1,9 +1,6 @@
 package it.polimi.ingsw.model.deck.card;
 
 /**
- *
- * @author Orizio Davide
- *
  * A general card
  */
 public abstract class Card {
@@ -55,5 +52,13 @@ public abstract class Card {
                 ", frontImage='" + frontImage + '\'' +
                 ", backImage='" + backImage + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Card other)) {
+            return false;
+        }
+        return this.id == other.id;
     }
 }
