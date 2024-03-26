@@ -13,7 +13,10 @@ import java.util.List;
  * This card represent a resource, gold or starter card
  */
 public class PlayableCard extends Card {
-
+    /**
+     * List that contains the 4 front corners followed by the 4 back corners.
+     * For each side, the corners follow the order in {@link CornerPos}.
+     */
     private final List<Corner> corners;
     private final List<Symbol> backResources;
 
@@ -49,17 +52,8 @@ public class PlayableCard extends Card {
      */
     public Corner getCorner(CornerPos cornerPos, boolean flipped) {
         if (cornerPos == null) throw new NullPointerException("CornerPos cannot be null");
-        // Find the corner position
-        for (CornerPos cp: CornerPos.values()) {
-            if (cp.val == cornerPos.val) {
-                // Find the corner on the back or front
-                if (flipped)
-                    return this.corners.get(cp.val + CornerPos.values().length); // back
-                else
-                    return this.corners.get(cp.val);    // front
-            }
-        }
-        throw new IllegalStateException("The requested corner was not found");
+        // Find the corner on the back or front
+        return this.corners.get(cornerPos.val + (flipped ? CornerPos.values().length : 0));
     }
 
     public List<Corner> getCorners() {
