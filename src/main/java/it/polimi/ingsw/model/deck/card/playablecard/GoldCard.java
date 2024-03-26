@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.deck.card.playablecard;
 
-import it.polimi.ingsw.model.deck.card.playablecard.corner.Symbol;
+import it.polimi.ingsw.model.deck.card.playablecard.corner.Resource;
 import it.polimi.ingsw.model.player.Field;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Corner;
 import java.util.Collections;
@@ -15,7 +15,7 @@ public abstract class GoldCard extends PlayableCard{
     /**
      * attribute defining types and amounts of the card's resource cost
      */
-    private final Map<Symbol, Integer> resourcesNeeded;
+    private final Map<Resource, Integer> resourcesNeeded;
 
     /**
      * Constructor of the class
@@ -36,15 +36,10 @@ public abstract class GoldCard extends PlayableCard{
                     String frontImage,
                     String backImage,
                     List<Corner> corners,
-                    List<Symbol> backResources,
-                    Map<Symbol, Integer> resourcesNeeded){
+                    List<Resource> backResources,
+                    Map<Resource, Integer> resourcesNeeded){
         super(points, id, frontImage, backImage, corners, backResources);
-        if(frontImage == null ||
-            backImage == null ||
-            corners == null ||
-            resourcesNeeded == null) throw new NullPointerException("Attributes cannot be null");
-        if(points < 0 ) throw new IllegalArgumentException("Value of points cannot be negative");
-        this.resourcesNeeded = new HashMap<>(resourcesNeeded);
+        this.resourcesNeeded = new HashMap<>(resourcesNeeded);  // TODO: check resourcesNeeded
     }
 
     /**
@@ -52,13 +47,13 @@ public abstract class GoldCard extends PlayableCard{
      * @return the possibility to satisfy the card's cost
      */
     public boolean hasResourcesNeeded(Field field){
-        for(Symbol key : this.resourcesNeeded.keySet()) {
+        for(Resource key : this.resourcesNeeded.keySet()) {
             if(field.getSymbolCount(key) < this.resourcesNeeded.get(key)) return false;
         }
         return true;
     }
 
-    public Map<Symbol, Integer> getResourcesNeeded() {
+    public Map<Resource, Integer> getResourcesNeeded() {
         return Collections.unmodifiableMap(this.resourcesNeeded);
     }
 

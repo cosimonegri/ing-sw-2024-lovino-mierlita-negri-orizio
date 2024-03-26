@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.deck.card.playablecard;
 
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Corner;
-import it.polimi.ingsw.model.deck.card.playablecard.corner.Symbol;
+import it.polimi.ingsw.model.deck.card.playablecard.corner.Resource;
 import it.polimi.ingsw.model.player.Field;
 
 import java.util.List;
@@ -28,9 +28,10 @@ public class CornerGoldCard extends GoldCard {
                           String frontImage,
                           String backImage,
                           List<Corner> corners,
-                          List<Symbol> backResources,
-                          Map<Symbol, Integer> resourcesNeeded){
-        super(points, id, frontImage, backImage, corners, backResources, resourcesNeeded);}
+                          List<Resource> backResources,
+                          Map<Resource, Integer> resourcesNeeded){
+        super(points, id, frontImage, backImage, corners, backResources, resourcesNeeded);
+    }
 
     /**
      * The method relies on two field's methods:

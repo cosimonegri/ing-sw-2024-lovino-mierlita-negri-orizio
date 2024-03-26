@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.deck.card.playablecard;
 
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Corner;
-import it.polimi.ingsw.model.deck.card.playablecard.corner.Symbol;
+import it.polimi.ingsw.model.deck.card.playablecard.corner.Resource;
 import it.polimi.ingsw.model.player.Field;
 import java.util.List;
 import java.util.Map;
@@ -29,12 +29,12 @@ public class SimpleGoldCard extends GoldCard {
                           String frontImage,
                           String backImage,
                           List<Corner> corners,
-                          List<Symbol> backResources,
-                          Map<Symbol, Integer> resourcesNeeded){
+                          List<Resource> backResources,
+                          Map<Resource, Integer> resourcesNeeded){
         super(points, id, frontImage, backImage, corners, backResources, resourcesNeeded);}
 
     /**
-     * @param field field of the calling player
+     * @param field field of the calling player, needed for the override
      * @return the bonus points of the card
      */
     @Override

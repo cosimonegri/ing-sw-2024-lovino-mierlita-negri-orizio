@@ -1,12 +1,24 @@
 package it.polimi.ingsw.model.deck.card;
 
 /**
- * A general card
+ * A general card.
  */
 public abstract class Card {
+    /**
+     * Number of points given by the card.
+     */
     private final int points;
+    /**
+     * Path to the front image.
+     */
     private final String frontImage;
+    /**
+     * Path to the back image.
+     */
     private final String backImage;
+    /**
+     * Unique identifier of the card.
+     */
     private final int id;
 
     /**
@@ -22,7 +34,6 @@ public abstract class Card {
                 int id,
                 String frontImage,
                 String backImage) {
-        if ((frontImage == null) || (backImage == null)) throw new NullPointerException("String cannot be null");
         if (points < 0) throw new IllegalArgumentException("Points must be a positive integer");
         this.points = points;
         this.id = id;
@@ -43,16 +54,6 @@ public abstract class Card {
     }
 
     public int getId() { return this.id; }
-
-    @Override
-    public String toString() {
-        return "Card{" +
-                "points=" + points +
-                "id=" + id +
-                ", frontImage='" + frontImage + '\'' +
-                ", backImage='" + backImage + '\'' +
-                '}';
-    }
 
     @Override
     public boolean equals(Object obj) {

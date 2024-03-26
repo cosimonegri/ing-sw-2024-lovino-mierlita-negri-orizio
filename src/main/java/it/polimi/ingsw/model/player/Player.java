@@ -54,9 +54,7 @@ public class Player {
      * @throws NullPointerException if the username or the marker are null
      */
     public Player(String username, Marker marker) {
-        if (username == null) throw new NullPointerException("Cannot create player with null username");
-        this.username = username;
-        if (marker == null) throw new NullPointerException("The marker cannot be null");
+        this.username = username;   // TODO: check if username is valid
         this.marker = marker;
         this.score = 0;
         this.objCard = null;
@@ -72,7 +70,6 @@ public class Player {
      * @throws NullPointerException if the parameter is null
      */
     public void setObjCard(ObjectiveCard objCard) {
-        if (objCard == null) throw new NullPointerException("ObjectiveCard is null");
         this.objCard = objCard;
     }
 
@@ -97,7 +94,7 @@ public class Player {
      * @throws IllegalStateException the player already has three card
      */
     public void addToHand(PlayableCard newCard) throws IllegalStateException {
-        if (newCard == null) throw new NullPointerException("The Card is null");
+        if (newCard == null) return;
         if (hand.size() >= Player.MAX_HAND_SIZE) {
             throw new IllegalStateException("Hand already full");
         }
@@ -112,7 +109,7 @@ public class Player {
      * @throws NoSuchElementException the card is not in the player's hand
      */
     public void removeFromHand(PlayableCard card) throws NoSuchElementException {
-        if (card == null) throw new NullPointerException("The Card is null");
+        if (card == null) return;
         if (hand.contains(card)) {
             this.hand.remove(card);
         } else {
