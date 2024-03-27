@@ -2,7 +2,7 @@ package it.polimi.ingsw.model.deck.card.playablecard;
 
 import it.polimi.ingsw.model.deck.card.Card;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Corner;
-import it.polimi.ingsw.model.deck.card.playablecard.corner.CornerPos;
+import it.polimi.ingsw.model.deck.card.playablecard.corner.Position;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Symbol;
 
 import java.util.Collections;
@@ -15,7 +15,7 @@ import java.util.List;
 public class PlayableCard extends Card {
     /**
      * List that contains the 4 front corners followed by the 4 back corners.
-     * For each side, the corners follow the order in {@link CornerPos}.
+     * For each side, the corners follow the order in {@link Position}.
      */
     private final List<Corner> corners;
     private final List<Symbol> backResources;
@@ -50,10 +50,10 @@ public class PlayableCard extends Card {
      * @param flipped tells if the card is on the front or back
      * @return the requested corner
      */
-    public Corner getCorner(CornerPos cornerPos, boolean flipped) {
+    public Corner getCorner(Position cornerPos, boolean flipped) {
         if (cornerPos == null) throw new NullPointerException("CornerPos cannot be null");
         // Find the corner on the back or front
-        return this.corners.get(cornerPos.val + (flipped ? CornerPos.values().length : 0));
+        return this.corners.get(cornerPos.val() + (flipped ? Position.values().length : 0));
     }
 
     public List<Corner> getCorners() {

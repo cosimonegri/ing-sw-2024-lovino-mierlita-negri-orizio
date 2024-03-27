@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.player;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.polimi.ingsw.model.deck.card.playablecard.corner.Position;
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.*;
 import it.polimi.ingsw.model.exceptions.CoordinatesAreNotValidException;
@@ -123,7 +124,7 @@ public class Field {
                         }
                     }
                 }
-                for (CornerPos cornerPos : CornerPos.values()) {
+                for (Position cornerPos : Position.values()) {
                     // if the symbol on a corner is different, don't count it
                     if (card.getCorner(cornerPos, flipped).symbol() != symbol) {
                         continue;
@@ -181,7 +182,7 @@ public class Field {
                 // neighbor card that is adjacent to the current position
                 PlayableCard neighborCard = this.placedCards[x + dx][y + dy].card();
                 boolean neighborFlipped = this.placedCards[x + dx][y + dy].flipped();
-                CornerPos neighborCornerPos = getCornerPosOfNeighbor(dx, dy);
+                Position neighborCornerPos = getCornerPosOfNeighbor(dx, dy);
                 if (neighborCard.getCorner(neighborCornerPos, neighborFlipped).type() == CornerType.VISIBLE) {
                     visibleAdjacentCorners++;
                 } else {
@@ -202,18 +203,18 @@ public class Field {
      * @param dy difference between the y coordinate of the neighbor and the y coordinate of the current card
      * @return the corner position of the neighbor card
      */
-    private CornerPos getCornerPosOfNeighbor(int dx, int dy) {
+    private Position getCornerPosOfNeighbor(int dx, int dy) {
         if (dx == 1 && dy == -1) {
-            return CornerPos.TOPLEFT;
+            return Position.TOPLEFT;
         }
         if (dx == -1 && dy == -1) {
-            return CornerPos.TOPRIGHT;
+            return Position.TOPRIGHT;
         }
         if (dx == 1 && dy == 1) {
-            return CornerPos.BOTTOMLEFT;
+            return Position.BOTTOMLEFT;
         }
         if (dx == -1 && dy == 1) {
-            return CornerPos.BOTTOMRIGHT;
+            return Position.BOTTOMRIGHT;
         }
         throw new IllegalArgumentException("Both parameters must be 1 or -1");
     }
@@ -229,14 +230,14 @@ public class Field {
      * @param y y coordinate of that card
      * @return the coordinates of the neighbor card
      */
-    private Coordinates getNeighborOfCornerPos(CornerPos cornerPos, int x, int y) {
-        if (cornerPos == CornerPos.TOPLEFT) {
+    private Coordinates getNeighborOfCornerPos(Position cornerPos, int x, int y) {
+        if (cornerPos == Position.TOPLEFT) {
             return new Coordinates(x - 1, y + 1);
         }
-        else if (cornerPos == CornerPos.TOPRIGHT) {
+        else if (cornerPos == Position.TOPRIGHT) {
             return new Coordinates(x + 1, y + 1);
         }
-        else if (cornerPos == CornerPos.BOTTOMLEFT) {
+        else if (cornerPos == Position.BOTTOMLEFT) {
             return new Coordinates(x - 1, y - 1);
         }
         else {
