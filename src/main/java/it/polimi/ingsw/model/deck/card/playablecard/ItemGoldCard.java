@@ -1,7 +1,8 @@
 package it.polimi.ingsw.model.deck.card.playablecard;
 
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Corner;
-import it.polimi.ingsw.model.deck.card.playablecard.corner.Symbol;
+import it.polimi.ingsw.model.deck.card.playablecard.corner.Item;
+import it.polimi.ingsw.model.deck.card.playablecard.corner.Resource;
 import it.polimi.ingsw.model.player.Field;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +16,7 @@ public class ItemGoldCard extends GoldCard{
     /**
      * Attribute representing the item needed for the score gain
      */
-    private final Symbol item;
+    private final Item item;
 
     /**
      * @param points added if the card is played
@@ -32,14 +33,18 @@ public class ItemGoldCard extends GoldCard{
                         String frontImage,
                         String backImage,
                         List<Corner> corners,
-                        List<Symbol> backResources,
-                        Map<Symbol, Integer> resourcesNeeded,
-                        Symbol item){super(points, id, frontImage, backImage, corners, backResources, resourcesNeeded);
-        if(item == null) throw new NullPointerException("Item cannot be null");
+                        List<Resource> backResources,
+                        Map<Resource, Integer> resourcesNeeded,
+                        Item item){
+        super(points, id, frontImage, backImage, corners, backResources, resourcesNeeded);
         this.item = item;
     }
 
-    public Symbol getItem(){
+    /**
+     *
+     * @return the item associated with the gold card.
+     */
+    public Item getItem(){
         return this.item;
     }
 
