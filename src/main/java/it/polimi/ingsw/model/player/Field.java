@@ -16,10 +16,11 @@ public class Field {
     /**
      * Maximum number of rows and columns in the field.
      */
-    static final int SIZE = 81;
+    private static final int SIZE = 81;
     /**
      * The field is a matrix of placed cards. To get the cards attached to a given card,
      * you have to look in the 4 diagonal directions.
+     * This means that in a full field half of the cells are always going to be empty.
      */
     private final PlacedCard[][] placedCards;
     /**
@@ -34,6 +35,11 @@ public class Field {
         this.placedCards = new PlacedCard[SIZE][SIZE];
         this.cardsCount = 0;
     }
+
+    /**
+     * @return the dimensions of the squared field
+     */
+    public int size() { return SIZE; }
 
     /**
      * @return the number of cards placed on the field
@@ -57,7 +63,7 @@ public class Field {
         if (coords == null) {
             throw new IllegalArgumentException("The coordinates cannot be null");
         }
-        if (areCoordsOutOfBound(coords.x(), coords.y())) {
+        if (areCoordsOutOfBound(coords)) {
             throw new ArrayIndexOutOfBoundsException("The coordinates are out of bound.");
         }
         if (!areCoordsValid(coords.x(), coords.y())) {
@@ -77,7 +83,7 @@ public class Field {
         if (coords == null) {
             throw new IllegalArgumentException("The coordinates cannot be null");
         }
-        if (areCoordsOutOfBound(coords.x(), coords.y())) {
+        if (areCoordsOutOfBound(coords)) {
             throw new ArrayIndexOutOfBoundsException("The coordinates are out of bound.");
         }
         return this.placedCards[coords.x()][coords.y()];
@@ -131,7 +137,7 @@ public class Field {
                     }
                     // if the symbol on a corner is the same, count it only if it is not covered
                     Coordinates neighborCoords = getNeighborOfCornerPos(cornerPos, x, y);
-                    if (areCoordsOutOfBound(neighborCoords.x(), neighborCoords.y())
+                    if (areCoordsOutOfBound(neighborCoords)
                             || this.placedCards[neighborCoords.x()][neighborCoords.y()] == null
                             || this.placedCards[neighborCoords.x()][neighborCoords.y()].placementIndex() < this.placedCards[x][y].placementIndex()
                     ) {
@@ -150,6 +156,14 @@ public class Field {
      */
     private boolean areCoordsOutOfBound(int x, int y) {
         return x < 0 || x >= SIZE || y < 0 || y >= SIZE;
+    }
+
+    /**
+     * @param coords x and y coordinates
+     * @return whether the coordinates are out of bound
+     */
+    private boolean areCoordsOutOfBound(Coordinates coords) {
+        return areCoordsOutOfBound(coords.x(), coords.y());
     }
 
     /**
@@ -261,7 +275,6 @@ public class Field {
         return null;
     }
 
-
     /**
      * @param coords of the given position
      * @return the number of cards around the given position
@@ -276,5 +289,113 @@ public class Field {
             }
         }
         return neighborsCount;
+    }
+
+    /**
+     * @param color color of the cards of the pattern
+     * @param mainDiagonal True if the direction of the diagonals is the one in which the longest diagonal
+     * contains the elements in the positions (0, 0), (1, 1), (2, 2) etc., false otherwise
+     * @return the maximum amount of matches for the given diagonal pattern
+     */
+    public int numOfDiagonalPatterns(Resource color, boolean mainDiagonal) {
+        int timesCompleted = 0;
+        // iterate through all the diagonal lines starting from the leftmost one,
+        // skipping half of them because they are always empty
+        for (int diag = 0; diag < 2 * SIZE - 1; diag += 2) {
+            int sequence = 0;
+
+            // for each diagonal, find the x and y coordinates of the leftmost element
+            // and the number of elements in that diagonal
+            int startX = Math.max(0, diag - SIZE + 1);
+            int startY = mainDiagonal ? Math.max(0, SIZE - diag - 1) : Math.min(diag, SIZE - 1);
+            int count = Math.min(SIZE, Math.min(SIZE - startX, diag + 1));
+
+            // iterate through the diagonal, and count how many times the pattern is matched using a greedy approach
+            for (int i = 0; i < count; i++) {
+                int x = startX + i;
+                int y = startY + (mainDiagonal ? 1 : -1) * i;
+                PlacedCard placedCard = this.placedCards[x][y];
+
+                // reset the current sequence if a card doesn't match and go to the next card
+                if (placedCard == null || placedCard.card().getColor() != color) {
+                    sequence = 0;
+                    continue;
+                }
+                sequence++;
+                // when a complete pattern is found, increase completion counter and reset current sequence
+                if (sequence == 3) {
+                    timesCompleted++;
+                    sequence = 0;
+                }
+            }
+        }
+        return timesCompleted;
+    }
+
+    /**
+     * @param mainColor color of the 2 vertical cards
+     * @param thirdCardColor color of the third card
+     * @param thirdCardPos  position of the third card, relatively to the other 2 cards of the pattern
+     * @return the maximum amount of matches for the given vertical pattern
+     */
+    public int numOfVerticalPatterns(Resource mainColor, Resource thirdCardColor, Position thirdCardPos) {
+        int timesCompleted = 0;
+        for (int x = 0; x < SIZE; x++) {
+            int sequence = 0;
+
+            // Iterate through the column, and count how many times the pattern is matched using a greedy approach.
+            // Start from a coordinate so that x + y is even, since half of them are always empty
+            for (int y = x % 2; y < SIZE; y += 2) {
+                PlacedCard placedCard = this.placedCards[x][y];
+                // reset the current sequence if a card doesn't match and go to the next card
+                if (placedCard == null || placedCard.card().getColor() != mainColor) {
+                    sequence = 0;
+                    continue;
+                }
+
+                sequence++;
+                // when we find a match for the 2 vertical cards
+                if (sequence == 2) {
+                    Coordinates thirdCardCoords = getThirdCardCoords(thirdCardPos, x, y);
+
+                    // reset the current sequence to 1 if third card doesn't match, since we could still find
+                    // a match at the next iteration
+                    if (areCoordsOutOfBound(thirdCardCoords)) {
+                        sequence = 1;
+                        continue;
+                    }
+                    PlacedCard thirdPlacedCard = this.placedCards[thirdCardCoords.x()][thirdCardCoords.y()];
+                    if (thirdPlacedCard == null || thirdPlacedCard.card().getColor() != thirdCardColor) {
+                        sequence = 1;
+                        continue;
+                    }
+                    // otherwise, when a complete pattern is found, increase completion counter and reset current sequence
+                    timesCompleted++;
+                    sequence = 0;
+                }
+            }
+        }
+        return timesCompleted;
+    }
+
+    /**
+     * @param thirdCardPos position of the third card of the vertical pattern, relatively to the other 2 cards
+     * @param x x coordinate of the card (among the other 2 cards) with a higher y coordinate
+     * @param y y coordinate of the card (among the other 2 cards) with a higher y coordinate
+     * @return the coordinates of the third card of the vertical pattern
+     */
+    private Coordinates getThirdCardCoords(Position thirdCardPos, int x, int y) {
+        if (thirdCardPos == Position.TOPLEFT) {
+            return new Coordinates(x - 1, y + 1);
+        }
+        else if (thirdCardPos == Position.TOPRIGHT) {
+            return new Coordinates(x + 1, y + 1);
+        }
+        else if (thirdCardPos == Position.BOTTOMLEFT) {
+            return new Coordinates(x - 1, y - 3);
+        }
+        else  {
+            return new Coordinates(x + 1, y - 3);
+        }
     }
 }

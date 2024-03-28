@@ -72,4 +72,14 @@ public class PlayableCard extends Card {
     public List<Resource> getBackResources() {
         return Collections.unmodifiableList(backResources);
     }
+
+    /**
+     * @return the color (main resource) of the card if there is only one resource on its back, otherwise return null
+     */
+    public Resource getColor() {
+        if (this.backResources.size() == 1) {
+            return this.backResources.getFirst();
+        }
+        return null;
+    }
 }
