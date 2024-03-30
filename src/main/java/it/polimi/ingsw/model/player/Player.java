@@ -51,7 +51,6 @@ public class Player {
      *
      * @param username the username chosen by the player
      * @param marker the token assigned/chosen by the player
-     * @throws NullPointerException if the username or the marker are null
      */
     public Player(String username, Marker marker) {
         this.username = username;   // TODO: check if username is valid
@@ -67,7 +66,6 @@ public class Player {
      * Set the new private objective for the player
      *
      * @param objCard the player's personal objective card
-     * @throws NullPointerException if the parameter is null
      */
     public void setObjCard(ObjectiveCard objCard) {
         this.objCard = objCard;
@@ -77,11 +75,11 @@ public class Player {
      * Change the player score. It should only increase
      *
      * @param newPoints the points to add (>=0)
-     * @throws IllegalArgumentException the value can only increase
+     * @throws IllegalArgumentException the points can only increase
      */
     public void increaseScore(int newPoints) {
         // Check if >= 0
-        if (newPoints < 0) throw new IllegalArgumentException("Invalid newPoints value");
+        if (newPoints < 0) throw new IllegalArgumentException("NewPoints must be a positive value");
         this.score += newPoints;
     }
 
@@ -90,7 +88,6 @@ public class Player {
      * Take a new card. Maximum three cards
      *
      * @param newCard the new card to add to the player's hand
-     * @throws NullPointerException the new card is a null pointer
      * @throws IllegalStateException the player already has three card
      */
     public void addToHand(PlayableCard newCard) throws IllegalStateException {
@@ -105,7 +102,6 @@ public class Player {
      * Remove a card from the hand
      *
      * @param card the card that is to be removed
-     * @throws NullPointerException the parameter is null
      * @throws NoSuchElementException the card is not in the player's hand
      */
     public void removeFromHand(PlayableCard card) throws NoSuchElementException {

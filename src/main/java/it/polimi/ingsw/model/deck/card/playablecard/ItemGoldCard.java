@@ -26,7 +26,7 @@ public class ItemGoldCard extends GoldCard{
      * @param corners list of 8 corners
      * @param backResources list of resources
      * @param resourcesNeeded map of type and amount of the cost's resources
-     * @throws NullPointerException if the item is null
+     * @throws IllegalArgumentException if points is a negative number
      */
     public ItemGoldCard(int points,
                         int id,

@@ -22,6 +22,7 @@ public class SimpleGoldCard extends GoldCard {
      * @param corners list of 8 corners
      * @param backResources list of resources
      * @param resourcesNeeded map of type and amount of the cost's resources
+     * @throws IllegalArgumentException if points is a negative number
      */
 
     public SimpleGoldCard(int points,

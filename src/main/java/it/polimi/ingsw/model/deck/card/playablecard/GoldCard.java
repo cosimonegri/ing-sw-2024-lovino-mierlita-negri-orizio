@@ -27,7 +27,6 @@ public abstract class GoldCard extends PlayableCard{
      * @param corners list of 8 corners
      * @param backResources list of resources
      * @param resourcesNeeded map of type and amount of the cost's resources
-     * @throws NullPointerException if one or more parameters are null
      * @throws IllegalArgumentException if value of points is negative
      */
 

@@ -30,7 +30,6 @@ public class PlayableCard extends Card {
      * @param backImage path to back image
      * @param corners list of 8 corners
      * @param backResources list of resources
-     * @throws NullPointerException if a parameter is null
      */
     public PlayableCard(int points,
                         int id,

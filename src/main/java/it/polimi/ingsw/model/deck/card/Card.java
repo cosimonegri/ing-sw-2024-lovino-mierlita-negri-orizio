@@ -27,7 +27,6 @@ public abstract class Card {
      * @param id identifier of the card
      * @param frontImage path to the front image
      * @param backImage path to the back image
-     * @throws NullPointerException when a path is null
      * @throws IllegalArgumentException if points is a negative number
      */
     public Card(int points,

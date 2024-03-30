@@ -52,20 +52,9 @@ public class Field {
      * @param card the card to add
      * @param flipped true if the card is placed on its back, false if it is placed on its front
      * @param coords x and y coordinates
-     * @throws IllegalArgumentException when parameters are null
-     * @throws ArrayIndexOutOfBoundsException when the coordinates are out of bound
-     * @throws CoordinatesAreNotValidException when the coordinates are not valid
+     * @throws CoordinatesAreNotValidException when the player cannot place a card at the given coordinates
      */
     public void addCard(PlayableCard card, boolean flipped, Coordinates coords) throws CoordinatesAreNotValidException {
-        if (card == null) {
-            throw new IllegalArgumentException("The card cannot be null");
-        }
-        if (coords == null) {
-            throw new IllegalArgumentException("The coordinates cannot be null");
-        }
-        if (areCoordsOutOfBound(coords)) {
-            throw new ArrayIndexOutOfBoundsException("The coordinates are out of bound.");
-        }
         if (!areCoordsValid(coords.x(), coords.y())) {
             throw new CoordinatesAreNotValidException();
         }
@@ -76,16 +65,8 @@ public class Field {
     /**
      * @param coords x and y coordinates
      * @return the placed card at the given coordinates
-     * @throws IllegalArgumentException when the coordinates are null
-     * @throws ArrayIndexOutOfBoundsException when the coordinates are out of bound
      */
     public PlacedCard getPlacedCard(Coordinates coords) {
-        if (coords == null) {
-            throw new IllegalArgumentException("The coordinates cannot be null");
-        }
-        if (areCoordsOutOfBound(coords)) {
-            throw new ArrayIndexOutOfBoundsException("The coordinates are out of bound.");
-        }
         return this.placedCards[coords.x()][coords.y()];
     }
 
@@ -107,12 +88,8 @@ public class Field {
     /**
      * @param symbol the symbol to count
      * @return the amount of those symbols on the field, without counting the covered ones
-     * @throws IllegalArgumentException when the parameter is null
      */
     public int getSymbolCount(Symbol symbol) {
-        if (symbol == null) {
-            throw new IllegalArgumentException("The symbol cannot be null");
-        }
         int count = 0;
         for (int x = 0; x < SIZE; x++) {
             for (int y = 0; y < SIZE; y++) {
