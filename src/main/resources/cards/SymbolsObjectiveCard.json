@@ -1,0 +1,67 @@
+[{
+  "id": 81,
+  "points": 2,
+  "type": "symbols",
+  "symbols": {
+    "fungi": 3
+  }
+},
+{
+  "id": 82,
+"points": 2,
+"type": "symbols",
+"symbols": {
+"plant": 3
+}
+},
+{
+  "id" : 83,
+"points": 2,
+"type": "symbols",
+"symbols": {
+"animal": 3
+}
+},
+{
+  "id": 84,
+"points": 2,
+"type": "symbols",
+"symbols": {
+"insect": 3
+}
+},
+{
+  "id": 85,
+"points": 3,
+"type": "symbols",
+"symbols": {
+"quill": 1,
+"inkwell": 1,
+"manuscript": 1
+}
+},
+{
+  "id": 86,
+"points": 2,
+"type": "symbols",
+"symbols": {
+"quill": 2
+}
+},
+{
+  "id": 87,
+"points": 2,
+"type": "symbols",
+"symbols": {
+"inkwell": 2
+}
+},
+{
+  "id" : 88,
+"points": 2,
+"type": "symbols",
+"symbols": {
+"manuscript": 2
+}
+}
+]

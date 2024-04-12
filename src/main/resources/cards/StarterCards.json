@@ -1,236 +1,74 @@
 [
   {
+    "id" : 97,
     "points": 0,
     "frontImage": null,
     "backImage": null,
-    "backResources": ["INSECT"],
-    "corners": [
-      {
-        "type": "VISIBLE",
-        "symbol": "FUNGI"
-      },
-      {
-        "type": "VISIBLE",
-        "symbol": "PLANT"
-      },
-      {
-        "type": "VISIBLE",
-        "symbol": "INSECT"
-      },
-      {
-        "type": "VISIBLE",
-        "symbol": "ANIMAL"
-      },
-      {
-        "type": "VISIBLE",
-        "symbol": null
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":"PLANT"
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":"INSECT"
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":null
-      }]
+    "colors": ["insect"],
+    "top-left": "empty",
+    "top-right": "plant",
+    "bottom-left": "insect",
+    "bottom-right": "empty"
+
   },
   {
+    "id" : 98,
     "points": 0,
     "frontImage": null,
     "backImage": null,
-    "backResources": ["FUNGI"],
-    "corners": [
-      {
-        "type": "VISIBLE",
-        "symbol":"PLANT"
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":"ANIMAL"
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":"FUNGI"
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":"INSECT"
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":"ANIMAL"
-      },
-      {
-        "type": "VISIBLE",
-        "symbol": null
-      },
-      {
-        "type": "VISIBLE",
-        "symbol": null
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":"FUNGI"
-      }]
+    "colors": ["fungi"],
+    "top-left": "animal",
+    "top-right": "empty",
+    "bottom-left": "empty",
+    "bottom-right": "fungi"
+
   },
   {
+    "id" : 99,
     "points": 0,
     "frontImage": null,
     "backImage": null,
-    "backResources": ["PLANT", "FUNGI"],
-    "corners": [
-      {
-        "type": "VISIBLE",
-        "symbol":"INSECT"
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":"ANIMAL"
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":"FUNGI"
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":"PLANT"
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":null
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":null
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":null
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":null
-      }]
+    "colors": ["plant", "fungi"],
+    "top-left": "empty",
+    "top-right": "empty",
+    "bottom-left": "empty",
+    "bottom-right": "empty"
+
   },
   {
+    "id" : 100,
     "points": 0,
     "frontImage": null,
     "backImage": null,
-    "backResources": ["ANIMAL", "INSECT"],
-    "corners": [
-      {
-        "type": "VISIBLE",
-        "symbol":"PLANT"
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":"INSECT"
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":"ANIMAL"
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":"FUNGI"
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":null
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":null
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":null
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":null
-      }]
+    "colors": ["animal", "insect"],
+    "top-left": "empty",
+    "top-right": "empty",
+    "bottom-left": "empty",
+    "bottom-right": "empty"
+
+
   },
   {
+    "id" : 101,
     "points": 0,
     "frontImage": null,
     "backImage": null,
-    "backResources": ["ANIMAL", "INSECT", "PLANT"],
-    "corners": [
-      {
-        "type": "VISIBLE",
-        "symbol":"INSECT"
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":"FUNGI"
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":"PLANT"
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":"ANIMAL"
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":null
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":null
-      },
-      {
-        "type": "HIDDEN",
-        "symbol":null
-      },
-      {
-        "type": "HIDDEN",
-        "symbol":null
-      }]
+    "colors": ["animal", "insect", "plant"],
+    "top-left": "empty",
+    "top-right": "empty",
+    "bottom-left": null,
+    "bottom-right": null
+
   },
   {
+    "id" : 102,
     "points": 0,
     "frontImage": null,
     "backImage": null,
-    "backResources": ["PLANT", "ANIMAL", "FUNGI"],
-    "corners": [
-      {
-        "type": "VISIBLE",
-        "symbol":"FUNGI"
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":"ANIMAL"
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":"PLANT"
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":"INSECT"
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":null
-      },
-      {
-        "type": "VISIBLE",
-        "symbol":null
-      },
-      {
-        "type": "HIDDEN",
-        "symbol":null
-      },
-      {
-        "type": "HIDDEN",
-        "symbol":null
-      }]
+    "colors": ["plant", "animal", "fungi"],
+    "top-left": "empty",
+    "top-right": "empty",
+    "bottom-left": null,
+    "bottom-right": null
   }
 ]
