@@ -144,4 +144,12 @@ public class Player {
     public Marker getMarker() {
         return this.marker;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Player other)) {
+            return false;
+        }
+        return this.username.equals(other.username);
+    }
 }
