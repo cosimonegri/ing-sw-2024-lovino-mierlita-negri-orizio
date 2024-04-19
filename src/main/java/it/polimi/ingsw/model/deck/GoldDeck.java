@@ -15,16 +15,21 @@ import java.util.*;
 
 public class GoldDeck extends Deck<GoldCard>{
 
-
+    /**
+     * Constructor of the gold Deck with Jackson Library from a File,
+     * firstly mapping the objects on a class called ParsedCard and then remapping on the specific Card type
+     * @throws IOException if the file containing the cards is not opened correctly
+     */
     public GoldDeck() throws IOException {
+        //constructor of deck
         super();
-
         ObjectMapper objectMapper = new ObjectMapper();
-        List<ParsedCard> parsedGoldCards = objectMapper.readValue(new File("src/main/resources/cards/GoldCards.json"), new TypeReference<List<ParsedCard>>() {});
+        //The Json file is parsed in a list of ParsedCards
+        List<ParsedCard> parsedGoldCards = objectMapper.readValue(new File("src/main/resources/cards/GoldCards.json"), new TypeReference<>() {});
         for(ParsedCard s : parsedGoldCards ) {
             List<Corner> corners = new ArrayList<>();
             Map<Resource, Integer> resourcesNeededMap = new HashMap<>();
-            //Mapping Corners
+            //initialize and construct the corners of the card
             if (s.getTopLeft() == null)
                 corners.add(new Corner(CornerType.HIDDEN, null));
             else

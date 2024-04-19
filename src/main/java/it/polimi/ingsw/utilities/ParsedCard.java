@@ -35,6 +35,33 @@ import java.util.Map;
 
         private Boolean mainDiagonal;
 
+    /**
+     * constructor of the class, for parameters not specified, see the attributes of {@link it.polimi.ingsw.model.deck.card.Card}
+     * or of its subclasses
+     * @param id
+     * @param color main resource of the card
+     * @param colors main resources of the starter cards
+     * @param points
+     * attributes used for mapping the back corners of the starter cards
+     * @param startTopLeft
+     * @param startTopRight
+     * @param startBottomLeft
+     * @param startBottomRight
+     * attributes for front corners
+     * @param topLeft
+     * @param topRight
+     * @param bottomLeft
+     * @param bottomRight
+     * @param resourcesNeeded
+     * @param type type of card to differentiate from different cards of the same class (Ex. simpleGold, cornerGold, ItemGold)
+     * @param item
+     * @param symbols
+     * parameters used for parsing {@link it.polimi.ingsw.model.deck.card.objectivecard.DiagonalPatternObjectiveCard}
+     * @param mainColor
+     * @param thirdCardColor
+     * @param thirdCardPos
+     * @param mainDiagonal
+     */
         @JsonCreator
         public ParsedCard(
                 @JsonProperty("id") int id,
