@@ -16,12 +16,20 @@ import java.io.IOException;
 import java.util.*;
 
 public class ResourceDeck extends Deck<PlayableCard> {
+    /**
+     * Constructor of the resource Deck with Jackson Library from a File,
+     * firstly mapping the objects on a class called ParsedCard and then remapping on the specific Card type
+     * @throws IOException if the file containing the cards is not opened correctly
+     */
     public ResourceDeck() throws IOException {
+        //constructor of deck
         super();
         ObjectMapper objectMapper = new ObjectMapper();
-
-        List<ParsedCard> parsedResourceCards = objectMapper.readValue(new File("src/main/resources/cards/ResourceCards.json"), new TypeReference<List<ParsedCard>>() {});
+        //The Json file is parsed in a list of ParsedCards
+        List<ParsedCard> parsedResourceCards = objectMapper.readValue(new File("src/main/resources/cards/ResourceCards.json"), new TypeReference<>() {
+        });
         for(ParsedCard s : parsedResourceCards){
+            //initialize and construct the corners of the card
             List<Corner> corners = new ArrayList<>();
             if(s.getTopLeft() == null)
                 corners.add(new Corner(CornerType.HIDDEN,null));
@@ -46,6 +54,7 @@ public class ResourceDeck extends Deck<PlayableCard> {
             //Mapping back Resources
             List<Resource> backResources = new ArrayList<>();
             backResources.add(stringToResource.get(s.getColor()));
+            //The new card is created and added to the list
             PlayableCard card = new PlayableCard(s.getPoints(), s.getId(), "frontImage", "backImage",
                     corners,backResources);
             cards.add(card);

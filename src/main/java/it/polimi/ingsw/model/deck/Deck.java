@@ -6,34 +6,39 @@ import it.polimi.ingsw.model.deck.card.playablecard.corner.Item;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Position;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Resource;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 
 import static it.polimi.ingsw.model.deck.card.playablecard.corner.Resource.*;
-import static it.polimi.ingsw.model.deck.card.playablecard.corner.Resource.INSECT;
 
 /**
  *
  * @param <T> the type of card to be used
  */
 public abstract class Deck<T extends Card> {
-
+    /**
+     * Deck is implemented as a list of cards
+     */
     protected final List<T> cards;
+    /**
+     * This map is used for parsing the string attributes of the class ParsedCard into the attributes of the card(Gold, Resource...)
+     */
     protected  Map<String, Resource> stringToResource = new HashMap<>();
+    /**
+     * This map is used for parsing the string attributes of the class ParsedCard into the attributes of the card(Gold, Resource...)
+     */
     protected Map<String, Item> stringToItem = new HashMap<>();
+    /**
+     * This map is used for parsing the string attributes of the class ParsedCard into the attributes of the card(Gold, Resource...)
+     */
     protected Map<String, Position> stringToPosition = new HashMap<>();
 
 
 
     /**
-     * Create a list of cards from a JSON file and initialize it
+     * Create a list of cards and initialize the maps used for parsing
      */
     public Deck()  {
         cards = new ArrayList<>();
-        // Parse the JSON file
         stringToResource.put("fungi", FUNGI);
         stringToResource.put("animal", ANIMAL);
         stringToResource.put("plant", PLANT);
@@ -48,6 +53,9 @@ public abstract class Deck<T extends Card> {
         stringToPosition.put("bottom-right", Position.BOTTOMRIGHT);
     }
 
+    /**
+     * @return the first card of the deck (meanwhile the card is removed)
+     */
     public T draw() {
         if (cards.isEmpty()) throw new IllegalStateException("Deck is empty");
         return cards.removeFirst();
@@ -57,7 +65,7 @@ public abstract class Deck<T extends Card> {
         return Collections.unmodifiableList(cards);
     }
 
-    public boolean isEmpty(){
+    public boolean isDeckEmpty(){
         return this.cards.isEmpty();
     }
 }

@@ -13,15 +13,18 @@ import java.io.IOException;
 import java.util.*;
 
 public class StarterDeck extends Deck<PlayableCard>{
-
+    /**
+     * Constructor of the starter Deck with Jackson Library from a File,
+     * firstly mapping the objects on a class called ParsedCard and then remapping on the specific Card type
+     * @throws IOException if the file containing the cards is not opened correctly
+     */
     public StarterDeck() throws IOException {
 
         ObjectMapper objectMapper = new ObjectMapper();
-        List<ParsedCard> parsedStarterCards = objectMapper.readValue(new File("src/main/resources/cards/StarterCards.json"), new TypeReference<List<ParsedCard>>() {});
+        List<ParsedCard> parsedStarterCards = objectMapper.readValue(new File("src/main/resources/cards/StarterCards.json"), new TypeReference<>() {});
         for(ParsedCard s : parsedStarterCards) {
             List<Corner> corners = new ArrayList<>();
             //mapping front corners of the starter card
-
             if (s.getStartTopLeft() == null)
                 corners.add(new Corner(CornerType.HIDDEN, null));
             else
@@ -39,7 +42,6 @@ public class StarterDeck extends Deck<PlayableCard>{
             else
                 corners.add(new Corner(CornerType.VISIBLE, stringToResource.get(s.getStartBottomRight())));
            //mapping back corners
-
             if (s.getTopLeft() == null)
                 corners.add(new Corner(CornerType.HIDDEN, null));
             else
@@ -62,6 +64,7 @@ public class StarterDeck extends Deck<PlayableCard>{
             for(String color : s.getColors()){
                 backResources.add(stringToResource.get(color));
             }
+            //The new card is created and added to the list
             PlayableCard card = new PlayableCard(s.getPoints(), s.getId(), "frontImage", "backImage",
                     corners, backResources);
             cards.add(card);
