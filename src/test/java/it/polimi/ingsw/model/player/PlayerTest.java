@@ -1,11 +1,12 @@
 package it.polimi.ingsw.model.player;
+
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import java.util.NoSuchElementException;
 import java.util.Random;
-import static org.junit.Assert.*;
 
 public class PlayerTest {
     private Player p;
@@ -13,7 +14,7 @@ public class PlayerTest {
     /**
      * Before every test create a new player
      */
-    @Before
+    @BeforeEach
     public void playerSetUp() {
         p = new Player("dolby", Marker.GREEN);
     }
