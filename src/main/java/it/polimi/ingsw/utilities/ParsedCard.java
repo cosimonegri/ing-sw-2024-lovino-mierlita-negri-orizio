@@ -8,182 +8,178 @@ import java.util.List;
 import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true) //ignores unknown fields while parsing if not present in the java class
-    public class ParsedCard {
-        private int id;
-        private String color;
+public class ParsedCard {
+    private int id;
+    private String color;
 
-        private List<String> colors;
-        private int points;
+    private List<String> colors;
+    private int points;
 
-        private String startTopLeft;
-        private String startTopRight;
-        private String startBottomLeft;
-        private String startBottomRight;
-        private String topLeft;
-        private String topRight;
-        private String bottomLeft;
-        private String bottomRight;
-        private Map<String, Integer> resourcesNeeded;
-        private String type;
-        private String item;
-        private Map<String, Integer> symbols;
-        private String mainColor;
-        private String thirdCardColor;
-        private String thirdCardPos;
-
-
-
-        private Boolean mainDiagonal;
+    private String backTopLeft;
+    private String backTopRight;
+    private String backBottomLeft;
+    private String backBottomRight;
+    private String topLeft;
+    private String topRight;
+    private String bottomLeft;
+    private String bottomRight;
+    private Map<String, Integer> resourcesNeeded;
+    private String type;
+    private String item;
+    private Map<String, Integer> symbols;
+    private String mainColor;
+    private String thirdCardColor;
+    private String thirdCardPos;
+    private Boolean mainDiagonal;
 
     /**
      * constructor of the class, for parameters not specified, see the attributes of {@link it.polimi.ingsw.model.deck.card.Card}
      * or of its subclasses
-     * @param id
+     * @param id unique identifier of the card
      * @param color main resource of the card
      * @param colors main resources of the starter cards
-     * @param points
-     * attributes used for mapping the back corners of the starter cards
-     * @param startTopLeft
-     * @param startTopRight
-     * @param startBottomLeft
-     * @param startBottomRight
-     * attributes for front corners
-     * @param topLeft
-     * @param topRight
-     * @param bottomLeft
-     * @param bottomRight
-     * @param resourcesNeeded
+     * @param points points of the card
+     * @param backTopLeft back top-left corner of starter card
+     * @param backTopRight back top-right corner of starter card
+     * @param backBottomLeft back bottom-left corner of starter card
+     * @param backBottomRight back bottom-right corner of starter card
+     * @param topLeft front top-left corner of the card
+     * @param topRight front top-right corner of the card
+     * @param bottomLeft front bottom-left corner of the card
+     * @param bottomRight front bottom-right corner of the card
+     * @param resourcesNeeded map of resources needed in order to place the card
      * @param type type of card to differentiate from different cards of the same class (Ex. simpleGold, cornerGold, ItemGold)
-     * @param item
-     * @param symbols
-     * parameters used for parsing {@link it.polimi.ingsw.model.deck.card.objectivecard.DiagonalPatternObjectiveCard}
-     * @param mainColor
-     * @param thirdCardColor
-     * @param thirdCardPos
-     * @param mainDiagonal
+     * @param item item in {@link it.polimi.ingsw.model.deck.card.playablecard.ItemGoldCard}
+     * @param symbols symbols in {@link it.polimi.ingsw.model.deck.card.objectivecard.SymbolsObjectiveCard}
+     * @param mainDiagonal mainDiagonal in {@link it.polimi.ingsw.model.deck.card.objectivecard.DiagonalPatternObjectiveCard}
+     * @param mainColor mainColor in {@link it.polimi.ingsw.model.deck.card.objectivecard.VerticalPatternObjectiveCard}
+     * @param thirdCardColor thirdCardColor in {@link it.polimi.ingsw.model.deck.card.objectivecard.VerticalPatternObjectiveCard}
+     * @param thirdCardPos thirdCardPos in {@link it.polimi.ingsw.model.deck.card.objectivecard.VerticalPatternObjectiveCard}
      */
-        @JsonCreator
-        public ParsedCard(
-                @JsonProperty("id") int id,
-                @JsonProperty("color") String color,
-                @JsonProperty("colors") List<String> colors,
-                @JsonProperty("points") int points,
-                @JsonProperty("start-top-left") String startTopLeft,
-                @JsonProperty("start-top-right") String startTopRight,
-                @JsonProperty("start-bottom-left") String startBottomLeft,
-                @JsonProperty("start-bottom-right") String startBottomRight,
-                @JsonProperty("top-left") String topLeft,
-                @JsonProperty("top-right") String topRight,
-                @JsonProperty("bottom-left") String bottomLeft,
-                @JsonProperty("bottom-right") String bottomRight,
-                @JsonProperty("resourcesNeeded") Map<String, Integer> resourcesNeeded,
-                @JsonProperty("type") String type,
-                @JsonProperty("item") String item,
-                @JsonProperty("symbols") Map<String, Integer> symbols,
-                @JsonProperty("main-color") String mainColor,
-                @JsonProperty("thirdCard-color") String thirdCardColor,
-                @JsonProperty("thirdCard-position") String thirdCardPos,
-                @JsonProperty("main-diagonal") Boolean mainDiagonal) {
-            this.id = id;
-            this.color = color;
-            this.colors = colors;
-            this.points = points;
-            this.startTopLeft = startTopLeft;
-            this.startTopRight = startTopRight;
-            this.startBottomLeft = startBottomLeft;
-            this.startBottomRight = startBottomRight;
-            this.topLeft = topLeft;
-            this.topRight = topRight;
-            this.bottomLeft = bottomLeft;
-            this.bottomRight = bottomRight;
-            this.resourcesNeeded = resourcesNeeded;
-            this.type = type;
-            this.item = item;
-            this.mainColor = mainColor;
-            this.thirdCardColor  = thirdCardColor;
-            this.thirdCardPos = thirdCardPos;
-            this.mainDiagonal = mainDiagonal;
-            this.symbols = symbols;
-        }
-        public int getId() {
-            return id;
-        }
+    @JsonCreator
+    public ParsedCard(
+            @JsonProperty("id") int id,
+            @JsonProperty("color") String color,
+            @JsonProperty("colors") List<String> colors,
+            @JsonProperty("points") int points,
+            @JsonProperty("back-top-left") String backTopLeft,
+            @JsonProperty("back-top-right") String backTopRight,
+            @JsonProperty("back-bottom-left") String backBottomLeft,
+            @JsonProperty("back-bottom-right") String backBottomRight,
+            @JsonProperty("top-left") String topLeft,
+            @JsonProperty("top-right") String topRight,
+            @JsonProperty("bottom-left") String bottomLeft,
+            @JsonProperty("bottom-right") String bottomRight,
+            @JsonProperty("resourcesNeeded") Map<String, Integer> resourcesNeeded,
+            @JsonProperty("type") String type,
+            @JsonProperty("item") String item,
+            @JsonProperty("symbols") Map<String, Integer> symbols,
+            @JsonProperty("main-color") String mainColor,
+            @JsonProperty("thirdCard-color") String thirdCardColor,
+            @JsonProperty("thirdCard-position") String thirdCardPos,
+            @JsonProperty("main-diagonal") Boolean mainDiagonal
+    ) {
+        this.id = id;
+        this.color = color;
+        this.colors = colors;
+        this.points = points;
+        this.backTopLeft = backTopLeft;
+        this.backTopRight = backTopRight;
+        this.backBottomLeft = backBottomLeft;
+        this.backBottomRight = backBottomRight;
+        this.topLeft = topLeft;
+        this.topRight = topRight;
+        this.bottomLeft = bottomLeft;
+        this.bottomRight = bottomRight;
+        this.resourcesNeeded = resourcesNeeded;
+        this.type = type;
+        this.item = item;
+        this.mainColor = mainColor;
+        this.thirdCardColor  = thirdCardColor;
+        this.thirdCardPos = thirdCardPos;
+        this.mainDiagonal = mainDiagonal;
+        this.symbols = symbols;
+    }
 
-        public void setId(int id) {
-            this.id = id;
-        }
+    public int getId() {
+        return id;
+    }
 
-        public String getColor() {
-            return color;
-        }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-        public void setColor(String color) {
-            this.color = color;
-        }
+    public String getColor() {
+        return color;
+    }
 
-        public int getPoints() {
-            return points;
-        }
+    public void setColor(String color) {
+        this.color = color;
+    }
 
-        public void setPoints(int points) {
-            this.points = points;
-        }
+    public int getPoints() {
+        return points;
+    }
 
-        public String getTopLeft() {
-            return topLeft;
-        }
+    public void setPoints(int points) {
+        this.points = points;
+    }
 
-        public void setTopLeft(String topLeft) {
-            this.topLeft = topLeft;
-        }
+    public String getTopLeft() {
+        return topLeft;
+    }
 
-        public String getTopRight() {
-            return topRight;
-        }
+    public void setTopLeft(String topLeft) {
+        this.topLeft = topLeft;
+    }
 
-        public void setTopRight(String topRight) {
-            this.topRight = topRight;
-        }
+    public String getTopRight() {
+        return topRight;
+    }
 
-        public String getBottomLeft() {
-            return bottomLeft;
-        }
+    public void setTopRight(String topRight) {
+        this.topRight = topRight;
+    }
 
-        public void setBottomLeft(String bottomLeft) {
-            this.bottomLeft = bottomLeft;
-        }
+    public String getBottomLeft() {
+        return bottomLeft;
+    }
 
-        public String getBottomRight() {
-            return bottomRight;
-        }
+    public void setBottomLeft(String bottomLeft) {
+        this.bottomLeft = bottomLeft;
+    }
 
-        public void setBottomRight(String bottomRight) {
-            this.bottomRight = bottomRight;
-        }
+    public String getBottomRight() {
+        return bottomRight;
+    }
 
-        public Map<String, Integer> getResourcesNeeded() {
-            return resourcesNeeded;
-        }
+    public void setBottomRight(String bottomRight) {
+        this.bottomRight = bottomRight;
+    }
 
-        public void setResourcesNeeded(Map<String, Integer> resourcesNeeded) {
-            this.resourcesNeeded = resourcesNeeded;
-        }
+    public Map<String, Integer> getResourcesNeeded() {
+        return resourcesNeeded;
+    }
 
-        public String getType() {
-            return type;
-        }
+    public void setResourcesNeeded(Map<String, Integer> resourcesNeeded) {
+        this.resourcesNeeded = resourcesNeeded;
+    }
 
-        public void setType(String type) {
-            this.type = type;
-        }
+    public String getType() {
+        return type;
+    }
 
-        public String getItem() {
-            return item;
-        }
+    public void setType(String type) {
+        this.type = type;
+    }
 
-        public void setItem(String item) {
-            this.item = item;
-        }
+    public String getItem() {
+        return item;
+    }
+
+    public void setItem(String item) {
+        this.item = item;
+    }
 
     public Boolean getMainDiagonal() {
         return mainDiagonal;
@@ -233,35 +229,35 @@ import java.util.Map;
         this.colors = colors;
     }
 
-    public String getStartTopLeft() {
-        return startTopLeft;
+    public String getBackTopLeft() {
+        return backTopLeft;
     }
 
-    public void setStartTopLeft(String startTopLeft) {
-        this.startTopLeft = startTopLeft;
+    public void setBackTopLeft(String backTopLeft) {
+        this.backTopLeft = backTopLeft;
     }
 
-    public String getStartTopRight() {
-        return startTopRight;
+    public String getBackTopRight() {
+        return backTopRight;
     }
 
-    public void setStartTopRight(String startTopRight) {
-        this.startTopRight = startTopRight;
+    public void setBackTopRight(String backTopRight) {
+        this.backTopRight = backTopRight;
     }
 
-    public String getStartBottomLeft() {
-        return startBottomLeft;
+    public String getBackBottomLeft() {
+        return backBottomLeft;
     }
 
-    public void setStartBottomLeft(String startBottomLeft) {
-        this.startBottomLeft = startBottomLeft;
+    public void setBackBottomLeft(String backBottomLeft) {
+        this.backBottomLeft = backBottomLeft;
     }
 
-    public String getStartBottomRight() {
-        return startBottomRight;
+    public String getBackBottomRight() {
+        return backBottomRight;
     }
 
-    public void setStartBottomRight(String startBottomRight) {
-        this.startBottomRight = startBottomRight;
+    public void setBackBottomRight(String backBottomRight) {
+        this.backBottomRight = backBottomRight;
     }
 }

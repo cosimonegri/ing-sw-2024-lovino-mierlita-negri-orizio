@@ -19,28 +19,28 @@ public class StarterDeck extends Deck<PlayableCard>{
      * @throws IOException if the file containing the cards is not opened correctly
      */
     public StarterDeck() throws IOException {
-
+        super();
         ObjectMapper objectMapper = new ObjectMapper();
         List<ParsedCard> parsedStarterCards = objectMapper.readValue(new File("src/main/resources/cards/StarterCards.json"), new TypeReference<>() {});
         for(ParsedCard s : parsedStarterCards) {
             List<Corner> corners = new ArrayList<>();
             //mapping front corners of the starter card
-            if (s.getStartTopLeft() == null)
+            if (s.getBackTopLeft() == null)
                 corners.add(new Corner(CornerType.HIDDEN, null));
             else
-                corners.add(new Corner(CornerType.VISIBLE, stringToResource.get(s.getStartTopLeft())));
-            if (s.getStartTopRight() == null)
+                corners.add(new Corner(CornerType.VISIBLE, stringToResource.get(s.getBackTopLeft())));
+            if (s.getBackTopRight() == null)
                 corners.add(new Corner(CornerType.HIDDEN, null));
             else
-                corners.add(new Corner(CornerType.VISIBLE, stringToResource.get(s.getStartTopRight())));
-            if (s.getStartBottomLeft() == null)
+                corners.add(new Corner(CornerType.VISIBLE, stringToResource.get(s.getBackTopRight())));
+            if (s.getBackBottomLeft() == null)
                 corners.add(new Corner(CornerType.HIDDEN, null));
             else
-                corners.add(new Corner(CornerType.VISIBLE, stringToResource.get(s.getStartBottomLeft())));
-            if (s.getStartBottomRight() == null)
+                corners.add(new Corner(CornerType.VISIBLE, stringToResource.get(s.getBackBottomLeft())));
+            if (s.getBackBottomRight() == null)
                 corners.add(new Corner(CornerType.HIDDEN, null));
             else
-                corners.add(new Corner(CornerType.VISIBLE, stringToResource.get(s.getStartBottomRight())));
+                corners.add(new Corner(CornerType.VISIBLE, stringToResource.get(s.getBackBottomRight())));
            //mapping back corners
             if (s.getTopLeft() == null)
                 corners.add(new Corner(CornerType.HIDDEN, null));
