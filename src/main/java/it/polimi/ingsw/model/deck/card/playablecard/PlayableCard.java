@@ -4,6 +4,8 @@ import it.polimi.ingsw.model.deck.card.Card;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Corner;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Position;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Resource;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,8 +41,8 @@ public class PlayableCard extends Card {
                         List<Resource> backResources) {
         // call the parent constructor
         super(points, id, frontImage, backImage);
-        this.corners = corners;
-        this.backResources = backResources;
+        this.corners = (corners != null) ? new ArrayList<>(corners) : new ArrayList<>();
+        this.backResources = (backResources != null) ? new ArrayList<>(backResources) : new ArrayList<>();
     }
 
     /**
