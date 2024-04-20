@@ -5,10 +5,14 @@
     "frontImage": null,
     "backImage": null,
     "colors": ["insect"],
-    "top-left": "empty",
+    "top-left": "fungi",
     "top-right": "plant",
     "bottom-left": "insect",
-    "bottom-right": "empty"
+    "bottom-right": "animal",
+    "back-top-left": "empty",
+    "back-top-right": "plant",
+    "back-bottom-left": "insect",
+    "back-bottom-right": "empty"
 
   },
   {
@@ -17,10 +21,14 @@
     "frontImage": null,
     "backImage": null,
     "colors": ["fungi"],
-    "top-left": "animal",
-    "top-right": "empty",
-    "bottom-left": "empty",
-    "bottom-right": "fungi"
+    "top-left": "plant",
+    "top-right": "animal",
+    "bottom-left": "fungi",
+    "bottom-right": "insect",
+    "back-top-left": "animal",
+    "back-top-right": "empty",
+    "back-bottom-left": "empty",
+    "back-bottom-right": "fungi"
 
   },
   {
@@ -29,10 +37,14 @@
     "frontImage": null,
     "backImage": null,
     "colors": ["plant", "fungi"],
-    "top-left": "empty",
-    "top-right": "empty",
-    "bottom-left": "empty",
-    "bottom-right": "empty"
+    "top-left": "insect",
+    "top-right": "animal",
+    "bottom-left": "fungi",
+    "bottom-right": "plant",
+    "back-top-left": "empty",
+    "back-top-right": "empty",
+    "back-bottom-left": "empty",
+    "back-bottom-right": "empty"
 
   },
   {
@@ -41,10 +53,14 @@
     "frontImage": null,
     "backImage": null,
     "colors": ["animal", "insect"],
-    "top-left": "empty",
-    "top-right": "empty",
-    "bottom-left": "empty",
-    "bottom-right": "empty"
+    "top-left": "plant",
+    "top-right": "insect",
+    "bottom-left": "animal",
+    "bottom-right": "fungi",
+    "back-top-left": "empty",
+    "back-top-right": "empty",
+    "back-bottom-left": "empty",
+    "back-bottom-right": "empty"
 
 
   },
@@ -54,10 +70,14 @@
     "frontImage": null,
     "backImage": null,
     "colors": ["animal", "insect", "plant"],
-    "top-left": "empty",
-    "top-right": "empty",
-    "bottom-left": null,
-    "bottom-right": null
+    "top-left": "insect",
+    "top-right": "fungi",
+    "bottom-left": "plant",
+    "bottom-right": "animal",
+    "back-top-left": "empty",
+    "back-top-right": "empty",
+    "back-bottom-left": null,
+    "back-bottom-right": null
 
   },
   {
@@ -66,9 +86,13 @@
     "frontImage": null,
     "backImage": null,
     "colors": ["plant", "animal", "fungi"],
-    "top-left": "empty",
-    "top-right": "empty",
-    "bottom-left": null,
-    "bottom-right": null
+    "top-left": "fungi",
+    "top-right": "animal",
+    "bottom-left": "plant",
+    "bottom-right": "insect",
+    "back-top-left": "empty",
+    "back-top-right": "empty",
+    "back-bottom-left": null,
+    "back-bottom-right": null
   }
 ]

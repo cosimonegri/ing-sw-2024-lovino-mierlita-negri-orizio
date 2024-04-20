@@ -10,8 +10,9 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- *
  * This card represent a resource, gold or starter card
+ *
+ * TODO maybe substitute corners list with 2 maps
  */
 public class PlayableCard extends Card {
     /**

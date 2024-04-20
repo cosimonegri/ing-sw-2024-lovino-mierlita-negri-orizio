@@ -1,12 +1,11 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.deck.GoldDeck;
-import it.polimi.ingsw.model.deck.ObjectiveDeck;
-import it.polimi.ingsw.model.deck.ResourceDeck;
-import it.polimi.ingsw.model.deck.StarterDeck;
+import it.polimi.ingsw.model.deck.Deck;
 import it.polimi.ingsw.model.deck.card.Card;
+import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.model.deck.card.playablecard.GoldCard;
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
+import it.polimi.ingsw.utilities.CardsConfig;
 
 import java.io.IOException;
 
@@ -14,42 +13,42 @@ import java.io.IOException;
  * Board class contains the four different type of decks and the visible cards that players can take from the terrain
  */
 public class Board {
-    private final GoldDeck goldDeck;
-    private final ResourceDeck resourceDeck;
-    private final ObjectiveDeck objectiveDeck;
-    private final StarterDeck starterDeck;
-
+    private final Deck<GoldCard> goldDeck;
+    private final Deck<PlayableCard> resourceDeck;
+    private final Deck<ObjectiveCard> objectiveDeck;
+    private final Deck<PlayableCard> starterDeck;
     private final PlayableCard[] visibleCards;
 
     /**
      * constructor of the class
      */
     public Board() throws IOException {
-        visibleCards = new PlayableCard[4];
-        goldDeck = new GoldDeck();
-        resourceDeck = new ResourceDeck();
-        objectiveDeck = new ObjectiveDeck();
-        starterDeck = new StarterDeck();
+        CardsConfig cardsConfig = CardsConfig.getInstance();
+        goldDeck = new Deck<>(cardsConfig.getGoldCards());
+        resourceDeck = new Deck<>(cardsConfig.getResourceCards());
+        objectiveDeck = new Deck<>(cardsConfig.getObjectiveCards());
+        starterDeck = new Deck<>(cardsConfig.getStarterCards());
 
+        visibleCards = new PlayableCard[4];
         visibleCards[0] =  goldDeck.draw();
         visibleCards[1] =  goldDeck.draw();
         visibleCards[2] =  resourceDeck.draw();
         visibleCards[3] =  resourceDeck.draw();
     }
 
-    public GoldDeck getGoldDeck() {
+    public Deck<GoldCard> getGoldDeck() {
         return goldDeck;
     }
 
-    public ResourceDeck getResourceDeck() {
+    public Deck<PlayableCard> getResourceDeck() {
         return resourceDeck;
     }
 
-    public ObjectiveDeck getObjectiveDeck() {
+    public Deck<ObjectiveCard> getObjectiveDeck() {
         return objectiveDeck;
     }
 
-    public StarterDeck getStarterDeck() {
+    public Deck<PlayableCard> getStarterDeck() {
         return starterDeck;
     }
 
