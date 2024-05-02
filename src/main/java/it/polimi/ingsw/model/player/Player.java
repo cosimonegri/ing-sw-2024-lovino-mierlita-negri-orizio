@@ -34,6 +34,14 @@ public class Player {
      */
     private ObjectiveCard objCard;
     /**
+     * Objective cards to choose from
+     */
+    private List<ObjectiveCard> objOptions;
+    /**
+     * Starter card of the player
+     */
+    private PlayableCard starterCard;
+    /**
      * The player's hand of cards
      */
     private final List<PlayableCard> hand;
@@ -129,9 +137,17 @@ public class Player {
         return Collections.unmodifiableList(this.hand);
     }
 
+    public void setStarterCard(PlayableCard starterCard){ this.starterCard = starterCard; }
+
+    public PlayableCard getStarterCard(){ return this.starterCard; }
+
     public ObjectiveCard getObjCard() {
         return this.objCard;
     }
+
+    public void setObjOptions(List<ObjectiveCard> objOptions){ this.objOptions = objOptions; }
+
+    public List<ObjectiveCard> getObjOptions(){ return Collections.unmodifiableList(this. objOptions); }
 
     public int getScore() {
         return this.score;

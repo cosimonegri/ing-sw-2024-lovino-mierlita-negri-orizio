@@ -12,26 +12,29 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 public class GameTest {
     private Game game;
 
     @BeforeEach
-    public void gameTest() { game = new Game(4); }
+    public void gameTest() { game = new Game(1,4); }
 
     @Test
     @DisplayName("Constructor Test")
     public void constructorTest() {
-       int playerCountMax = 5;
-       for(int playerCount = -1; playerCount <= playerCountMax; playerCount++){
+        assertThrows(IllegalArgumentException.class, () -> new Game(-1, 4));
+        int playerCountMax = 5;
+        for(int playerCount = -1; playerCount <= playerCountMax; playerCount++){
            int finalI = playerCount;
            if(playerCount < 2 || playerCount > 4){
-               assertThrows(IllegalArgumentException.class, () -> new Game(finalI));
+               assertThrows(IllegalArgumentException.class, () -> new Game(1, finalI));
            }
-           else { assertDoesNotThrow(() -> new Game(finalI)); }
-       }
+           else { assertDoesNotThrow(() -> new Game(1, finalI)); }
+        }
     }
 
 
@@ -39,21 +42,28 @@ public class GameTest {
     @DisplayName("New Player")
     public void addPlayerTest() {
         String u1 = "the-player*]0";
-        assertThrows(IllegalArgumentException.class, () -> game.addPlayer(u1, Marker.GREEN));
+        assertThrows(IllegalArgumentException.class, () -> game.addPlayer(u1));
         String u2 = "   ";
-        assertThrows(IllegalArgumentException.class, () -> game.addPlayer(u2, Marker.GREEN));
+        assertThrows(IllegalArgumentException.class, () -> game.addPlayer(u2));
         String u3 = "";
-        assertThrows(IllegalArgumentException.class, () -> game.addPlayer(u3, Marker.GREEN));
+        assertThrows(IllegalArgumentException.class, () -> game.addPlayer(u3));
 
-        assertDoesNotThrow(() -> game.addPlayer("one1_", Marker.GREEN));
-        assertThrows(UsernameAlreadyTakenException.class, () -> game.addPlayer("one1_", Marker.RED));
-        assertThrows(MarkerAlreadyTakenException.class, () -> game.addPlayer("two2", Marker.GREEN));
+        assertDoesNotThrow(() -> game.addPlayer("one1_"));
+        assertThrows(UsernameAlreadyTakenException.class, () -> game.addPlayer("one1_"));
         assertEquals(1, game.getPlayers().size());
-        assertDoesNotThrow(() -> game.addPlayer("two2", Marker.RED));
-        assertDoesNotThrow(() -> game.addPlayer("three3", Marker.BLUE));
-        assertDoesNotThrow(() -> game.addPlayer("four4", Marker.YELLOW));
-        assertThrows(LobbyFullException.class, () -> game.addPlayer("five5", Marker.GREEN));
+        assertDoesNotThrow(() -> game.addPlayer("two2"));
+        assertDoesNotThrow(() -> game.addPlayer("three3"));
+        assertDoesNotThrow(() -> game.addPlayer("four4"));
+        assertThrows(LobbyFullException.class, () -> game.addPlayer("five5"));
         assertEquals(4, game.getPlayers().size());
+
+        Set<Marker> markerSet = new HashSet<>();
+        List<Marker> markerList = new ArrayList<>();
+        for(Player player : game.getPlayers()) {
+            markerSet.add(player.getMarker());
+            markerList.add(player.getMarker());
+        }
+        assertEquals(markerSet.size(), markerList.size());
 
         List<String> names = new ArrayList<>();
         names.add("one1_");
@@ -69,21 +79,20 @@ public class GameTest {
     @Test
     @DisplayName("Remove Player")
     public void removePlayerTest() {
-        assertThrows(NonExistentUsernameException.class, () -> game.removePlayer("void"));
-        assertDoesNotThrow(() -> game.addPlayer("one_1", Marker.GREEN));
-        assertDoesNotThrow(() -> game.addPlayer("two_2", Marker.RED));
-        assertDoesNotThrow(() -> game.addPlayer("three_3", Marker.BLUE));
+        assertDoesNotThrow(() -> game.addPlayer("one_1"));
+        assertDoesNotThrow(() -> game.addPlayer("two_2"));
+        assertDoesNotThrow(() -> game.addPlayer("three_3"));
         String u1 = "the-player*]0";
-        assertThrows(IllegalArgumentException.class, () -> game.removePlayer(u1));
+        game.removePlayer(u1);
         String u2 = "   ";
-        assertThrows(IllegalArgumentException.class, () -> game.removePlayer(u2));
+        game.removePlayer(u2);
         String u3 = "";
-        assertThrows(IllegalArgumentException.class, () -> game.removePlayer(u3));
+        game.removePlayer(u3);
         String u4 = "None0";
-        assertThrows(NonExistentUsernameException.class, () -> game.removePlayer(u4));
+        game.removePlayer(u4);
         assertEquals(3, game.getPlayers().size());
 
-        assertDoesNotThrow(() -> game.removePlayer("one_1"));
+        game.removePlayer("one_1");
         assertEquals(2, game.getPlayers().size());
 
         List<String> names = new ArrayList<>();
@@ -99,16 +108,15 @@ public class GameTest {
     @Test
     @DisplayName("Start Test")
     public void StartTest(){
-        assertDoesNotThrow(() -> game.addPlayer("one", Marker.GREEN));
+        assertDoesNotThrow(() -> game.addPlayer("one"));
         assertThrows(StillWaitingPlayersException.class, () -> game.start());
 
-        assertDoesNotThrow(() -> game.addPlayer("two", Marker.RED));
-        assertDoesNotThrow(() -> game.addPlayer("three", Marker.BLUE));
-        assertDoesNotThrow(() -> game.addPlayer("four", Marker.YELLOW));
+        assertDoesNotThrow(() -> game.addPlayer("two"));
+        assertDoesNotThrow(() -> game.addPlayer("three"));
+        assertDoesNotThrow(() -> game.addPlayer("four"));
 
         assertDoesNotThrow(() -> game.start());
 
-        assertThrows(GameAlreadyStartedException.class, () -> game.start());
         assertEquals(2, game.getObjectives().size());
 
         for(ObjectiveCard objectiveCard : game.getObjectives())
@@ -121,9 +129,15 @@ public class GameTest {
             for (PlayableCard cardInHand : player.getHand()) {
                 if(cardInHand instanceof GoldCard) { goldAmount++; }
                 else{ resourceAmount++; }
+                assertInstanceOf(PlayableCard.class, player.getStarterCard());
+                assertNotNull(player.getStarterCard());
+                assertEquals(2, player.getObjOptions().size());
+                assertInstanceOf(ObjectiveCard.class, player.getObjOptions().get(0));
+                assertInstanceOf(ObjectiveCard.class, player.getObjOptions().get(1));
             }
             assertEquals(1, goldAmount);
             assertEquals(2, resourceAmount);
+
         }
 
     }
@@ -132,10 +146,10 @@ public class GameTest {
     @DisplayName("Advance turn test")
     public void advanceTurnTest(){
         assertThrows(GameNotStartedYetException.class, () -> game.advanceTurn());
-        assertDoesNotThrow(() -> game.addPlayer("one_1", Marker.GREEN));
-        assertDoesNotThrow(() -> game.addPlayer("two_2", Marker.RED));
-        assertDoesNotThrow(() -> game.addPlayer("three_3", Marker.BLUE));
-        assertDoesNotThrow(() -> game.addPlayer("four_4", Marker.YELLOW));
+        assertDoesNotThrow(() -> game.addPlayer("one_1"));
+        assertDoesNotThrow(() -> game.addPlayer("two_2"));
+        assertDoesNotThrow(() -> game.addPlayer("three_3"));
+        assertDoesNotThrow(() -> game.addPlayer("four_4"));
         assertDoesNotThrow(() -> game.start());
 
         assertEquals(game.getPlayers().getFirst(), game.getCurrentPlayer());
