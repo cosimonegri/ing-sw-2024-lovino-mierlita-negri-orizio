@@ -30,11 +30,7 @@ public class Server implements ServerInterface {
                     }
                     continue;
                 }
-                if (message instanceof CreateGameMessage m) {
-                    controller.createGame(m.getUsername(), m.getPlayersCount());
-                } else if (message instanceof JoinMessage m) {
-                    controller.joinGame(m.getUsername(), m.getGameId());
-                }
+                message.execute();
             }
         });
         messagesThread.start();

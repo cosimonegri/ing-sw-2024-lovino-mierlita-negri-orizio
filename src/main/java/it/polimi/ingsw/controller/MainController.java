@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.GamePhase;
+import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.model.exceptions.LobbyFullException;
 import it.polimi.ingsw.utilities.Config;
 

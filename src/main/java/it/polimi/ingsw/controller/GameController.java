@@ -15,7 +15,9 @@ public class GameController {
     private final Map<String, GameListener> usernameToListener;
 
     public GameController(int gameId, int playersCount) {
-        this.model = new Game(gameId, playersCount);
+
+        this.model = new Game(gameId,playersCount);
+
         this.usernameToListener = new HashMap<>();
         System.out.println("Created new game with id " + gameId);
     }
