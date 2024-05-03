@@ -21,12 +21,21 @@ public class AppClient {
     private static final String PARAM_GUI = "gui";
 
     public static void main(String[] args) {
-        if (args.length != 2) {
+        if (args.length == 0){
+            TUI tui = new TUI();
+            try {
+                ServerInterface server = setupRmiConnection();
+                ClientInterface client = new Client(server, tui);
+            } catch (RemoteException | NotBoundException e) {
+                Printer.printError("Cannot connect to the RMI Server", e);
+            }
+        }
+        else if (args.length != 2) {
             Printer.printError("Command line argument for the network protocol not found");
             return;
         }
 
-        if(args[1].equalsIgnoreCase(PARAM_TUI)){
+        if(args.length != 0 && args[1].equalsIgnoreCase(PARAM_TUI)){
             TUI tui = new TUI();
             if (args[0].equalsIgnoreCase(PARAM_RMI)) {
                 try {
@@ -41,7 +50,7 @@ public class AppClient {
                 ClientInterface client = new Client(server, tui);
             }
         }
-        else if(args[1].equalsIgnoreCase(PARAM_GUI)){
+        else if(args.length != 0 && args[1].equalsIgnoreCase(PARAM_GUI)){
             GUI gui = new GUI();
             if (args[0].equalsIgnoreCase(PARAM_RMI)) {
                 try {
@@ -56,7 +65,7 @@ public class AppClient {
                 ClientInterface client = new Client(server, gui);
             }
         }
-        else {
+        else if (args.length != 0){
             Printer.printError("The chosen network protocol doesn't exists");
         }
     }

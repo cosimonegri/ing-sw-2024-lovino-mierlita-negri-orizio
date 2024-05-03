@@ -11,14 +11,14 @@ import java.util.Scanner;
 public class TUI extends View {
     private Scanner scanner;
     private String username;
-    private ConnectionType connectionType;
-    //private RMIServer serverRMI;
-    //private SocketServer serverSocket;
 
 
     public TUI(){
         super();
         this.scanner = new Scanner(System.in);
+    }
+
+    public void run(){
         chooseUsername();
         chooseCreateOrJoin();
     }

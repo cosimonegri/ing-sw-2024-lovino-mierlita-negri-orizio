@@ -29,4 +29,6 @@ public abstract class View {
             listener.updateFromView(message);
         }
     }
+
+    public void run(){}
 }
