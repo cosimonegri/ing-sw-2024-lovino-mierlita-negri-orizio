@@ -140,9 +140,8 @@ public class Game {
      * Initializes the board, which initializes all the cards and decks
      * gives to all players their starting hands and assigns the first turn and player.
      */
-    public void start() throws StillWaitingPlayersException{
+    public void start() {
         if(this.currentTurn != 0){ return; }
-        if(this.playersCount > this.players.size()){ throw new StillWaitingPlayersException(); }
 
         addObjectives();
         this.currentTurn += 1;
@@ -226,5 +225,12 @@ public class Game {
         for(int i=0; i<2; i++){
             this.objectives.add(this.board.getObjectiveDeck().draw());
         }
+    }
+
+    /**
+     * @return true if the lobby is full
+     */
+    public boolean isLobbyFull() {
+        return this.playersCount == this.players.size();
     }
 }

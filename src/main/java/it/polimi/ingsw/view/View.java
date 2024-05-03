@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view;
 
-import it.polimi.ingsw.network.message.CreateGameMessage;
+import it.polimi.ingsw.network.message.*;
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.utilities.Config;
 
@@ -61,7 +61,8 @@ public class View {
             notifyAllListeners(new CreateGameMessage(this.username, playersChoice));
         } else {
             System.out.println("Type the ID of an existing game:");
-            int gameChoice = scanner.nextInt();
+            int gameId = getGameID();
+            notifyAllListeners(new JoinMessage(this.username, gameId));
         }
     }
 
@@ -71,5 +72,12 @@ public class View {
             choice = scanner.nextInt();
         } while (choice < min || choice > max);
         return choice;
+    }
+
+    // TODO: change gameID to String and check length
+    private int getGameID() {
+        int gameId;
+        gameId = scanner.nextInt();
+        return gameId;
     }
 }

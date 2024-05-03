@@ -1,5 +1,7 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.model.GamePhase;
+import it.polimi.ingsw.model.exceptions.LobbyFullException;
 import it.polimi.ingsw.utilities.Config;
 
 import java.util.*;
@@ -23,6 +25,7 @@ public class MainController {
 
     synchronized public GameController createGame(String username, int playersCount) {
         if (this.usernames.contains(username)) {
+            System.out.println("This username already exists");
             return null;
         }
         this.usernames.add(username);
@@ -35,13 +38,19 @@ public class MainController {
 
     synchronized public GameController joinGame(String username, int gameId) {
         if (this.usernames.contains(username)) {
+            System.out.println("This username already exists");
             return null;
         }
         if (!this.games.containsKey(gameId)) {
+            System.out.println("This game does not exists");
             return null;
         }
         this.usernames.add(username);
         GameController game = games.get(gameId);
+        if (game.getGamePhase() == GamePhase.WAITING) {
+            System.out.println("Game already started");
+            return null;
+        }
         game.addPlayer(username);
         return game;
     }

@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.controller.MainController;
 import it.polimi.ingsw.network.message.CreateGameMessage;
+import it.polimi.ingsw.network.message.JoinMessage;
 import it.polimi.ingsw.network.message.Message;
 
 import java.rmi.RemoteException;
@@ -29,10 +30,10 @@ public class Server implements ServerInterface {
                     }
                     continue;
                 }
-                if (message instanceof CreateGameMessage) {
-                    CreateGameMessage m = (CreateGameMessage) message;
+                if (message instanceof CreateGameMessage m) {
                     controller.createGame(m.getUsername(), m.getPlayersCount());
-                    System.out.println(m.getUsername());
+                } else if (message instanceof JoinMessage m) {
+                    controller.joinGame(m.getUsername(), m.getGameId());
                 }
             }
         });
