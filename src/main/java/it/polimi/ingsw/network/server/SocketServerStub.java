@@ -1,7 +1,10 @@
 package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.network.SocketMiddleware;
+import it.polimi.ingsw.network.client.ClientInterface;
+import it.polimi.ingsw.network.message.ConnectMessage;
 import it.polimi.ingsw.network.message.Message;
+import it.polimi.ingsw.network.message.UsernameMessage;
 import it.polimi.ingsw.utilities.Config;
 import it.polimi.ingsw.utilities.Printer;
 
@@ -44,6 +47,15 @@ public class SocketServerStub implements SocketMiddleware, ServerInterface {
             Printer.printError("Cannot receive the message from the socket server");
         }
         return message;
+    }
+
+    @Override
+    public void connectClient(UsernameMessage message, ClientInterface client) {
+        try {
+            this.output.writeObject(message);
+        } catch (IOException e) {
+            Printer.printError("Cannot send the message to the socket server ");
+        }
     }
 
     @Override

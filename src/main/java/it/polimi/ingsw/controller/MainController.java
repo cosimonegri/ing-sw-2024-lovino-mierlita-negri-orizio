@@ -1,8 +1,12 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.exceptions.UsernameNotValidException;
+import it.polimi.ingsw.model.GameListener;
+import it.polimi.ingsw.exceptions.UsernameAlreadyTakenException;
 import it.polimi.ingsw.model.GamePhase;
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.model.exceptions.LobbyFullException;
+import it.polimi.ingsw.model.GamePhase;
 import it.polimi.ingsw.utilities.Config;
 
 import java.util.*;
@@ -10,11 +14,11 @@ import java.util.*;
 public class MainController {
     private static MainController instance;
     private final Map<Integer, GameController> games;
-    private final List<String> usernames;
+    private final Map<String, GameListener> usernameToListener;
 
     private MainController() {
         games = new HashMap<>();
-        usernames = new ArrayList<>();
+        usernameToListener = new HashMap<>();
     }
 
     public static MainController getInstance() {
@@ -24,49 +28,49 @@ public class MainController {
         return instance;
     }
 
-    synchronized public GameController createGame(String username, int playersCount) {
-        if (this.usernames.contains(username)) {
-            System.out.println("This username already exists");
-            return null;
+    synchronized public void connect(String username, GameListener listener) throws UsernameNotValidException, UsernameAlreadyTakenException {
+        if (!Config.isUsernameValid(username)) {
+            throw new UsernameNotValidException();
         }
-        this.usernames.add(username);
-        int gameId = this.generateGameId();
-        GameController game = new GameController(gameId, playersCount);
-        game.addPlayer(username);
-        this.games.put(gameId, game);
-        return game;
+        if (this.usernameToListener.containsKey(username)) {
+            throw new UsernameAlreadyTakenException();
+        }
+        this.usernameToListener.put(username, listener);
     }
 
-    synchronized public GameController joinGame(String username, int gameId) {
-        if (this.usernames.contains(username)) {
-            System.out.println("This username already exists");
-            return null;
+    synchronized public void createGame(String username, int playersCount) {
+        if (!this.usernameToListener.containsKey(username)) {
+            return;
+        }
+        int gameId = this.generateGameId();
+        GameController game = new GameController(playersCount);
+        game.addPlayer(username, this.usernameToListener.get(username));
+        this.games.put(gameId, game);
+    }
+
+    synchronized public void joinGame(String username, int gameId) {
+        if (!this.usernameToListener.containsKey(username)) {
+            return;
         }
         if (!this.games.containsKey(gameId)) {
-            System.out.println("This game does not exists");
-            return null;
+            return;
         }
-        this.usernames.add(username);
         GameController game = games.get(gameId);
-        if (game.getGamePhase() == GamePhase.WAITING) {
-            System.out.println("Game already started");
-            return null;
+        if (game.getPhase() == GamePhase.WAITING) {
+            return;
         }
-        game.addPlayer(username);
-        return game;
+        game.addPlayer(username, this.usernameToListener.get(username));
     }
 
-    synchronized public GameController leaveGame(String username) {
-        if (this.usernames.contains(username)) {
-            return null;
+    synchronized public void leaveGame(String username) {
+        if (!this.usernameToListener.containsKey(username)) {
+            return;
         }
-        this.usernames.remove(username);
-        GameController game = getGameOfPlayer(username);
-        game.removePlayer(username);
-        return game;
+        this.usernameToListener.remove(username);
+        getGameOfPlayer(username).removePlayer(username);
     }
 
-    synchronized private GameController getGameOfPlayer(String username) {
+    private GameController getGameOfPlayer(String username) {
         for (int gameId : this.games.keySet()) {
             GameController game = this.games.get(gameId);
             if (game.getPlayers().stream().anyMatch(p -> p.getUsername().equals(username))) {

@@ -1,25 +1,20 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.exceptions.UsernameAlreadyTakenException;
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.player.Marker;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.network.message.Message;
+import it.polimi.ingsw.utilities.Config;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Class to represent a game of 2 to 4 players.
  */
-
 public class Game {
-    /**
-     * ID number to identify the different games
-     */
-    private int id;
     /**
      * Number of players for the lobby (not actual players in game), min of 2 and max of 4
      */
@@ -28,6 +23,10 @@ public class Game {
      * List of players that joined the lobby, the order is that of entry
      */
     private final List<Player> players;
+    /**
+     * Listeners of the game
+     */
+    private final Map<Player, GameListener> playerToListener;
     /**
      * Reference to the player whose turn it is.
      */
@@ -57,14 +56,15 @@ public class Game {
      * Constructor of the class
      *
      * @param playersCount the number of players wanted for the match
-     * @throws IllegalArgumentException when playerCount has not a legal value
+     * @throws IllegalArgumentException when playersCount has not a legal value
      */
-    public Game(int id, int playersCount){
-        if(id < 0) {throw new IllegalArgumentException("ID of game cannot be negative");}
+    public Game(int playersCount) {
         if(playersCount < 2 || playersCount > 4) {
-            throw new IllegalArgumentException("Amount of players cannot be zero, negative nor smaller than 2 or greater than 4");}
+            throw new IllegalArgumentException("Amount of players cannot be zero, negative nor smaller than 2 or greater than 4");
+        }
         this.playersCount = playersCount;
         this.players = new ArrayList<>();
+        this.playerToListener = new HashMap<>();
         this.currentPlayer = null;
         this.currentTurn = 0;
         this.objectives = new ArrayList<>();
@@ -84,14 +84,17 @@ public class Game {
      * @throws UsernameAlreadyTakenException when a new player tries to choose an already taken username
      * @throws LobbyFullException when a new player tries to enter a game of already "playerCount" players
      */
-    public void addPlayer(String username) throws UsernameAlreadyTakenException, LobbyFullException {
-
-        if(this.players.size() == this.playersCount) throw new LobbyFullException();
-        if(username.isEmpty() || username.isBlank() || !(username.matches("[a-zA-Z_0-9]*"))){
+    public void addPlayer(String username, GameListener listener) throws UsernameAlreadyTakenException, LobbyFullException {
+        if (this.players.size() == this.playersCount) {
+            throw new LobbyFullException();
+        }
+        if (Config.isUsernameValid(username)){
             throw new IllegalArgumentException("Username must be alphanumeric and not null");
         }
-        for(Player p : this.players) {
-            if(p.getUsername().equals(username)){ throw new UsernameAlreadyTakenException();}
+        for (Player p : this.players) {
+            if (p.getUsername().equals(username)) {
+                throw new UsernameAlreadyTakenException();
+            }
         }
 
         List<Marker> markers = new ArrayList<>();
@@ -101,38 +104,59 @@ public class Game {
         markers.add(Marker.YELLOW);
         int maxBound = 4;
         Random rand = new Random();
-        boolean markerTaken = false;
+        boolean markerTaken;
 
         Marker randMarker = markers.get(rand.nextInt(maxBound));
-        if(!this.players.isEmpty()) {
-            do{
-                markerTaken = false;
-                for(Player player : this.players){
-                    if(player.getMarker().equals(randMarker)){
-                        markerTaken = true;
-                        randMarker = markers.get(rand.nextInt(maxBound));
-                    }
+        do {
+            markerTaken = false;
+            for(Player player : this.players){
+                if(player.getMarker().equals(randMarker)){
+                    markerTaken = true;
+                    randMarker = markers.get(rand.nextInt(maxBound));
                 }
-            }while(markerTaken);
-        }
-        this.players.add(new Player(username, randMarker));
+            }
+        } while(markerTaken);
+
+        Player player = new Player(username, randMarker);
+        this.players.add(player);
+        this.playerToListener.put(player, listener);
     }
 
     /**
-     * Removes a player from the game
+     * Removes a player and the correspondent listener from the game
      *
      * @param username of the player to be removed
-     * @throws IllegalArgumentException when the username is null or blank
      */
-    public void removePlayer(String username){
-        if(this.players.isEmpty() || username.isEmpty() || username.isBlank() || !(username.matches("[a-zA-Z_0-9]*"))){
-            return;}
-
-        for(Player p : this.players) {
-            if(p.getUsername().equals(username)){
+    public void removePlayer(String username) {
+        for (Player p : this.players) {
+            if (p.getUsername().equals(username)){
                 this.players.remove(p);
+                this.playerToListener.remove(p);
                 return;
             }
+        }
+    }
+
+    public void notifyListener(String username, Message message) {
+        for (Player p : this.players) {
+            if (p.getUsername().equals(username)) {
+                this.playerToListener.get(p).updateFromModel(message);
+            }
+        }
+    }
+
+    public void notifyAllListenersExcept(String username, Message message) {
+        for (Player p : this.players) {
+            if (p.getUsername().equals(username)) {
+                continue;
+            }
+            this.playerToListener.get(p).updateFromModel(message);
+        }
+    }
+
+    public void notifyAllListeners(Message message) {
+        for (GameListener listener : this.playerToListener.values()) {
+            listener.updateFromModel(message);
         }
     }
 
@@ -194,20 +218,12 @@ public class Game {
         return Collections.unmodifiableList(this.objectives);
     }
 
-    public int getId() {
-        return this.id;
-    }
-
     public GamePhase getGamePhase(){
         return this.gamePhase;
     }
 
     public TurnPhase getTurnPhase() {
         return this.turnPhase;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public void setGamePhase(GamePhase gamePhase) {

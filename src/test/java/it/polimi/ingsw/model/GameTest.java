@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 import static org.junit.jupiter.api.Assertions.*;
 
+import it.polimi.ingsw.exceptions.UsernameAlreadyTakenException;
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.model.deck.card.playablecard.GoldCard;
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
@@ -21,19 +22,18 @@ public class GameTest {
     private Game game;
 
     @BeforeEach
-    public void gameTest() { game = new Game(1,4); }
+    public void gameTest() { game = new Game(4); }
 
     @Test
     @DisplayName("Constructor Test")
     public void constructorTest() {
-        assertThrows(IllegalArgumentException.class, () -> new Game(-1, 4));
         int playerCountMax = 5;
         for(int playerCount = -1; playerCount <= playerCountMax; playerCount++){
            int finalI = playerCount;
            if(playerCount < 2 || playerCount > 4){
-               assertThrows(IllegalArgumentException.class, () -> new Game(1, finalI));
+               assertThrows(IllegalArgumentException.class, () -> new Game(finalI));
            }
-           else { assertDoesNotThrow(() -> new Game(1, finalI)); }
+           else { assertDoesNotThrow(() -> new Game(finalI)); }
         }
     }
 
@@ -42,19 +42,19 @@ public class GameTest {
     @DisplayName("New Player")
     public void addPlayerTest() {
         String u1 = "the-player*]0";
-        assertThrows(IllegalArgumentException.class, () -> game.addPlayer(u1));
+        assertThrows(IllegalArgumentException.class, () -> game.addPlayer(u1, null));
         String u2 = "   ";
-        assertThrows(IllegalArgumentException.class, () -> game.addPlayer(u2));
+        assertThrows(IllegalArgumentException.class, () -> game.addPlayer(u2, null));
         String u3 = "";
-        assertThrows(IllegalArgumentException.class, () -> game.addPlayer(u3));
+        assertThrows(IllegalArgumentException.class, () -> game.addPlayer(u3, null));
 
-        assertDoesNotThrow(() -> game.addPlayer("one1_"));
-        assertThrows(UsernameAlreadyTakenException.class, () -> game.addPlayer("one1_"));
+        assertDoesNotThrow(() -> game.addPlayer("one1_", null));
+        assertThrows(UsernameAlreadyTakenException.class, () -> game.addPlayer("one1_", null));
         assertEquals(1, game.getPlayers().size());
-        assertDoesNotThrow(() -> game.addPlayer("two2"));
-        assertDoesNotThrow(() -> game.addPlayer("three3"));
-        assertDoesNotThrow(() -> game.addPlayer("four4"));
-        assertThrows(LobbyFullException.class, () -> game.addPlayer("five5"));
+        assertDoesNotThrow(() -> game.addPlayer("two2", null));
+        assertDoesNotThrow(() -> game.addPlayer("three3", null));
+        assertDoesNotThrow(() -> game.addPlayer("four4", null));
+        assertThrows(LobbyFullException.class, () -> game.addPlayer("five5", null));
         assertEquals(4, game.getPlayers().size());
 
         Set<Marker> markerSet = new HashSet<>();
@@ -79,9 +79,9 @@ public class GameTest {
     @Test
     @DisplayName("Remove Player")
     public void removePlayerTest() {
-        assertDoesNotThrow(() -> game.addPlayer("one_1"));
-        assertDoesNotThrow(() -> game.addPlayer("two_2"));
-        assertDoesNotThrow(() -> game.addPlayer("three_3"));
+        assertDoesNotThrow(() -> game.addPlayer("one_1", null));
+        assertDoesNotThrow(() -> game.addPlayer("two_2", null));
+        assertDoesNotThrow(() -> game.addPlayer("three_3", null));
         String u1 = "the-player*]0";
         game.removePlayer(u1);
         String u2 = "   ";
@@ -108,12 +108,12 @@ public class GameTest {
     @Test
     @DisplayName("Start Test")
     public void StartTest(){
-        assertDoesNotThrow(() -> game.addPlayer("one"));
+        assertDoesNotThrow(() -> game.addPlayer("one", null));
         assertThrows(StillWaitingPlayersException.class, () -> game.start());
 
-        assertDoesNotThrow(() -> game.addPlayer("two"));
-        assertDoesNotThrow(() -> game.addPlayer("three"));
-        assertDoesNotThrow(() -> game.addPlayer("four"));
+        assertDoesNotThrow(() -> game.addPlayer("two", null));
+        assertDoesNotThrow(() -> game.addPlayer("three", null));
+        assertDoesNotThrow(() -> game.addPlayer("four", null));
 
         assertDoesNotThrow(() -> game.start());
 
@@ -146,10 +146,10 @@ public class GameTest {
     @DisplayName("Advance turn test")
     public void advanceTurnTest(){
         assertThrows(GameNotStartedYetException.class, () -> game.advanceTurn());
-        assertDoesNotThrow(() -> game.addPlayer("one_1"));
-        assertDoesNotThrow(() -> game.addPlayer("two_2"));
-        assertDoesNotThrow(() -> game.addPlayer("three_3"));
-        assertDoesNotThrow(() -> game.addPlayer("four_4"));
+        assertDoesNotThrow(() -> game.addPlayer("one_1", null));
+        assertDoesNotThrow(() -> game.addPlayer("two_2", null));
+        assertDoesNotThrow(() -> game.addPlayer("three_3", null));
+        assertDoesNotThrow(() -> game.addPlayer("four_4", null));
         assertDoesNotThrow(() -> game.start());
 
         assertEquals(game.getPlayers().getFirst(), game.getCurrentPlayer());

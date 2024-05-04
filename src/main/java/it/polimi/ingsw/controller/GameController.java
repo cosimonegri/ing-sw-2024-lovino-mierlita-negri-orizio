@@ -1,33 +1,26 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.GameListener;
 import it.polimi.ingsw.model.GamePhase;
 import it.polimi.ingsw.model.player.Marker;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.network.client.ClientInterface;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class GameController {
     private final Game model;
-    private final Map<String, GameListener> usernameToListener;
 
-    public GameController(int gameId, int playersCount) {
-
-        this.model = new Game(gameId,playersCount);
-
-        this.usernameToListener = new HashMap<>();
-        System.out.println("Created new game with id " + gameId);
+    public GameController(int playersCount) {
+        this.model = new Game(playersCount);
+        System.out.println("Created a new game");
     }
 
     //TODO fix
-    synchronized public void addPlayer(String username) {
+    synchronized public void addPlayer(String username, GameListener listener) {
         try {
-            model.addPlayer(username);
+            model.addPlayer(username, listener);
             System.out.println(username + " joined the game");
-            usernameToListener.put(username, null);
         } catch (Exception e) {
             System.out.println("The lobby is already full");
         } finally {
@@ -41,7 +34,6 @@ public class GameController {
     synchronized public void removePlayer(String username) {
         try {
             model.removePlayer(username);
-            usernameToListener.remove(username);
         } catch (Exception e) {
 
         }
@@ -49,12 +41,6 @@ public class GameController {
 
     synchronized public List<Player> getPlayers() {
         return model.getPlayers();
-    }
-
-    synchronized private void notifyAllClients() {
-        for (GameListener listener : usernameToListener.values()) {
-
-        }
     }
 
     synchronized public GamePhase getGamePhase() {

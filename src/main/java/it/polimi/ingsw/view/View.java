@@ -1,13 +1,9 @@
 package it.polimi.ingsw.view;
 
-import it.polimi.ingsw.network.message.*;
 import it.polimi.ingsw.network.message.Message;
-import it.polimi.ingsw.utilities.Config;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 
 public abstract class View {
     private final List<ViewListener> listeners;
@@ -24,11 +20,11 @@ public abstract class View {
         this.listeners.remove(listener);
     }
 
-    public void notifyAllListeners(Message message) {
+    protected void notifyAllListeners(Message message) {
         for (ViewListener listener : this.listeners) {
             listener.updateFromView(message);
         }
     }
 
-    public void run(){}
+    public abstract void run();
 }

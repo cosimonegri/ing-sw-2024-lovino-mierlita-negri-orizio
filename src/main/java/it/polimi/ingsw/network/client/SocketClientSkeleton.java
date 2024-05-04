@@ -1,7 +1,9 @@
 package it.polimi.ingsw.network.client;
 
 import it.polimi.ingsw.network.SocketMiddleware;
+import it.polimi.ingsw.network.message.ConnectMessage;
 import it.polimi.ingsw.network.message.Message;
+import it.polimi.ingsw.network.message.UsernameMessage;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -23,7 +25,11 @@ public class SocketClientSkeleton implements SocketMiddleware, ClientInterface, 
     @Override
     public Message receiveMessage() throws RemoteException {
         try {
-            return (Message) this.input.readObject();
+            Message message = (Message) this.input.readObject();
+            if (message instanceof UsernameMessage m) {
+                return new ConnectMessage(m.getUsername(), this);
+            }
+            return message;
         } catch (ClassNotFoundException | IOException e) {
             throw new RemoteException("Cannot receive the message from the client");
         }
