@@ -31,7 +31,7 @@ public class SocketClientSkeleton implements SocketMiddleware, ClientInterface, 
             }
             return message;
         } catch (ClassNotFoundException | IOException e) {
-            throw new RemoteException("Cannot receive the message from the client");
+            throw new RemoteException("Cannot receive message from the client");
         }
     }
 
@@ -40,12 +40,13 @@ public class SocketClientSkeleton implements SocketMiddleware, ClientInterface, 
         try {
             this.output.writeObject(message);
         } catch (IOException e) {
-            throw new RemoteException("Cannot send the message to the client");
+            throw new RemoteException("Cannot send message to the client");
         }
     }
 
     @Override
     public void close() throws IOException {
         this.clientSocket.close();
+        System.out.println("Socket connection closed");
     }
 }

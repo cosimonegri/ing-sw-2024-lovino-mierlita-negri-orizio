@@ -1,12 +1,12 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.exceptions.LobbyFullException;
 import it.polimi.ingsw.exceptions.UsernameAlreadyTakenException;
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.player.Marker;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.message.Message;
-import it.polimi.ingsw.utilities.Config;
 
 import java.io.IOException;
 import java.util.*;
@@ -72,9 +72,7 @@ public class Game {
             this.board = new Board();
         }
         //todo implement try-catch to controller
-        catch (IOException e) {
-            e.printStackTrace();
-        }
+        catch (IOException ignored) { }
     }
 
     /**
@@ -87,9 +85,6 @@ public class Game {
     public void addPlayer(String username, GameListener listener) throws UsernameAlreadyTakenException, LobbyFullException {
         if (this.players.size() == this.playersCount) {
             throw new LobbyFullException();
-        }
-        if (Config.isUsernameValid(username)){
-            throw new IllegalArgumentException("Username must be alphanumeric and not null");
         }
         for (Player p : this.players) {
             if (p.getUsername().equals(username)) {

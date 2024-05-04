@@ -4,7 +4,6 @@ import it.polimi.ingsw.controller.MainController;
 import it.polimi.ingsw.exceptions.UsernameNotValidException;
 import it.polimi.ingsw.exceptions.UsernameAlreadyTakenException;
 import it.polimi.ingsw.network.client.ClientInterface;
-import it.polimi.ingsw.utilities.Printer;
 
 import java.rmi.RemoteException;
 
@@ -25,25 +24,26 @@ public class ConnectMessage implements Message {
         return this.client;
     }
 
+    //TODO check error handling
     public void execute(MainController controller) {
         try {
             controller.connect(this.username, (message) -> {
                 try {
                     this.client.messageFromServer(message);
                 } catch (RemoteException e) {
-                    Printer.printError("Remote Exception", e);
+                    System.err.println("Cannot send message to the client");
                 }
             });
             try {
                 this.client.messageFromServer(new UsernameValidMessage());
-            } catch (RemoteException e2) {
-                Printer.printError("Remote Exception", e2);
+            } catch (RemoteException e) {
+                System.err.println("Cannot send message to the client");
             }
         } catch (UsernameNotValidException | UsernameAlreadyTakenException e) {
             try {
                 this.client.messageFromServer(new UsernameNotValidMessage(e.getMessage()));
             } catch (RemoteException e2) {
-                Printer.printError("Remote Exception", e2);
+                System.err.println("Cannot send message to the client");
             }
         }
     }

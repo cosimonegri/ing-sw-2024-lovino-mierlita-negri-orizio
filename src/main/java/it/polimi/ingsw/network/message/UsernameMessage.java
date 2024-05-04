@@ -2,6 +2,11 @@ package it.polimi.ingsw.network.message;
 
 import it.polimi.ingsw.controller.MainController;
 
+/**
+ * Message generated on the client side that should become a {@link ConnectMessage}
+ * (by adding a reference to a {@link it.polimi.ingsw.network.client.ClientInterface})
+ * before the server analyzes it
+ */
 public class UsernameMessage implements Message {
     private final String username;
 

@@ -1,14 +1,18 @@
 package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.network.message.Message;
+import it.polimi.ingsw.network.client.Client;
+import it.polimi.ingsw.network.message.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class View {
+    private final Client client;
     private final List<ViewListener> listeners;
 
-    public View() {
+    public View(Client client) {
+        this.client = client;
         this.listeners = new ArrayList<>();
     }
 

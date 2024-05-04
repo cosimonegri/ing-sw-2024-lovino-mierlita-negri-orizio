@@ -2,11 +2,9 @@ package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.network.SocketMiddleware;
 import it.polimi.ingsw.network.client.ClientInterface;
-import it.polimi.ingsw.network.message.ConnectMessage;
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.UsernameMessage;
 import it.polimi.ingsw.utilities.Config;
-import it.polimi.ingsw.utilities.Printer;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -15,55 +13,43 @@ import java.net.Socket;
 import java.rmi.RemoteException;
 
 public class SocketServerStub implements SocketMiddleware, ServerInterface {
-    private Socket clientSocket;
-    private ObjectOutputStream output;
-    private ObjectInputStream input;
+    private final Socket clientSocket;
+    private final ObjectOutputStream output;
+    private final ObjectInputStream input;
 
-    public SocketServerStub() {
-        try {
-            this.clientSocket = new Socket(Config.HOSTNAME, Config.SOCKET_PORT);
-        } catch (IOException e) {
-            Printer.printError("Cannot establish a connection with the socket server: " + e.getMessage());
-        }
-        try {
-            this.output = new ObjectOutputStream(this.clientSocket.getOutputStream());
-        } catch (IOException e) {
-            Printer.printError("Cannot connect to the socket output stream: " + e.getMessage());
-        }
-        try {
-            this.input = new ObjectInputStream(this.clientSocket.getInputStream());
-        } catch (IOException e) {
-            Printer.printError("Cannot connect to the socket input stream");
-        }
+    //TODO add ip as parameter
+    public SocketServerStub() throws IOException {
+        this.clientSocket = new Socket(Config.HOSTNAME, Config.SOCKET_PORT);
+        this.output = new ObjectOutputStream(this.clientSocket.getOutputStream());
+        this.input = new ObjectInputStream(this.clientSocket.getInputStream());
     }
 
-    //TODO sistemare casting e tutti lanciano eccezioni
     @Override
-    public Message receiveMessage() {
-        Message message = null;
+    public Message receiveMessage() throws RemoteException {
+        Message message;
         try {
             message = (Message) this.input.readObject();
+            return message;
         } catch (ClassNotFoundException | IOException e) {
-            Printer.printError("Cannot receive the message from the socket server");
-        }
-        return message;
-    }
-
-    @Override
-    public void connectClient(UsernameMessage message, ClientInterface client) {
-        try {
-            this.output.writeObject(message);
-        } catch (IOException e) {
-            Printer.printError("Cannot send the message to the socket server ");
+            throw new RemoteException("Cannot receive message from the socket server");
         }
     }
 
     @Override
-    public void messageFromClient(Message message) {
+    public void connectClient(UsernameMessage message, ClientInterface client) throws RemoteException {
         try {
             this.output.writeObject(message);
         } catch (IOException e) {
-            Printer.printError("Cannot send the message to the socket server ");
+            throw new RemoteException("Cannot send message to the socket server ");
+        }
+    }
+
+    @Override
+    public void messageFromClient(Message message) throws RemoteException {
+        try {
+            this.output.writeObject(message);
+        } catch (IOException e) {
+            throw new RemoteException("Cannot send message to the socket server ");
         }
     }
 }

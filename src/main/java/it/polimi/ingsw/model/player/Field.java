@@ -3,7 +3,6 @@ package it.polimi.ingsw.model.player;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.polimi.ingsw.model.deck.card.playablecard.corner.Position;
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.*;
 import it.polimi.ingsw.model.exceptions.CoordinatesAreNotValidException;

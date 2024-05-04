@@ -17,7 +17,7 @@ public class PlayableCardTest {
     private final Random rand = new Random();
 
     /**
-     *  Checks that the constructor doesnt accept a negative
+     *  Checks that the constructor doesn't accept a negative
      *  value for the points field
       */
     @Test

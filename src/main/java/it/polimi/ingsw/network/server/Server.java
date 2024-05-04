@@ -7,7 +7,7 @@ import it.polimi.ingsw.network.message.CreateGameMessage;
 import it.polimi.ingsw.network.message.JoinMessage;
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.UsernameMessage;
-import it.polimi.ingsw.utilities.Printer;
+import it.polimi.ingsw.utilities.Config;
 
 import java.rmi.RemoteException;
 import java.util.LinkedList;
@@ -28,9 +28,10 @@ public class Server implements ServerInterface {
                 Message message = pollMessage();
                 if (message == null) {
                     try {
-                        TimeUnit.MILLISECONDS.sleep(200);
+                        TimeUnit.MILLISECONDS.sleep(Config.SLEEP_TIME_MS);
                     } catch (InterruptedException e) {
-                        Printer.printError("Interrupted Exception", e);
+                        System.err.println("Messages thread interrupted while sleeping");
+                        System.exit(1);
                     }
                     continue;
                 }
@@ -51,14 +52,18 @@ public class Server implements ServerInterface {
     @Override
     public void connectClient(UsernameMessage message, ClientInterface client) throws RemoteException {
         synchronized (messages) {
-            messages.add(new ConnectMessage(message.getUsername(), client));
+            if (message != null) {
+                messages.add(new ConnectMessage(message.getUsername(), client));
+            }
         }
     }
 
     @Override
     public void messageFromClient(Message message) throws RemoteException {
         synchronized (messages) {
-            messages.add(message);
+            if (message != null) {
+                messages.add(message);
+            }
         }
     }
 

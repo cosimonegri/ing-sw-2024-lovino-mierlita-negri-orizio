@@ -1,12 +1,17 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.exceptions.UsernameAlreadyTakenException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.GameListener;
 import it.polimi.ingsw.model.GamePhase;
 import it.polimi.ingsw.model.player.Marker;
+import it.polimi.ingsw.exceptions.LobbyFullException;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.network.message.Message;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GameController {
     private final Game model;
@@ -16,13 +21,23 @@ public class GameController {
         System.out.println("Created a new game");
     }
 
-    //TODO fix
-    synchronized public void addPlayer(String username, GameListener listener) {
+    public void notifyListener(String username, Message message) {
+        model.notifyListener(username, message);
+    }
+
+    public void notifyAllListenersExcept(String username, Message message) {
+        model.notifyAllListenersExcept(username, message);
+    }
+
+    public void notifyAllListeners(Message message) {
+        model.notifyAllListeners(message);
+    }
+
+    //TODO maybe we can remove checks on username validity in game
+    synchronized public void addPlayer(String username, GameListener listener) throws LobbyFullException {
         try {
             model.addPlayer(username, listener);
-            System.out.println(username + " joined the game");
-        } catch (Exception e) {
-            System.out.println("The lobby is already full");
+        } catch (UsernameAlreadyTakenException ignored) {
         } finally {
             if (model.isLobbyFull()) {
                 model.start();
@@ -32,18 +47,14 @@ public class GameController {
     }
 
     synchronized public void removePlayer(String username) {
-        try {
-            model.removePlayer(username);
-        } catch (Exception e) {
-
-        }
+        model.removePlayer(username);
     }
 
     synchronized public List<Player> getPlayers() {
         return model.getPlayers();
     }
 
-    synchronized public GamePhase getGamePhase() {
+    synchronized public GamePhase getPhase() {
         return this.model.getGamePhase();
     }
 }

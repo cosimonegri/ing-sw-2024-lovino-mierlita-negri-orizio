@@ -9,6 +9,8 @@ public class Config {
     public static final int MIN_GAME_ID = 0;
     public static final int MAX_GAME_ID = 999999;
 
+    public static final int SLEEP_TIME_MS = 200;
+
     public static boolean isUsernameValid(String username) {
         return !username.isEmpty() && !username.isBlank() && username.matches("[a-zA-Z_0-9]*");
     }

@@ -5,7 +5,6 @@ import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.server.Server;
 import it.polimi.ingsw.network.server.ServerInterface;
 import it.polimi.ingsw.utilities.Config;
-import it.polimi.ingsw.utilities.Printer;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -23,7 +22,8 @@ public class AppServer {
             try {
                 initRmiServer();
             } catch (RemoteException e) {
-                Printer.printError("Cannot start RMI server", e);
+                System.err.println("Cannot start the RMI server");
+                System.exit(1);
             }
         });
         rmiThread.start();
@@ -32,14 +32,14 @@ public class AppServer {
             try {
                 initSocketServer();
             } catch (IOException e) {
-                Printer.printError("Cannot start Socket server", e);
+                System.err.println("Cannot start Socket server");
+                System.exit(1);
             }
         });
         socketThread.start();
     }
 
     private static void initRmiServer() throws RemoteException {
-        // System.out.println("Starting RMI server...");
         ServerInterface stub = (ServerInterface) UnicastRemoteObject.exportObject(
                 Server.getInstance(), Config.RMI_PORT
         );
@@ -49,12 +49,11 @@ public class AppServer {
     }
 
     private static void initSocketServer() throws IOException {
-        try (ExecutorService executor = Executors.newCachedThreadPool();) {
-            // System.out.println("Starting Socket server...");
-
+        try (ExecutorService executor = Executors.newCachedThreadPool()) {
             try (ServerSocket serverSocket = new ServerSocket(Config.SOCKET_PORT)) {
                 System.out.println("Socket server started successfully");
 
+                //noinspection InfiniteLoopStatement
                 while (true) {
                     System.out.println("Waiting for a socket connection...");
                     Socket clientSocket = serverSocket.accept();
@@ -62,14 +61,15 @@ public class AppServer {
 
                     executor.submit(() -> {
                         try (SocketClientSkeleton client = new SocketClientSkeleton(clientSocket)) {
+                            //noinspection InfiniteLoopStatement
                             while (true) {
                                 Message message = client.receiveMessage();
                                 Server.getInstance().messageFromClient(message);
                             }
                         } catch (RemoteException e) {
-                            Printer.printError("Cannot receive data from socket client");
+                            System.err.println("Cannot receive data from socket client");
                         } catch (IOException e) {
-                            Printer.printError("Cannot close connection with socket client", e);
+                            System.err.println("Cannot close connection with socket client");
                         }
                     });
                 }
