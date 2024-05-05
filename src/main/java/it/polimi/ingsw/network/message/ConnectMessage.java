@@ -25,9 +25,9 @@ public class ConnectMessage implements Message {
     }
 
     //TODO check error handling
-    public void execute(MainController controller) {
+    public void execute() {
         try {
-            controller.connect(this.username, (message) -> {
+            MainController.getInstance().connect(this.username, (message) -> {
                 try {
                     this.client.messageFromServer(message);
                 } catch (RemoteException e) {

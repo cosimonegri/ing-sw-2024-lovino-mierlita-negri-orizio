@@ -1,8 +1,7 @@
 package it.polimi.ingsw.view;
 
-import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.client.Client;
-import it.polimi.ingsw.network.message.*;
+import it.polimi.ingsw.network.message.Message;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,10 +9,15 @@ import java.util.List;
 public abstract class View {
     private final Client client;
     private final List<ViewListener> listeners;
+    protected String username;
 
     public View(Client client) {
         this.client = client;
         this.listeners = new ArrayList<>();
+    }
+
+    public Client getClient() {
+        return this.client;
     }
 
     public void addListener(ViewListener listener) {
@@ -30,5 +34,7 @@ public abstract class View {
         }
     }
 
-    public abstract void run();
+    public void run() {
+        this.client.connectToServer(this);
+    }
 }

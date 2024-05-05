@@ -1,6 +1,5 @@
 package it.polimi.ingsw.network.message;
 
-import it.polimi.ingsw.controller.MainController;
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
 import it.polimi.ingsw.model.player.Coordinates;
 

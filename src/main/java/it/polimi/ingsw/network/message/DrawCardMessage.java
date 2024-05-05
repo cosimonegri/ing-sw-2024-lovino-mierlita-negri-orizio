@@ -1,7 +1,6 @@
 package it.polimi.ingsw.network.message;
 
 import it.polimi.ingsw.controller.DrawType;
-import it.polimi.ingsw.controller.MainController;
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
 
 public class DrawCardMessage {

@@ -4,14 +4,11 @@ import it.polimi.ingsw.exceptions.UsernameAlreadyTakenException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.GameListener;
 import it.polimi.ingsw.model.GamePhase;
-import it.polimi.ingsw.model.player.Marker;
 import it.polimi.ingsw.exceptions.LobbyFullException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.message.Message;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class GameController {
     private final Game model;

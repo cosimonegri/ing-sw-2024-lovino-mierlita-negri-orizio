@@ -1,10 +1,10 @@
 package it.polimi.ingsw.view;
 
+import it.polimi.ingsw.network.client.Client;
+
 public class GUI extends View{
 
-    private String username;
-
-    public GUI(){
-
+    public GUI (Client client) {
+        super(client);
     }
 }

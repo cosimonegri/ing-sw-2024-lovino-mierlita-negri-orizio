@@ -1,6 +1,5 @@
 package it.polimi.ingsw.network.message;
 
-import it.polimi.ingsw.controller.MainController;
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 
 public class ChooseObjectiveMessage implements Message{

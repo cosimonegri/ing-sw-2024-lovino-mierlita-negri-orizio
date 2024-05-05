@@ -1,6 +1,5 @@
 package it.polimi.ingsw.network.message;
 
-import it.polimi.ingsw.controller.MainController;
 
 public class PlayStarterMessage implements Message{
     private final String username;

@@ -3,6 +3,7 @@ package it.polimi.ingsw;
 import it.polimi.ingsw.network.ConnectionType;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.view.TUI;
+import it.polimi.ingsw.view.View;
 
 public class AppClient {
 
