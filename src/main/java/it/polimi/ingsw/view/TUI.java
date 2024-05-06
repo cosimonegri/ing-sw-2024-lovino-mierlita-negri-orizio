@@ -18,11 +18,21 @@ public class TUI extends View {
 
     public void run() {
         super.run();
+        printTitle();
         this.username = readUsername();
         chooseCreateOrJoin();
         try {
             TimeUnit.SECONDS.sleep(3);
         } catch (Exception ignored) {}
+    }
+
+    private void printTitle() {
+        System.out.println("  _____          _              _   _       _                   _ _ ");
+        System.out.println(" / ____|        | |            | \\ | |     | |                 | (_)");
+        System.out.println("| |     ___   __| | _____  __  |  \\| | __ _| |_ _   _ _ __ __ _| |_ ___");
+        System.out.println("| |    / _ \\ / _` |/ _ \\ \\/ /  | . ` |/ _` | __| | | | '__/ _` | | / __|");
+        System.out.println("| |___| (_) | (_| |  __/>  <   | |\\  | (_| | |_| |_| | | | (_| | | \\__ \\");
+        System.out.println(" \\_____\\___/ \\__,_|\\___/_/\\_\\  |_| \\_|\\__,_|\\__|\\__,_|_|  \\__,_|_|_|___/");
     }
 
     private String readUsername() {
