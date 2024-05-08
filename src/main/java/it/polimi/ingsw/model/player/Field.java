@@ -165,7 +165,7 @@ public class Field {
         }
         // the first card can be placed only at the center of the field
         if (this.cardsCount == 0) {
-            return x == SIZE / 2 && y == SIZE / 2;
+            return x == (SIZE+1) / 2 && y == (SIZE+1) / 2;
         }
         // since we can attach cards only in a diagonal direction, half of the coordinates in the field cannot be valid.
         // a coordinate is not valid if there is already a card in it.
@@ -184,7 +184,7 @@ public class Field {
                 // neighbor card that is adjacent to the current position
                 PlayableCard neighborCard = this.placedCards[x + dx][y + dy].card();
                 boolean neighborFlipped = this.placedCards[x + dx][y + dy].flipped();
-                Position neighborCornerPos = getCornerPosOfNeighbor(dx, dy);
+                Position neighborCornerPos = getCornerPosOfNeighbor(-dx, -dy);
                 if (neighborCard.getCorner(neighborCornerPos, neighborFlipped).type() == CornerType.VISIBLE) {
                     visibleAdjacentCorners++;
                 } else {
@@ -206,16 +206,16 @@ public class Field {
      * @return the corner position of the neighbor card
      */
     private Position getCornerPosOfNeighbor(int dx, int dy) {
-        if (dx == 1 && dy == -1) {
+        if (dx == -1 && dy == -1) {
             return Position.TOPLEFT;
         }
-        if (dx == -1 && dy == -1) {
+        if (dx == 1 && dy == -1) {
             return Position.TOPRIGHT;
         }
-        if (dx == 1 && dy == 1) {
+        if (dx == -1 && dy == 1) {
             return Position.BOTTOMLEFT;
         }
-        if (dx == -1 && dy == 1) {
+        if (dx == 1 && dy == 1) {
             return Position.BOTTOMRIGHT;
         }
         throw new IllegalArgumentException("Both parameters must be 1 or -1");
