@@ -234,16 +234,16 @@ public class Field {
      */
     private Coordinates getNeighborOfCornerPos(Position cornerPos, int x, int y) {
         if (cornerPos == Position.TOPLEFT) {
-            return new Coordinates(x - 1, y + 1);
-        }
-        else if (cornerPos == Position.TOPRIGHT) {
-            return new Coordinates(x + 1, y + 1);
-        }
-        else if (cornerPos == Position.BOTTOMLEFT) {
             return new Coordinates(x - 1, y - 1);
         }
-        else {
+        else if (cornerPos == Position.TOPRIGHT) {
             return new Coordinates(x + 1, y - 1);
+        }
+        else if (cornerPos == Position.BOTTOMLEFT) {
+            return new Coordinates(x - 1, y + 1);
+        }
+        else {
+            return new Coordinates(x + 1, y + 1);
         }
     }
 
