@@ -2,7 +2,7 @@ package it.polimi.ingsw.network.message;
 
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 
-public class ChooseObjectiveMessage implements Message{
+public class ChooseObjectiveMessage implements Message {
 
     private final String username;
 
@@ -19,10 +19,5 @@ public class ChooseObjectiveMessage implements Message{
 
     public ObjectiveCard getObjective() {
         return objective;
-    }
-
-    @Override
-    public void execute() {
-        // MainController.getInstance().chooseObjective(this.getUsername(),this.getObjective());
     }
 }

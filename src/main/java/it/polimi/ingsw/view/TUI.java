@@ -2,6 +2,12 @@ package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.message.*;
+import it.polimi.ingsw.network.message.clienttoserver.UsernameMessage;
+import it.polimi.ingsw.network.message.clienttoserver.maincontroller.JoinMessage;
+import it.polimi.ingsw.network.message.clienttoserver.maincontroller.CreateGameMessage;
+import it.polimi.ingsw.network.message.servertoclient.CreateGameAckMessage;
+import it.polimi.ingsw.network.message.servertoclient.UsernameNotValidMessage;
+import it.polimi.ingsw.network.message.servertoclient.UsernameAckMessage;
 import it.polimi.ingsw.utilities.Printer;
 
 import java.util.Scanner;
@@ -42,7 +48,7 @@ public class TUI extends View {
             notifyAllListeners(new UsernameMessage(username));
             Message response = getClient().waitForMessage();
 
-            if (response instanceof UsernameValidMessage) {
+            if (response instanceof UsernameAckMessage) {
                 return username;
             }
             else if (response instanceof UsernameNotValidMessage m) {
@@ -62,8 +68,8 @@ public class TUI extends View {
                 int playersChoice = readInt(2, 4);
                 notifyAllListeners(new CreateGameMessage(this.username, playersChoice));
                 Message response = getClient().waitForMessage();
-                if (response instanceof CreateGameAckMessage) {
-                    System.out.println("Game created successfully. Waiting for players to join...");
+                if (response instanceof CreateGameAckMessage r) {
+                    System.out.println("Game created successfully with id " + r.getGameId() + ". Waiting for players to join...");
                     break;
                 }
             } else {

@@ -20,11 +20,6 @@ public class PlayCardMessage implements Message{
         this.coords = coords;
     }
 
-    @Override
-    public void execute() {
-        //MainController.getInstance().playCard(this.getUsername(),this.getCard(),this.isFlipped(),this.getCoords();
-    }
-
     public String getUsername() {
         return username;
     }

@@ -1,14 +1,12 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.exceptions.LobbyNotValidException;
-import it.polimi.ingsw.exceptions.UsernameNotValidException;
+import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.GameListener;
-import it.polimi.ingsw.exceptions.UsernameAlreadyTakenException;
-import it.polimi.ingsw.exceptions.LobbyFullException;
-import it.polimi.ingsw.network.message.CreateGameAckMessage;
-import it.polimi.ingsw.model.GamePhase;
+import it.polimi.ingsw.network.message.servertoclient.CreateGameAckMessage;
+import it.polimi.ingsw.network.message.servertoclient.ServerToClientMessage;
 import it.polimi.ingsw.utilities.Config;
 
+import java.io.IOException;
 import java.util.*;
 
 public class MainController {
@@ -32,48 +30,62 @@ public class MainController {
         if (!Config.isUsernameValid(username)) {
             throw new UsernameNotValidException();
         }
-        if (this.usernameToListener.containsKey(username)) {
+        if (this.isUsernameConnected(username)) {
             throw new UsernameAlreadyTakenException();
         }
         this.usernameToListener.put(username, listener);
     }
 
-    synchronized public void createGame(String username, int playersCount) {
-        if (!this.usernameToListener.containsKey(username)) {
+    synchronized public void notifyListener(String username, ServerToClientMessage message) {
+        if (this.isUsernameConnected(username)) {
+            usernameToListener.get(username).updateFromModel(message);
+        }
+    }
+
+    synchronized public void createGame(String username, int playersCount) throws CannotCreateGameException {
+        if (!this.isUsernameConnected(username)) {
             return;
         }
         int gameId = this.generateGameId();
-        GameController game = new GameController(playersCount);
         try {
+            GameController game = new GameController(gameId, playersCount);
             game.addPlayer(username, this.usernameToListener.get(username));
-            game.notifyAllListeners(new CreateGameAckMessage());
             this.games.put(gameId, game);
         } catch (LobbyFullException ignored) {}
     }
 
     synchronized public void joinGame(String username, int gameId) throws LobbyNotValidException, LobbyFullException {
-        if (!this.usernameToListener.containsKey(username)) {
+        if (!this.isUsernameConnected(username)) {
             return;
         }
         if (!this.games.containsKey(gameId)) {
             throw new LobbyNotValidException();
         }
         GameController game = games.get(gameId);
-        if (game.getPhase() == GamePhase.WAITING) {
-            return;
-        }
         game.addPlayer(username, this.usernameToListener.get(username));
     }
 
-    synchronized public void leaveGame(String username) {
-        if (!this.usernameToListener.containsKey(username)) {
+    synchronized public void leaveGame(String username) throws UsernameNotPlayingException {
+        if (!this.isUsernameConnected(username)) {
             return;
         }
         this.usernameToListener.remove(username);
         GameController game = getGameOfPlayer(username);
-        if (game != null) {
-            game.removePlayer(username);
+        game.removePlayer(username);
+    }
+
+    public GameController getGameOfPlayer(String username) throws UsernameNotPlayingException {
+        for (int gameId : this.games.keySet()) {
+            GameController game = this.games.get(gameId);
+            if (game.getPlayers().stream().anyMatch(p -> p.getUsername().equals(username))) {
+                return game;
+            }
         }
+        throw new UsernameNotPlayingException();
+    }
+
+    private boolean isUsernameConnected(String username) {
+        return this.usernameToListener.containsKey(username);
     }
 
     private int generateGameId() {
@@ -83,15 +95,5 @@ public class MainController {
             generatedId = random.nextInt(Config.MIN_GAME_ID, Config.MAX_GAME_ID + 1);
         } while (games.containsKey(generatedId));
         return generatedId;
-    }
-
-    private GameController getGameOfPlayer(String username) {
-        for (int gameId : this.games.keySet()) {
-            GameController game = this.games.get(gameId);
-            if (game.getPlayers().stream().anyMatch(p -> p.getUsername().equals(username))) {
-                return game;
-            }
-        }
-        return null;
     }
 }

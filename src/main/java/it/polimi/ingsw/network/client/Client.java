@@ -1,8 +1,8 @@
 package it.polimi.ingsw.network.client;
 
 import it.polimi.ingsw.network.ConnectionType;
-import it.polimi.ingsw.network.message.Message;
-import it.polimi.ingsw.network.message.UsernameMessage;
+import it.polimi.ingsw.network.message.clienttoserver.UsernameMessage;
+import it.polimi.ingsw.network.message.servertoclient.ServerToClientMessage;
 import it.polimi.ingsw.network.server.ServerInterface;
 import it.polimi.ingsw.network.server.SocketServerStub;
 import it.polimi.ingsw.utilities.Config;
@@ -19,7 +19,7 @@ import java.util.Queue;
 
 public class Client implements ClientInterface {
     private final ConnectionType connection;
-    private final Queue<Message> messages;
+    private final Queue<ServerToClientMessage> messages;
     private ClientInterface skeleton = null;
     private ServerInterface server = null;
 
@@ -85,7 +85,7 @@ public class Client implements ClientInterface {
         new Thread(() -> {
             try {
                 while (true) {
-                    Message message = stub.receiveMessage();
+                    ServerToClientMessage message = stub.receiveMessage();
                     this.messageFromServer(message);
                 }
             } catch (RemoteException e) {
@@ -97,7 +97,7 @@ public class Client implements ClientInterface {
     }
 
     @Override
-    public void messageFromServer(Message message) throws RemoteException {
+    public void messageFromServer(ServerToClientMessage message) throws RemoteException {
         synchronized (messages) {
             if (message != null) {
                 this.messages.add(message);
@@ -106,7 +106,7 @@ public class Client implements ClientInterface {
         }
     }
 
-    public Message waitForMessage() {
+    public ServerToClientMessage waitForMessage() {
         synchronized (messages) {
             while (this.messages.isEmpty()) {
                 try {

@@ -40,7 +40,7 @@ public class Deck<T extends Card> {
     /**
      * @return true if the deck is empty, false otherwise
      */
-    public boolean isDeckEmpty(){
+    public boolean isEmpty(){
         return this.cards.isEmpty();
     }
 }

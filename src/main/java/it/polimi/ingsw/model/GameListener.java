@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.network.message.Message;
+import it.polimi.ingsw.network.message.servertoclient.ServerToClientMessage;
 
 public interface GameListener {
-    void updateFromModel(Message message);
+    void updateFromModel(ServerToClientMessage message);
 }

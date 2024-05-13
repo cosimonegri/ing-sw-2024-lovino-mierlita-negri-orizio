@@ -1,12 +1,11 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.exceptions.LobbyFullException;
-import it.polimi.ingsw.exceptions.UsernameAlreadyTakenException;
+import it.polimi.ingsw.exceptions.CannotCreateGameException;
+import it.polimi.ingsw.exceptions.MarkerNotValidException;
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
-import it.polimi.ingsw.model.exceptions.*;
 import it.polimi.ingsw.model.player.Marker;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.network.message.Message;
+import it.polimi.ingsw.network.message.servertoclient.ServerToClientMessage;
 
 import java.io.IOException;
 import java.util.*;
@@ -34,7 +33,7 @@ public class Game {
     /**
      * Reference to the current game's board
      */
-    private Board board;
+    private final Board board;
     /**
      * Incremental number representing the current turn
      */
@@ -51,6 +50,10 @@ public class Game {
      * Current turn phase of the round
      */
     private TurnPhase turnPhase;
+    /**
+     * Set of available markers
+     */
+    private final Set<Marker> markers;
 
     /**
      * Constructor of the class
@@ -58,61 +61,35 @@ public class Game {
      * @param playersCount the number of players wanted for the match
      * @throws IllegalArgumentException when playersCount has not a legal value
      */
-    public Game(int playersCount) {
-        if(playersCount < 2 || playersCount > 4) {
-            throw new IllegalArgumentException("Amount of players cannot be zero, negative nor smaller than 2 or greater than 4");
-        }
+    public Game(int playersCount) throws CannotCreateGameException {
         this.playersCount = playersCount;
-        this.players = new ArrayList<>();
-        this.playerToListener = new HashMap<>();
+
+        this.players = new ArrayList<>(playersCount);
+        this.playerToListener = new HashMap<>(playersCount);
         this.currentPlayer = null;
-        this.currentTurn = 0;
-        this.objectives = new ArrayList<>();
+
+        this.markers = new HashSet<>(List.of(Marker.values()));
+
+        this.currentTurn = 0; // todo maybe remove
+        this.gamePhase = GamePhase.WAITING;
+
+        this.objectives = new ArrayList<>(2);
+
         try {
             this.board = new Board();
+        } catch (IOException e) {
+            throw new CannotCreateGameException();
         }
-        //todo implement try-catch to controller
-        catch (IOException ignored) { }
     }
 
     /**
-     * Add a player to the game assigning it a unique marker
+     * Add a player to the game
      *
-     * @param username is the username of a new player
-     * @throws UsernameAlreadyTakenException when a new player tries to choose an already taken username
-     * @throws LobbyFullException when a new player tries to enter a game of already "playerCount" players
+     * @param username username of the player
+     * @param listener game listener of the player
      */
-    public void addPlayer(String username, GameListener listener) throws UsernameAlreadyTakenException, LobbyFullException {
-        if (this.players.size() == this.playersCount) {
-            throw new LobbyFullException();
-        }
-        for (Player p : this.players) {
-            if (p.getUsername().equals(username)) {
-                throw new UsernameAlreadyTakenException();
-            }
-        }
-
-        List<Marker> markers = new ArrayList<>();
-        markers.add(Marker.GREEN);
-        markers.add(Marker.RED);
-        markers.add(Marker.BLUE);
-        markers.add(Marker.YELLOW);
-        int maxBound = 4;
-        Random rand = new Random();
-        boolean markerTaken;
-
-        Marker randMarker = markers.get(rand.nextInt(maxBound));
-        do {
-            markerTaken = false;
-            for(Player player : this.players){
-                if(player.getMarker().equals(randMarker)){
-                    markerTaken = true;
-                    randMarker = markers.get(rand.nextInt(maxBound));
-                }
-            }
-        } while(markerTaken);
-
-        Player player = new Player(username, randMarker);
+    public void addPlayer(String username, GameListener listener) {
+        Player player = new Player(username);
         this.players.add(player);
         this.playerToListener.put(player, listener);
     }
@@ -132,7 +109,7 @@ public class Game {
         }
     }
 
-    public void notifyListener(String username, Message message) {
+    public void notifyListener(String username, ServerToClientMessage message) {
         for (Player p : this.players) {
             if (p.getUsername().equals(username)) {
                 this.playerToListener.get(p).updateFromModel(message);
@@ -140,7 +117,7 @@ public class Game {
         }
     }
 
-    public void notifyAllListenersExcept(String username, Message message) {
+    public void notifyAllListenersExcept(String username, ServerToClientMessage message) {
         for (Player p : this.players) {
             if (p.getUsername().equals(username)) {
                 continue;
@@ -149,7 +126,7 @@ public class Game {
         }
     }
 
-    public void notifyAllListeners(Message message) {
+    public void notifyAllListeners(ServerToClientMessage message) {
         for (GameListener listener : this.playerToListener.values()) {
             listener.updateFromModel(message);
         }
@@ -160,11 +137,10 @@ public class Game {
      * gives to all players their starting hands and assigns the first turn and player.
      */
     public void start() {
-        if(this.currentTurn != 0){ return; }
-
-        addObjectives();
+        this.addObjectives();
         this.currentTurn += 1;
         this.currentPlayer = this.players.getFirst();
+
         for(Player p : this.players){
             p.addToHand(this.board.getResourceDeck().draw());
             p.addToHand(this.board.getResourceDeck().draw());
@@ -172,9 +148,10 @@ public class Game {
 
             p.setStarterCard(this.board.getStarterDeck().draw());
 
-            List<ObjectiveCard> objectiveCardList = new ArrayList<>();
+            List<ObjectiveCard> objectiveCardList = new ArrayList<>(2);
             objectiveCardList.add(this.board.getObjectiveDeck().draw());
             objectiveCardList.add(this.board.getObjectiveDeck().draw());
+
             p.setObjOptions(objectiveCardList);
         }
     }
@@ -182,13 +159,9 @@ public class Game {
     /**
      * Takes the game to the next turn changing the current player to the next in line
      */
-    public void advanceTurn() throws GameNotStartedYetException{
-        if(this.currentTurn == 0) {throw new GameNotStartedYetException();}
+    public void advanceTurn() {
+        currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % playersCount);
         this.currentTurn += 1;
-        int currentPlayerIndex = this.players.indexOf(this.currentPlayer);
-        if(!this.currentPlayer.equals(this.players.getLast())){
-            this.currentPlayer = this.players.get(currentPlayerIndex + 1); }
-        else{ this.currentPlayer = this.players.getFirst(); }
     }
 
     public int getPlayersCount(){
@@ -230,11 +203,19 @@ public class Game {
     }
 
     /**
-     * Draws the two public objectives and reveals them
+     * @param username username of a player
+     * @param marker marker to be assigned to the player
+     * @throws MarkerNotValidException when the marker has already been choosen
      */
-    private void addObjectives(){
-        for(int i=0; i<2; i++){
-            this.objectives.add(this.board.getObjectiveDeck().draw());
+    public void assignMarker(String username, Marker marker) throws MarkerNotValidException {
+        if (!this.markers.contains(marker)) {
+            throw new MarkerNotValidException();
+        }
+        for (Player p : players) {
+            if (p.getUsername().equals(username)) {
+                p.setMarker(marker);
+                markers.remove(marker);
+            }
         }
     }
 
@@ -243,5 +224,22 @@ public class Game {
      */
     public boolean isLobbyFull() {
         return this.playersCount == this.players.size();
+    }
+
+    /**
+     * @param username username of a player
+     * @return true if the player is the last of the round
+     */
+    public boolean isLastPlayer(String username) {
+        return players.getLast().getUsername().equals(username);
+    }
+
+    /**
+     * Draws the two public objectives and reveals them
+     */
+    private void addObjectives(){
+        for(int i=0; i<2; i++){
+            this.objectives.add(this.board.getObjectiveDeck().draw());
+        }
     }
 }

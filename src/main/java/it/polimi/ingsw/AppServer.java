@@ -1,7 +1,7 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.network.client.SocketClientSkeleton;
-import it.polimi.ingsw.network.message.Message;
+import it.polimi.ingsw.network.message.clienttoserver.ClientToServerMessage;
 import it.polimi.ingsw.network.server.Server;
 import it.polimi.ingsw.network.server.ServerInterface;
 import it.polimi.ingsw.utilities.Config;
@@ -63,7 +63,7 @@ public class AppServer {
                         try (SocketClientSkeleton client = new SocketClientSkeleton(clientSocket)) {
                             //noinspection InfiniteLoopStatement
                             while (true) {
-                                Message message = client.receiveMessage();
+                                ClientToServerMessage message = client.receiveMessage();
                                 Server.getInstance().messageFromClient(message);
                             }
                         } catch (RemoteException e) {

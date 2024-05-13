@@ -1,6 +1,6 @@
-package it.polimi.ingsw.network.message;
+package it.polimi.ingsw.network.message.servertoclient;
 
-public class UsernameNotValidMessage implements Message {
+public class UsernameNotValidMessage implements ServerToClientMessage {
     private final String message;
 
     public UsernameNotValidMessage(String message) {
@@ -9,10 +9,5 @@ public class UsernameNotValidMessage implements Message {
 
     public String getMessage() {
         return message;
-    }
-
-    @Override
-    public void execute() {
-        System.out.println(message);
     }
 }

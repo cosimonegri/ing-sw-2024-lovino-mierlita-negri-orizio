@@ -24,7 +24,7 @@ public class Player {
     /**
      * The marker color associated
      */
-    private final Marker marker;
+    private Marker marker;
     /**
      * The score of the player
      */
@@ -58,11 +58,9 @@ public class Player {
      * Create a new player
      *
      * @param username the username chosen by the player
-     * @param marker the token assigned/chosen by the player
      */
-    public Player(String username, Marker marker) {
-        this.username = username;   // TODO: check if username is valid
-        this.marker = marker;
+    public Player(String username) {
+        this.username = username;
         this.score = 0;
         this.objCard = null;
         this.hand = new ArrayList<>();
@@ -70,13 +68,8 @@ public class Player {
         this.isWinner = false;
     }
 
-    /**
-     * Set the new private objective for the player
-     *
-     * @param objCard the player's personal objective card
-     */
-    public void setObjCard(ObjectiveCard objCard) {
-        this.objCard = objCard;
+    public int getScore() {
+        return this.score;
     }
 
     /**
@@ -137,24 +130,41 @@ public class Player {
         return Collections.unmodifiableList(this.hand);
     }
 
-    public void setStarterCard(PlayableCard starterCard){ this.starterCard = starterCard; }
+    public void setStarterCard(PlayableCard starterCard) {
+        this.starterCard = starterCard;
+    }
 
-    public PlayableCard getStarterCard(){ return this.starterCard; }
+    public PlayableCard getStarterCard() {
+        return this.starterCard;
+    }
+
+    /**
+     * Set the new private objective for the player
+     *
+     * @param objCard the player's personal objective card
+     */
+    public void setObjCard(ObjectiveCard objCard) {
+        this.objCard = objCard;
+    }
 
     public ObjectiveCard getObjCard() {
         return this.objCard;
     }
 
-    public void setObjOptions(List<ObjectiveCard> objOptions){ this.objOptions = objOptions; }
+    public void setObjOptions(List<ObjectiveCard> objOptions) {
+        this.objOptions = new ArrayList<>(objOptions);
+    }
 
-    public List<ObjectiveCard> getObjOptions(){ return Collections.unmodifiableList(this. objOptions); }
-
-    public int getScore() {
-        return this.score;
+    public List<ObjectiveCard> getObjOptions() {
+        return Collections.unmodifiableList(this. objOptions);
     }
 
     public String getUsername() {
         return this.username;
+    }
+
+    public void setMarker(Marker m) {
+        this.marker = m;
     }
 
     public Marker getMarker() {

@@ -1,10 +1,14 @@
 package it.polimi.ingsw.network.server;
 
+import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.controller.MainController;
+import it.polimi.ingsw.exceptions.UsernameNotPlayingException;
 import it.polimi.ingsw.network.client.ClientInterface;
-import it.polimi.ingsw.network.message.ConnectMessage;
-import it.polimi.ingsw.network.message.Message;
-import it.polimi.ingsw.network.message.UsernameMessage;
+import it.polimi.ingsw.network.message.clienttoserver.ClientToServerMessage;
+import it.polimi.ingsw.network.message.clienttoserver.gamecontroller.GameControllerMessage;
+import it.polimi.ingsw.network.message.clienttoserver.maincontroller.ConnectMessage;
+import it.polimi.ingsw.network.message.clienttoserver.UsernameMessage;
+import it.polimi.ingsw.network.message.clienttoserver.maincontroller.MainControllerMessage;
 import it.polimi.ingsw.utilities.Config;
 
 import java.rmi.RemoteException;
@@ -15,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 public class Server implements ServerInterface {
     private static Server instance;
     private final MainController controller;
-    private final Queue<Message> messages;
+    private final Queue<ClientToServerMessage> messages;
 
     private Server() {
         this.controller = MainController.getInstance();
@@ -23,7 +27,7 @@ public class Server implements ServerInterface {
 
         Thread messagesThread = new Thread(() -> {
             while (true) {
-                Message message = pollMessage();
+                ClientToServerMessage message = pollMessage();
                 if (message == null) {
                     try {
                         TimeUnit.MILLISECONDS.sleep(Config.SLEEP_TIME_MS);
@@ -34,7 +38,17 @@ public class Server implements ServerInterface {
                     continue;
                 }
                 System.out.println("Received message: " + message.getClass());
-                message.execute();
+                if (message instanceof MainControllerMessage m) {
+                    m.execute(this.controller);
+                }
+                if (message instanceof GameControllerMessage m) {
+                    try {
+                        GameController game = this.controller.getGameOfPlayer(m.getUsername());
+                        m.execute(game);
+                    } catch (UsernameNotPlayingException ignored) {
+                        //TODO ignore or catch excetion?
+                    }
+                }
             }
         });
         messagesThread.start();
@@ -57,7 +71,7 @@ public class Server implements ServerInterface {
     }
 
     @Override
-    public void messageFromClient(Message message) throws RemoteException {
+    public void messageFromClient(ClientToServerMessage message) throws RemoteException {
         synchronized (messages) {
             if (message != null) {
                 messages.add(message);
@@ -65,7 +79,7 @@ public class Server implements ServerInterface {
         }
     }
 
-    private Message pollMessage() {
+    private ClientToServerMessage pollMessage() {
         synchronized (messages) {
             return messages.poll();
         }

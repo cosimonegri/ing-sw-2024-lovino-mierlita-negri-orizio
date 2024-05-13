@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.deck.Deck;
-import it.polimi.ingsw.model.deck.card.Card;
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.model.deck.card.playablecard.GoldCard;
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
@@ -59,33 +58,32 @@ public class Board {
         return visibleCards.clone();
     }
 
+    //TODO remove card when both decks are empty
     /**
-     * the method removes c from visibleCards and tries to replace it with a new card
-     * @param c is the card the player wants to draw from visibleCards
+     * the method removes a card from visibleCards and tries to replace it with a new card
+     * @param card is the card the player wants to draw from visibleCards
      */
-    public void takeVisibleCard(Card c) {
+    public void takeVisibleCard(PlayableCard card) {
         //iterates on the array of visible cards
-            for (int i = 0; i < 4; i++) {
-                if (c.equals(visibleCards[i])) {
-                    if (c instanceof GoldCard)
-                    //treating the case when the replaced card's deck type is empty for both possible instances of a visible card
-                    {
-                        if (!(getGoldDeck().isDeckEmpty()))
-                            visibleCards[i] = getGoldDeck().draw();
-                          else if (!getResourceDeck().isDeckEmpty())
-                             visibleCards[i] = getResourceDeck().draw();
-                    } else if (c instanceof PlayableCard)
-                    {
-                        if ((!getResourceDeck().isDeckEmpty()))
-                            visibleCards[i] = getResourceDeck().draw();
-                           else if(!getGoldDeck().isDeckEmpty())
-                               visibleCards[i] = getGoldDeck().draw();
-                    }
-                    //if both decks are empty, it does nothing
-                    return;
+        for (int i = 0; i < 4; i++) {
+            if (card.equals(visibleCards[i])) {
+                if (card instanceof GoldCard) {
+                //treating the case when the replaced card's deck type is empty for both possible instances of a visible card
+                    if (!(getGoldDeck().isEmpty()))
+                        visibleCards[i] = getGoldDeck().draw();
+                    else if (!getResourceDeck().isEmpty())
+                        visibleCards[i] = getResourceDeck().draw();
+                } else {
+                    if ((!getResourceDeck().isEmpty()))
+                        visibleCards[i] = getResourceDeck().draw();
+                    else if (!getGoldDeck().isEmpty())
+                        visibleCards[i] = getGoldDeck().draw();
                 }
+                //if both decks are empty, it does nothing
+                return;
             }
-            //if card c is not a goldCard or a resourceDeck
+        }
+        //if card c is not a goldCard or a resourceDeck
         throw new IllegalStateException("Card requested was not a visible card");
     }
 

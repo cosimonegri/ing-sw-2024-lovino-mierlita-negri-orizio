@@ -1,9 +1,9 @@
 package it.polimi.ingsw.network.server;
 
-import it.polimi.ingsw.network.SocketMiddleware;
 import it.polimi.ingsw.network.client.ClientInterface;
-import it.polimi.ingsw.network.message.Message;
-import it.polimi.ingsw.network.message.UsernameMessage;
+import it.polimi.ingsw.network.message.clienttoserver.ClientToServerMessage;
+import it.polimi.ingsw.network.message.clienttoserver.UsernameMessage;
+import it.polimi.ingsw.network.message.servertoclient.ServerToClientMessage;
 import it.polimi.ingsw.utilities.Config;
 
 import java.io.IOException;
@@ -12,7 +12,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.rmi.RemoteException;
 
-public class SocketServerStub implements SocketMiddleware, ServerInterface {
+public class SocketServerStub implements ServerInterface {
     private final Socket clientSocket;
     private final ObjectOutputStream output;
     private final ObjectInputStream input;
@@ -24,11 +24,10 @@ public class SocketServerStub implements SocketMiddleware, ServerInterface {
         this.input = new ObjectInputStream(this.clientSocket.getInputStream());
     }
 
-    @Override
-    public Message receiveMessage() throws RemoteException {
-        Message message;
+    public ServerToClientMessage receiveMessage() throws RemoteException {
+        ServerToClientMessage message;
         try {
-            message = (Message) this.input.readObject();
+            message = (ServerToClientMessage) this.input.readObject();
             return message;
         } catch (ClassNotFoundException | IOException e) {
             throw new RemoteException("Cannot receive message from the socket server");
@@ -45,7 +44,7 @@ public class SocketServerStub implements SocketMiddleware, ServerInterface {
     }
 
     @Override
-    public void messageFromClient(Message message) throws RemoteException {
+    public void messageFromClient(ClientToServerMessage message) throws RemoteException {
         try {
             this.output.writeObject(message);
         } catch (IOException e) {

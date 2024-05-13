@@ -1,7 +1,7 @@
 package it.polimi.ingsw.view;
 
-import it.polimi.ingsw.network.message.Message;
+import it.polimi.ingsw.network.message.clienttoserver.ClientToServerMessage;
 
 public interface ViewListener {
-    void updateFromView(Message m);
+    void updateFromView(ClientToServerMessage m);
 }

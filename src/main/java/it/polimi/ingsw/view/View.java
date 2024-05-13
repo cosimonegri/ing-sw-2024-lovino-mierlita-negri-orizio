@@ -1,7 +1,7 @@
 package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.network.client.Client;
-import it.polimi.ingsw.network.message.Message;
+import it.polimi.ingsw.network.message.clienttoserver.ClientToServerMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ public abstract class View {
         this.listeners.remove(listener);
     }
 
-    protected void notifyAllListeners(Message message) {
+    protected void notifyAllListeners(ClientToServerMessage message) {
         for (ViewListener listener : this.listeners) {
             listener.updateFromView(message);
         }

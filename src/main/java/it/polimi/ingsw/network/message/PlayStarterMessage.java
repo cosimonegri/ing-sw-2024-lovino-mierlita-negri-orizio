@@ -18,9 +18,4 @@ public class PlayStarterMessage implements Message{
     public boolean isFlipped() {
         return flipped;
     }
-
-    @Override
-    public void execute() {
-        //MainController.getInstance().playStarter(this.getUsername(), this.isFlipped());
-    }
 }
