@@ -58,33 +58,35 @@ public class Board {
         return visibleCards.clone();
     }
 
-    //TODO remove card when both decks are empty
     /**
      * the method removes a card from visibleCards and tries to replace it with a new card
      * @param card is the card the player wants to draw from visibleCards
      */
-    public void takeVisibleCard(PlayableCard card) {
-        //iterates on the array of visible cards
-        for (int i = 0; i < 4; i++) {
-            if (card.equals(visibleCards[i])) {
-                if (card instanceof GoldCard) {
-                //treating the case when the replaced card's deck type is empty for both possible instances of a visible card
-                    if (!(getGoldDeck().isEmpty()))
-                        visibleCards[i] = getGoldDeck().draw();
-                    else if (!getResourceDeck().isEmpty())
-                        visibleCards[i] = getResourceDeck().draw();
-                } else {
-                    if ((!getResourceDeck().isEmpty()))
-                        visibleCards[i] = getResourceDeck().draw();
-                    else if (!getGoldDeck().isEmpty())
-                        visibleCards[i] = getGoldDeck().draw();
-                }
-                //if both decks are empty, it does nothing
-                return;
+    public void replaceVisibleCard(PlayableCard card) {
+        for (int i = 0; i < this.visibleCards.length; i++) {
+            // skip to the next index if the card doesn't match woth the given one
+            if (!this.visibleCards[i].equals(card)) {
+                continue;
+            }
+            // just remove the card if both decks are empty
+            if (this.resourceDeck.isEmpty() && this.goldDeck.isEmpty()) {
+                visibleCards[i] = null;
+            }
+            // replace the card with an available card when one deck is empty
+            else if (this.resourceDeck.isEmpty()) {
+                visibleCards[i] = this.goldDeck.draw();
+            }
+            else if (this.goldDeck.isEmpty()) {
+                visibleCards[i] = this.resourceDeck.draw();
+            }
+            // replace the card with a card of the same type when no decks are empty
+            else if (card instanceof GoldCard) {
+                visibleCards[i] = this.goldDeck.draw();
+            }
+            else {
+                visibleCards[i] = this.resourceDeck.draw();
             }
         }
-        //if card c is not a goldCard or a resourceDeck
-        throw new IllegalStateException("Card requested was not a visible card");
     }
 
 }
