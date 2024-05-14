@@ -7,10 +7,11 @@ import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.modelView.cardView.ObjectiveCardView.ObjectiveCardView;
 import it.polimi.ingsw.modelView.cardView.PlayableCardView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayerView {
+public class PlayerView implements Serializable {
     private final String username;
     private final Marker marker;
     private final int score;

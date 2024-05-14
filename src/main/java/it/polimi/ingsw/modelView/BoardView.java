@@ -4,10 +4,11 @@ import it.polimi.ingsw.model.Board;
 import it.polimi.ingsw.modelView.cardView.PlacedCardView;
 import it.polimi.ingsw.modelView.cardView.PlayableCardView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BoardView {
+public class BoardView implements Serializable {
     private final PlayableCardView resourceTopCard;
     private final PlayableCardView goldTopCard;
     private final PlayableCardView[] visibleCards = new PlayableCardView[4];

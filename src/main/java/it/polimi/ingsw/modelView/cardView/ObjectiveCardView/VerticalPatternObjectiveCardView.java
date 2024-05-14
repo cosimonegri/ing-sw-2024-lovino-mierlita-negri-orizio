@@ -4,10 +4,12 @@ import it.polimi.ingsw.model.deck.card.objectivecard.VerticalPatternObjectiveCar
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Position;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Resource;
 
-public class VerticalPatternObjectiveCardView extends ObjectiveCardView {
-    private Resource mainColor;
-    private Resource thirdCardColor;
-    private Position thirdCardPosition;
+import java.io.Serializable;
+
+public class VerticalPatternObjectiveCardView extends ObjectiveCardView implements Serializable {
+    private final Resource mainColor;
+    private final Resource thirdCardColor;
+    private final Position thirdCardPosition;
     public VerticalPatternObjectiveCardView(VerticalPatternObjectiveCard card){
         super(card);
         this.mainColor = card.getMainColor();

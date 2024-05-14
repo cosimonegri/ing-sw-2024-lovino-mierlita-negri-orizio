@@ -3,7 +3,9 @@ package it.polimi.ingsw.modelView.cardView.ObjectiveCardView;
 import it.polimi.ingsw.model.deck.card.objectivecard.DiagonalPatternObjectiveCard;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Resource;
 
-public class DiagonalPatternObjectiveCardView extends ObjectiveCardView {
+import java.io.Serializable;
+
+public class DiagonalPatternObjectiveCardView extends ObjectiveCardView implements Serializable {
     private Resource color;
     private boolean mainDiagonal;
     public DiagonalPatternObjectiveCardView(DiagonalPatternObjectiveCard card){

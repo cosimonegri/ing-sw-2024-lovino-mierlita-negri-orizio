@@ -5,9 +5,11 @@ import it.polimi.ingsw.model.deck.card.playablecard.corner.Corner;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Resource;
 import it.polimi.ingsw.modelView.cardView.CardView;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class PlayableCardView extends CardView {
+public class PlayableCardView extends CardView implements Serializable
+{
     private final int id;
     private final int points;
     private final List<Corner> corners;

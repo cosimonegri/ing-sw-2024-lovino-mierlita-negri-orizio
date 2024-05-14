@@ -9,12 +9,13 @@ import it.polimi.ingsw.model.player.PlacedCard;
 import it.polimi.ingsw.modelView.cardView.PlacedCardView;
 import it.polimi.ingsw.modelView.cardView.PlayableCardView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FieldView {
+public class FieldView implements Serializable {
 
     private final PlacedCardView[][] placedCards;
     private final List<Coordinates> allValidCords = new ArrayList<>();

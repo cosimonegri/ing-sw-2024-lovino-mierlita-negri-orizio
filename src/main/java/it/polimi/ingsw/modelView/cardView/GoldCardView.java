@@ -5,9 +5,10 @@ import it.polimi.ingsw.model.deck.card.playablecard.SimpleGoldCard;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Item;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Resource;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public class GoldCardView extends PlayableCardView {
+public class GoldCardView extends PlayableCardView implements Serializable {
 
     private final GoldType type;
     private final Map<Resource, Integer> resourcesNeeded;
