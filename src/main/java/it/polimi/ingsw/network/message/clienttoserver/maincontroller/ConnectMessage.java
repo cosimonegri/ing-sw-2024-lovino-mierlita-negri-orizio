@@ -33,8 +33,12 @@ public class ConnectMessage extends MainControllerMessage {
                 }
             });
             controller.notifyListener(this.getUsername(), new UsernameAckMessage());
-        } catch (UsernameNotValidException | UsernameAlreadyTakenException e) {
-            controller.notifyListener(this.getUsername(), new UsernameNotValidMessage(e.getMessage()));
+        } catch (UsernameNotValidException | UsernameAlreadyTakenException error) {
+            try {
+                this.client.messageFromServer(new UsernameNotValidMessage(error.getMessage()));
+            } catch (RemoteException e) {
+                System.err.println("Cannot send message to the client");
+            }
         }
     }
 }

@@ -7,7 +7,7 @@ public class LobbyNotValidMessage implements ServerToClientMessage {
         this.message = message;
     }
 
-    public String toString() {
+    public String getMessage() {
         return message;
     }
 }
