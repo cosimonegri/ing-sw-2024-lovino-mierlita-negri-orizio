@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.deck.card;
 
+import it.polimi.ingsw.modelView.cardView.CardView;
+
 /**
  * A general card.
  */
@@ -53,7 +55,6 @@ public abstract class Card {
     }
 
     public int getId() { return this.id; }
-
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Card other)) {
@@ -61,4 +62,5 @@ public abstract class Card {
         }
         return this.id == other.id;
     }
+
 }

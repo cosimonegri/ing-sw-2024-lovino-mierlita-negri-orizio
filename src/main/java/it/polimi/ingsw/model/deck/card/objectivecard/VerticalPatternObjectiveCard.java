@@ -3,6 +3,8 @@ package it.polimi.ingsw.model.deck.card.objectivecard;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Position;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Resource;
 import it.polimi.ingsw.model.player.Field;
+import it.polimi.ingsw.modelView.cardView.ObjectiveCardView.ObjectiveCardView;
+import it.polimi.ingsw.modelView.cardView.ObjectiveCardView.VerticalPatternObjectiveCardView;
 
 /**
  * Class that represents the objective cards that need a J-shaped pattern of cards to be completed
@@ -59,4 +61,9 @@ public class VerticalPatternObjectiveCard extends ObjectiveCard {
     public Resource getThirdCardColor() { return this.thirdCardColor; }
 
     public Position getThirdCardPos() { return this.thirdCardPos; }
+
+    @Override
+    public VerticalPatternObjectiveCardView getView() {
+        return new VerticalPatternObjectiveCardView(this);
+    }
 }

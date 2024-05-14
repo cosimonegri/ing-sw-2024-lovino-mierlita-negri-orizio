@@ -6,6 +6,7 @@ import java.util.List;
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.*;
 import it.polimi.ingsw.model.exceptions.CoordinatesAreNotValidException;
+import it.polimi.ingsw.modelView.cardView.PlacedCardView;
 
 /**
  * Field class to represent the placed cards of a player.
@@ -385,4 +386,5 @@ public class Field {
             return new Coordinates(x + 1, y - 3);
         }
     }
-}
+    }
+

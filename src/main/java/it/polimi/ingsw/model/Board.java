@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.deck.Deck;
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.model.deck.card.playablecard.GoldCard;
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
+import it.polimi.ingsw.modelView.BoardView;
 import it.polimi.ingsw.utilities.CardsConfig;
 
 import java.io.IOException;
@@ -87,6 +88,10 @@ public class Board {
                 visibleCards[i] = this.resourceDeck.draw();
             }
         }
+    }
+
+    public BoardView getView(Board board){
+        return new BoardView(board);
     }
 
 }

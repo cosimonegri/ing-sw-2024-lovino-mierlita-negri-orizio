@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
+import it.polimi.ingsw.modelView.PlayerView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -171,6 +172,9 @@ public class Player {
     public Marker getMarker() {
         return this.marker;
     }
+    public PlayerView getView(){
+        return new PlayerView(this);
+    }
 
     @Override
     public boolean equals(Object obj) {
@@ -179,4 +183,5 @@ public class Player {
         }
         return this.username.equals(other.username);
     }
+
 }
