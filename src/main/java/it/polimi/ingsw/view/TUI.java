@@ -64,7 +64,7 @@ public class TUI extends View {
     }
 
     private String readUsername() {
-        System.out.println("Choose a username:");
+        System.out.print("Choose a username: ");
         String username = scanner.nextLine();
         notifyAllListeners(new UsernameMessage(username));
         return username;
@@ -103,17 +103,18 @@ public class TUI extends View {
 
     private void chooseCreateOrJoin() {
         System.out.println("What do you want to do?");
-        printOptions("Create a new game", "Join a game");
-        int choice = readInt(1, 2);
+        int choice = getOptions("Create a new game", "Join a game");
         switch (choice) {
             case 1:
-                System.out.println("How many players do you want in the lobby?");
+                System.out.print("How many players do you want in the lobby [2-4]: ");
                 int playersCount = readInt(2, 4);
                 notifyAllListeners(new CreateGameMessage(this.username, playersCount));
                 break;
             case 2:
-                System.out.println("Type the ID of the game you want to join:");
+                System.out.print("Type the ID of the game you want to join: ");
                 int gameId = this.scanner.nextInt();
+                // flush
+                this.scanner.nextLine();
                 notifyAllListeners(new JoinGameMessage(this.username, gameId));
                 break;
         }
@@ -154,8 +155,7 @@ public class TUI extends View {
 
     private void chooseMarker() {
         System.out.println("Which marker do you want?");
-        printOptions("Blue", "Green", "Red", "Yellow");
-        int choice = readInt(1, 4);
+        int choice = getOptions("Blue", "Green", "Red", "Yellow");
         Marker marker = switch (choice) {
             case 1 -> Marker.BLUE;
             case 2 -> Marker.GREEN;
@@ -167,16 +167,17 @@ public class TUI extends View {
 
     private void chooseStarter() {
         System.out.println("How do you want to play the starter card?");
-        printOptions("Front visible", "Back visible");
-        int choice = readInt(1, 2);
+        int choice = getOptions("Front visible", "Back visible");
         notifyAllListeners(new PlayStarterMessage(this.username, choice == 2));
     }
 
-    private void printOptions(String... options) {
+    private int getOptions(String... options) {
         for (int i = 0; i < options.length; i++) {
             int num = i + 1;
             System.out.println(num + ") " + options[i]);
         }
+        System.out.print("> ");
+        return readInt(1, options.length);
     }
 
     private int readInt(int min, int max) {
@@ -185,9 +186,12 @@ public class TUI extends View {
         while (choice < min || choice > max) {
             if (!firstIter) {
                 Printer.printError("Choose a number between " + min + " and " + max);
+                System.out.print("> ");
             }
             try {
                 choice = this.scanner.nextInt();
+                // flush
+                this.scanner.nextLine();
             } catch (InputMismatchException e) {
                 this.scanner.nextLine();
             }
