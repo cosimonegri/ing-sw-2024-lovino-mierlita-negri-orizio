@@ -3,8 +3,7 @@ package it.polimi.ingsw.network.message.clienttoserver.maincontroller;
 import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.controller.MainController;
 import it.polimi.ingsw.exceptions.CannotCreateGameException;
-import it.polimi.ingsw.exceptions.UsernameNotPlayingException;
-import it.polimi.ingsw.network.message.servertoclient.CannotCreateGameMessage;
+import it.polimi.ingsw.network.message.servertoclient.CreateGameErrorMessage;
 import it.polimi.ingsw.network.message.servertoclient.CreateGameAckMessage;
 
 public class CreateGameMessage extends MainControllerMessage {
@@ -20,12 +19,10 @@ public class CreateGameMessage extends MainControllerMessage {
     @Override
     public void execute(MainController controller) {
         try {
-            controller.createGame(this.getUsername(), this.playersCount);
-            GameController game = controller.getGameOfPlayer(this.getUsername());
+            GameController game = controller.createGame(this.getUsername(), this.playersCount);
             game.notifyAllListeners(new CreateGameAckMessage(game.getId()));
         } catch (CannotCreateGameException e) {
-            controller.notifyListener(this.getUsername(), new CannotCreateGameMessage());
-        } catch (UsernameNotPlayingException ignored) {
+            controller.notifyListener(this.getUsername(), new CreateGameErrorMessage());
         }
     }
 }

@@ -95,6 +95,19 @@ public class Game {
     }
 
     /**
+     * @param username username of a player
+     * @return the player with that username if it exists, otherwise null
+     */
+    public Player getPlayer(String username) {
+        for (Player p : this.players) {
+            if (p.getUsername().equals(username)) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Removes a player and the correspondent listener from the game
      *
      * @param username of the player to be removed
@@ -138,7 +151,7 @@ public class Game {
      */
     public void start() {
         this.addObjectives();
-        this.currentTurn += 1;
+        this.currentTurn = 1;
         this.currentPlayer = this.players.getFirst();
 
         for(Player p : this.players){
@@ -224,14 +237,6 @@ public class Game {
      */
     public boolean isLobbyFull() {
         return this.playersCount == this.players.size();
-    }
-
-    /**
-     * @param username username of a player
-     * @return true if the player is the last of the round
-     */
-    public boolean isLastPlayer(String username) {
-        return players.getLast().getUsername().equals(username);
     }
 
     /**

@@ -5,9 +5,7 @@ package it.polimi.ingsw.model;
  */
 public enum GamePhase {
     WAITING,
-    MARKER,
-    STARTER,
-    OBJECTIVE,
+    SETUP,
     MAIN,
     LASTROUND,
     END

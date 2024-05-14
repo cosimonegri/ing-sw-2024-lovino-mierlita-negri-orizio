@@ -14,18 +14,16 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.LinkedList;
-import java.util.Queue;
 
 public class Client implements ClientInterface {
+    private final View view;
     private final ConnectionType connection;
-    private final Queue<ServerToClientMessage> messages;
     private ClientInterface skeleton = null;
     private ServerInterface server = null;
 
-    public Client(ConnectionType connection) {
+    public Client(View view, ConnectionType connection) {
+        this.view = view;
         this.connection = connection;
-        this.messages = new LinkedList<>();
         try {
             if (connection == ConnectionType.RMI) {
                 this.skeleton = (ClientInterface) UnicastRemoteObject.exportObject(this, 0);
@@ -36,10 +34,7 @@ public class Client implements ClientInterface {
         }
     }
 
-    public void connectToServer(View view) {
-        if (this.server != null) {
-            return;
-        }
+    public void run() {
         if (connection == ConnectionType.RMI) {
             try {
                 this.server = setupRmiConnection();
@@ -56,18 +51,20 @@ public class Client implements ClientInterface {
                 System.exit(1);
             }
         }
-        view.addListener((message) -> {
+
+        this.view.addListener((message) -> {
             try {
                 if (message instanceof UsernameMessage m) {
-                    server.connectClient(m, this.skeleton);
+                    this.server.connectClient(m, this.skeleton);
                 } else {
-                    server.messageFromClient(message);
+                    this.server.messageFromClient(message);
                 }
             } catch (RemoteException e) {
                 System.err.println("Cannot send messages to the RMI server");
                 System.exit(1);
             }
         });
+        this.view.run();
     }
 
     private ServerInterface setupRmiConnection() throws RemoteException, NotBoundException {
@@ -98,25 +95,6 @@ public class Client implements ClientInterface {
 
     @Override
     public void messageFromServer(ServerToClientMessage message) throws RemoteException {
-        synchronized (messages) {
-            if (message != null) {
-                this.messages.add(message);
-                messages.notifyAll();
-            }
-        }
-    }
-
-    public ServerToClientMessage waitForMessage() {
-        synchronized (messages) {
-            while (this.messages.isEmpty()) {
-                try {
-                    messages.wait();
-                } catch (InterruptedException e) {
-                   System.err.println("Interrupted while waiting for server response");
-                   System.exit(1);
-                }
-            }
-            return this.messages.poll();
-        }
+        view.addMessage(message);
     }
 }

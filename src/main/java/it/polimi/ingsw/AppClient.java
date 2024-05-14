@@ -15,9 +15,9 @@ public class AppClient {
 
         try {
             String connection = args[0].toUpperCase();
-            Client client = new Client(ConnectionType.valueOf(connection));
-            View view = new TUI(client);
-            view.run();
+            View view = new TUI();
+            Client client = new Client(view, ConnectionType.valueOf(connection));
+            client.run();
         } catch (IllegalArgumentException e) {
             System.err.println("The chosen network protocol doesn't exists");
         }

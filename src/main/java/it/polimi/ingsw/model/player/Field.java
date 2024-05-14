@@ -62,6 +62,17 @@ public class Field {
     }
 
     /**
+     * Add the starter card in the central position of the field.
+     *
+     * @param card the starter card
+     * @param flipped true if the card is placed on its back, false if it is placed on its front
+     * @throws CoordinatesAreNotValidException when the player cannot place a card at the given coordinates
+     */
+    public void addStarter(PlayableCard card, boolean flipped) throws CoordinatesAreNotValidException {
+        addCard(card, flipped, new Coordinates(SIZE / 2, SIZE / 2));
+    }
+
+    /**
      * @param coords x and y coordinates
      * @return the placed card at the given coordinates
      */

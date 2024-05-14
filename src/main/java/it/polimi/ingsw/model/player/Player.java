@@ -62,6 +62,7 @@ public class Player {
     public Player(String username) {
         this.username = username;
         this.score = 0;
+        this.marker = null;
         this.objCard = null;
         this.hand = new ArrayList<>();
         this.field = new Field();

@@ -42,27 +42,33 @@ public class MainController {
         }
     }
 
-    synchronized public void createGame(String username, int playersCount) throws CannotCreateGameException {
+    synchronized public GameController createGame(String username, int playersCount) throws CannotCreateGameException {
         if (!this.isUsernameConnected(username)) {
-            return;
+            //todo maybe handle this case
+            return null;
         }
         int gameId = this.generateGameId();
         try {
             GameController game = new GameController(gameId, playersCount);
             game.addPlayer(username, this.usernameToListener.get(username));
             this.games.put(gameId, game);
-        } catch (LobbyFullException ignored) {}
+            return game;
+        } catch (LobbyFullException ignored) {
+            return null;
+        }
     }
 
-    synchronized public void joinGame(String username, int gameId) throws LobbyNotValidException, LobbyFullException {
+    synchronized public GameController joinGame(String username, int gameId) throws LobbyNotValidException, LobbyFullException {
         if (!this.isUsernameConnected(username)) {
-            return;
+            //todo maybe handle this case
+            return null;
         }
         if (!this.games.containsKey(gameId)) {
             throw new LobbyNotValidException();
         }
         GameController game = games.get(gameId);
         game.addPlayer(username, this.usernameToListener.get(username));
+        return game;
     }
 
     synchronized public void leaveGame(String username) throws UsernameNotPlayingException {
