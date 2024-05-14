@@ -13,7 +13,51 @@ import it.polimi.ingsw.utilities.Printer;
 import java.io.IOException;
 import java.util.*;
 
-public class FieldPrinter {
+public class GamePrinter {
+    public static void main(String[] args) {
+        GamePrinter gamePrinter = new GamePrinter();
+        Coordinates cell;
+        PlayableCard card;
+        boolean flipped;
+        gamePrinter.printBoard();
+        gamePrinter.printField();
+        if(!cardPool.isEmpty()) gamePrinter.printHand();
+        for(int i = 0; i < 3; i++) {
+            switch (objectives.get(i)) {
+                case SymbolsObjectiveCard symbolsObjectiveCard ->
+                        gamePrinter.printSymbolsObjective(symbolsObjectiveCard);
+                case DiagonalPatternObjectiveCard diagonalPatternObjectiveCard ->
+                        gamePrinter.printDiagonalObjective(diagonalPatternObjectiveCard);
+                case VerticalPatternObjectiveCard verticalPatternObjectiveCard ->
+                        gamePrinter.printVerticalObjective(verticalPatternObjectiveCard);
+                case null, default -> System.out.println("Not an Objective");
+            }
+            System.out.print("\n");
+        }
+        do{
+            if(!validPlays.isEmpty()){
+                System.out.println("Choose a card");
+                card = cardPool.get(gamePrinter.makeChoice(cardPool.size()) - 1);
+                System.out.println("Flipped or not?");
+                flipped = gamePrinter.chooseFace();
+                if(card instanceof GoldCard goldCard && !goldCard.hasResourcesNeeded(gamePrinter.field) && !flipped) {
+                    System.out.println("Not enough resources to play the card");
+                    continue;
+                }
+                System.out.println("Choose a cell");
+                cell = validPlays.get(gamePrinter.makeChoice(gamePrinter.availablePlays));
+                try {
+                    gamePrinter.field.addCard(card, flipped, cell);
+                    cardPool.remove(card);
+                } catch (CoordinatesAreNotValidException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            gamePrinter.printField();
+            if(!cardPool.isEmpty()) gamePrinter.printHand();
+        }while(!cardPool.isEmpty());
+    }
+
     public static final String RESET = Printer.RESET;
     public static final String FungiCard = Printer.RED_BACKGROUND_BRIGHT;
     public static final String AnimalCard = Printer.BLUE_BACKGROUND_BRIGHT;
@@ -43,7 +87,7 @@ public class FieldPrinter {
     private static Map<Integer, Coordinates> validPlays;
     private final Scanner scanner;
     private int availablePlays;
-    public FieldPrinter(){
+    public GamePrinter(){
         this.scanner = new Scanner(System.in);
         field = new Field();
         cardPool = new ArrayList<>();
@@ -72,7 +116,8 @@ public class FieldPrinter {
         }
     }
 
-    private void printField(){
+    //printField(FieldView field)
+    public void printField(){
         Coordinates cell;
         List<Coordinates> validCoords = new ArrayList<>(field.getAllValidCoords());
         validPlays = new HashMap<>();
@@ -80,15 +125,15 @@ public class FieldPrinter {
         int h;
 
         //columns
-        for (int i = topRightBound.y(); i >= botLeftBound.y(); i--) {
+        for (int y = topRightBound.y(); y >= botLeftBound.y(); y--) {
             PlacedCard card;
-            for (int j = 0; j < 2; j++) {
+            for (int rowPrinterIndex = 0; rowPrinterIndex < 2; rowPrinterIndex++) {
                 //rows
-                for (int k = botLeftBound.x(); k <= topRightBound.x(); k++) {
-                    cell = new Coordinates(k, i);
+                for (int x = botLeftBound.x(); x <= topRightBound.x(); x++) {
+                    cell = new Coordinates(x, y);
                     if (field.getPlacedCard(cell) == null) {
                         if (validCoords.contains(cell)) {
-                            if(j == 0) {
+                            if(rowPrinterIndex == 0) {
                                 availablePlays++;
                                 validPlays.put(availablePlays, cell);
                                 if(availablePlays <= 9 ) { System.out.print(PlayableCell + availablePlays + "     " + RESET); }
@@ -101,19 +146,19 @@ public class FieldPrinter {
                         }
                     } else {
                         card = field.getPlacedCard(cell);
-                        if(j == 0) { h = j; }
-                        else { h = j + 1; }
-                        boolean isStarter = k == 40 && i == 40;
+                        if(rowPrinterIndex == 0) { h = rowPrinterIndex; }
+                        else { h = rowPrinterIndex + 1; }
+                        boolean isStarter = x == 40 && y == 40;
                         List<Integer> neighborPlacementIndexes = new ArrayList<>();
-                        for(int y = 1; y >= -2; y-=2) {
-                            for(int x = -1; x < 2; x+=2) {
-                                if(field.getPlacedCard(new Coordinates(cell.x() + x, cell.y() + y)) != null) {
-                                    neighborPlacementIndexes.add(field.getPlacedCard(new Coordinates(cell.x() + x, cell.y() + y)).placementIndex());
+                        for(int dy = 1; dy >= -2; dy-=2) {
+                            for(int dx = -1; dx < 2; dx+=2) {
+                                if(field.getPlacedCard(new Coordinates(cell.x() + dx, cell.y() + dy)) != null) {
+                                    neighborPlacementIndexes.add(field.getPlacedCard(new Coordinates(cell.x() + dx, cell.y() + dy)).placementIndex());
                                 } else { neighborPlacementIndexes.add(0); }
                             }
                         }
 
-                        printCard(card.card(), h, j, isStarter, card.flipped(), true, card.placementIndex(), neighborPlacementIndexes);
+                        printCard(card.card(), h, rowPrinterIndex, isStarter, card.flipped(), true, card.placementIndex(), neighborPlacementIndexes);
                     }
                 }
                 System.out.print("\n");
@@ -121,6 +166,69 @@ public class FieldPrinter {
         }
 
         printPlayerResources();
+    }
+
+    public void printHand() {
+        System.out.print("\n");
+        PlayableCard card;
+        for (int rawPrinterIndex = 0; rawPrinterIndex < 7; rawPrinterIndex++) {
+            int cornerIndex = 0;
+            if (rawPrinterIndex != 3) {
+                for (PlayableCard playableCard : cardPool) {
+                    if (rawPrinterIndex % 2 == 0 && rawPrinterIndex != 0) {
+                        cornerIndex = rawPrinterIndex;
+                    }
+                    card = playableCard;
+                    printCard(card, cornerIndex, rawPrinterIndex, false, rawPrinterIndex > 3, false, 0, null);
+                    System.out.print("   ");
+                }
+            }
+            System.out.print("\n");
+        }
+        System.out.print("\n");
+    }
+
+    public void printBoard(){
+        System.out.print("\n");
+        PlayableCard card;
+
+        for(int rowPrinterIndex = 0; rowPrinterIndex < 7; rowPrinterIndex++) {
+            int min = -1, max = -1;
+            if(rowPrinterIndex < 3) {
+                min = 0;
+                max = 2;
+            } else if(rowPrinterIndex > 3){
+                min = 2;
+                max = 4;
+            }
+
+            int cornerIndex = 0;
+            int boardRowPrinterIndex;
+            if(rowPrinterIndex != 3){
+                if(rowPrinterIndex < 3) { boardRowPrinterIndex = rowPrinterIndex; }
+                else { boardRowPrinterIndex = rowPrinterIndex - 4; }
+                if (rowPrinterIndex % 2 == 0 && rowPrinterIndex != 0) {
+                    if(rowPrinterIndex < 3) { cornerIndex = rowPrinterIndex; }
+                    else { cornerIndex = boardRowPrinterIndex; }
+                }
+                if (rowPrinterIndex < 3) {
+                    card = board.getGoldDeck().getCards().getFirst();
+                } else {
+                    card = board.getResourceDeck().getCards().getFirst();
+                }
+                printCard(card, cornerIndex + 4, boardRowPrinterIndex + 4, false, true, false, 0, null);
+                System.out.print("   ");
+
+                for (PlayableCard playableCard : visibleCards.subList(min, max)) {
+                    card = playableCard;
+                    printCard(card, cornerIndex, boardRowPrinterIndex, false, false, false, 0, null);
+                    System.out.print("   ");
+                }
+            }
+            System.out.print("\n");
+        }
+
+        System.out.print("\n");
     }
 
     private void printPlayerResources() {
@@ -155,75 +263,17 @@ public class FieldPrinter {
         return "  ";
     }
 
-    private void printCardList(boolean isHand, boolean isBoard){
-        System.out.print("\n");
-        PlayableCard card;
-        if(isHand && !isBoard){
-            for (int j = 0; j < 7; j++) {
-                int k = 0;
-                if (j != 3) {
-                    for (PlayableCard playableCard : cardPool) {
-                        if (j % 2 == 0 && j != 0) {
-                            k = j;
-                        }
-                        card = playableCard;
-                        printCard(card, k, j, false, j > 3, false, 0, null);
-                        System.out.print("   ");
-                    }
-                }
-                System.out.print("\n");
-            }
-        } else if(!isHand && isBoard) {
-            for(int j = 0; j < 7; j++) {
-                int min = -1, max = -1;
-                if(j < 3) {
-                    min = 0;
-                    max = 2;
-                } else if(j > 3){
-                    min = 2;
-                    max = 4;
-                }
-
-                int k = 0;
-                int jay;
-                if(j != 3){
-                    if(j < 3) { jay = j; }
-                    else { jay = j - 4; }
-                    if (j % 2 == 0 && j != 0) {
-                        if(j < 3) { k = j; }
-                        else { k = jay; }
-                    }
-                    if (j < 3) {
-                        card = board.getGoldDeck().getCards().getFirst();
-                    } else {
-                        card = board.getResourceDeck().getCards().getFirst();
-                    }
-                    printCard(card, k + 4, jay + 4, false, true, false, 0, null);
-                    System.out.print("   ");
-
-                    for (PlayableCard playableCard : visibleCards.subList(min, max)) {
-                        card = playableCard;
-                        printCard(card, k, jay, false, false, false, 0, null);
-                        System.out.print("   ");
-                    }
-                }
-                System.out.print("\n");
-            }
-        }
-        System.out.print("\n");
-    }
-
-    private String assignCorner(String cardColor, Corner corner, int k, boolean onField, boolean isLeft, int placementIndex, List<Integer> neighborPlacementIndexes) {
+    private String assignCorner(String cardColor, Corner corner, int cornerIndex, boolean onField, boolean isLeft, int placementIndex, List<Integer> neighborPlacementIndexes) {
         if (corner.type().name().equalsIgnoreCase("visible")) {
             if (onField) {
                 if(isLeft) {
-                    if(neighborPlacementIndexes != null && neighborPlacementIndexes.get(k) > placementIndex) {
+                    if(neighborPlacementIndexes != null && neighborPlacementIndexes.get(cornerIndex) > placementIndex) {
                         return cardColor + CoveredCorner;
                     } else {
                         return getSymbolName(corner.symbol()) + SymbolCorner;
                     }
                 } else {
-                    if(neighborPlacementIndexes != null && neighborPlacementIndexes.get(k) > placementIndex) {
+                    if(neighborPlacementIndexes != null && neighborPlacementIndexes.get(cornerIndex) > placementIndex) {
                         return cardColor + CoveredCorner;
                     } else {
                         return SymbolCorner + getSymbolName(corner.symbol());
@@ -241,7 +291,7 @@ public class FieldPrinter {
         }
     }
 
-    private void printCard(PlayableCard card, int k, int j, boolean starter, boolean flipped, boolean onField, int placementIndex, List<Integer> neighborPlacementIndexes) {
+    private void printCard(PlayableCard card, int cornerIndex, int j, boolean starter, boolean flipped, boolean onField, int placementIndex, List<Integer> neighborPlacementIndexes) {
         String leftCorner = null, rightCorner = null, cardColor;
         List<Corner> corners;
 
@@ -262,9 +312,9 @@ public class FieldPrinter {
         else { cardColor = getCardColor(card.getColor()); }
 
         if((j != 1 && j != 5) || onField) {
-            leftCorner = assignCorner(cardColor, corners.get(k), k, onField, true, placementIndex, neighborPlacementIndexes);
-            k++;
-            rightCorner = assignCorner(cardColor, corners.get(k), k, onField, false, placementIndex, neighborPlacementIndexes);
+            leftCorner = assignCorner(cardColor, corners.get(cornerIndex), cornerIndex, onField, true, placementIndex, neighborPlacementIndexes);
+            cornerIndex++;
+            rightCorner = assignCorner(cardColor, corners.get(cornerIndex), cornerIndex, onField, false, placementIndex, neighborPlacementIndexes);
         }
 
         if(flipped && starter) {
@@ -428,49 +478,5 @@ public class FieldPrinter {
                 System.out.println(Printer.RED + "Type a valid input!" + RESET);
             }
         }
-    }
-
-    public static void main(String[] args) {
-        FieldPrinter fieldPrinter = new FieldPrinter();
-        Coordinates cell;
-        PlayableCard card;
-        boolean flipped;
-        fieldPrinter.printCardList(false, true);
-        fieldPrinter.printField();
-        if(!cardPool.isEmpty()) fieldPrinter.printCardList(true, false);
-        for(int i = 0; i < 3; i++) {
-            switch (objectives.get(i)) {
-                case SymbolsObjectiveCard symbolsObjectiveCard ->
-                        fieldPrinter.printSymbolsObjective(symbolsObjectiveCard);
-                case DiagonalPatternObjectiveCard diagonalPatternObjectiveCard ->
-                        fieldPrinter.printDiagonalObjective(diagonalPatternObjectiveCard);
-                case VerticalPatternObjectiveCard verticalPatternObjectiveCard ->
-                        fieldPrinter.printVerticalObjective(verticalPatternObjectiveCard);
-                case null, default -> System.out.print("UFO");
-            }
-            System.out.print("\n");
-        }
-        do{
-            if(!validPlays.isEmpty()){
-                System.out.println("Choose a card");
-                card = cardPool.get(fieldPrinter.makeChoice(cardPool.size()) - 1);
-                System.out.println("Flipped or not?");
-                flipped = fieldPrinter.chooseFace();
-                if(card instanceof GoldCard goldCard && !goldCard.hasResourcesNeeded(fieldPrinter.field) && !flipped) {
-                    System.out.println("Not enough resources to play the card");
-                    continue;
-                }
-                System.out.println("Choose a cell");
-                cell = validPlays.get(fieldPrinter.makeChoice(fieldPrinter.availablePlays));
-                try {
-                    fieldPrinter.field.addCard(card, flipped, cell);
-                    cardPool.remove(card);
-                } catch (CoordinatesAreNotValidException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            fieldPrinter.printField();
-            if(!cardPool.isEmpty()) fieldPrinter.printCardList(true, false);
-        }while(!cardPool.isEmpty());
     }
 }
