@@ -4,6 +4,7 @@ import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.controller.MainController;
 import it.polimi.ingsw.exceptions.UsernameNotPlayingException;
 import it.polimi.ingsw.network.client.ClientInterface;
+import it.polimi.ingsw.network.message.GameEndedMessage;
 import it.polimi.ingsw.network.message.clienttoserver.ClientToServerMessage;
 import it.polimi.ingsw.network.message.clienttoserver.PingResponse;
 import it.polimi.ingsw.network.message.clienttoserver.gamecontroller.GameControllerMessage;
@@ -45,28 +46,26 @@ public class Server implements ServerInterface {
                 }
                 System.out.println("Received message: " + message.getClass());
 
-                if (message instanceof PingResponse m) {
-                    // todo use execute?
-                    new Thread(() -> {
-                        pingResponse(m.getUsername());
-                    }).start();
-
-                }
-                else if (message instanceof MainControllerMessage m) {
-                    new Thread(() -> {
+                switch (message) {
+                    case PingResponse m ->
+                            new Thread(m::execute).start();
+                    case MainControllerMessage m -> new Thread(() -> {
                         m.execute(this.controller);
+                        // Start ping timer
                         if (message instanceof ConnectMessage) {
                             this.pingRequest(m.getUsername());
                         }
                     }).start();
-
-                }
-                else if (message instanceof GameControllerMessage m) {
-                    try {
-                        GameController game = this.controller.getGameOfPlayer(m.getUsername());
-                        m.execute(game);
-                    } catch (UsernameNotPlayingException ignored) {
-                        //TODO ignore or catch exception?
+                    case GameControllerMessage m -> {
+                        try {
+                            GameController game = this.controller.getGameOfPlayer(m.getUsername());
+                            m.execute(game);
+                        } catch (UsernameNotPlayingException ignored) {
+                            //TODO ignore or catch exception?
+                        }
+                    }
+                    default -> {
+                        System.err.println("Message not valid");
                     }
                 }
             }
@@ -131,7 +130,9 @@ public class Server implements ServerInterface {
             public void run() {
                 try {
                     usernameToTimer.remove(username);
+                    controller.getGameOfPlayer(username).notifyAllListenersExcept(username, new GameEndedMessage(username + " left the lobby"));
                     controller.leaveGame(username);
+
                 } catch (UsernameNotPlayingException e) {
                     System.err.println("Username not playing");
                 }

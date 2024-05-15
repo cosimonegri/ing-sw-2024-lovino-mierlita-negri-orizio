@@ -1,6 +1,8 @@
 package it.polimi.ingsw.network.message;
 
-public class GameEndedMessage {
+import it.polimi.ingsw.network.message.servertoclient.ServerToClientMessage;
+
+public class GameEndedMessage implements ServerToClientMessage {
     private final String message;
     public GameEndedMessage(String message){
         this.message = message;

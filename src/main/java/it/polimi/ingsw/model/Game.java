@@ -5,6 +5,7 @@ import it.polimi.ingsw.exceptions.MarkerNotValidException;
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.model.player.Marker;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.network.message.GameEndedMessage;
 import it.polimi.ingsw.network.message.servertoclient.ServerToClientMessage;
 
 import java.io.IOException;
@@ -246,5 +247,10 @@ public class Game {
         for(int i=0; i<2; i++){
             this.objectives.add(this.board.getObjectiveDeck().draw());
         }
+    }
+
+    public void end() {
+        this.notifyAllListeners(new GameEndedMessage("The game has ended."));
+        this.gamePhase = GamePhase.END;
     }
 }

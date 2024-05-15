@@ -85,6 +85,7 @@ public class MainController {
         this.usernameToListener.remove(username);
         GameController game = getGameOfPlayer(username);
         game.removePlayer(username);
+        game.endGame();
     }
 
     public GameController getGameOfPlayer(String username) throws UsernameNotPlayingException {

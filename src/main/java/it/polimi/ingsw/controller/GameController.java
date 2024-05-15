@@ -169,4 +169,8 @@ public class GameController {
     private boolean hasChosenObjective(Player player) {
         return player.getObjCard() != null;
     }
+
+    public void endGame() {
+        this.model.end();
+    }
 }

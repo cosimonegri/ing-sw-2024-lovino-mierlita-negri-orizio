@@ -34,14 +34,6 @@ public class ConnectMessage extends MainControllerMessage {
                 }
             });
             controller.notifyListener(this.getUsername(), new UsernameAckMessage());
-            // ping thread
-//            new Thread(() -> {
-//                while (true) {
-//                    // ping request to the client
-//                    controller.notifyListener(this.getUsername(), new PingRequest(this.getUsername()));
-//                    // wait for response
-//                }
-//            }).start();
 
         } catch (UsernameNotValidException | UsernameAlreadyTakenException error) {
             try {

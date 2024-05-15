@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.client;
 
 import it.polimi.ingsw.network.ConnectionType;
+import it.polimi.ingsw.network.message.GameEndedMessage;
 import it.polimi.ingsw.network.message.clienttoserver.PingResponse;
 import it.polimi.ingsw.network.message.clienttoserver.UsernameMessage;
 import it.polimi.ingsw.network.message.servertoclient.PingRequest;
@@ -102,6 +103,8 @@ public class Client implements ClientInterface {
         if (message instanceof PingRequest m) {
             System.err.println("New ping request");
             this.server.messageFromClient(new PingResponse(m.getUsername()));
+        } else if (message instanceof GameEndedMessage) {
+            System.out.println(message);
         }
         view.addMessage(message);
     }
