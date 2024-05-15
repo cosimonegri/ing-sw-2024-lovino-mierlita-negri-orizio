@@ -5,6 +5,7 @@ import it.polimi.ingsw.controller.MainController;
 import it.polimi.ingsw.exceptions.UsernameNotPlayingException;
 import it.polimi.ingsw.network.client.ClientInterface;
 import it.polimi.ingsw.network.message.clienttoserver.ClientToServerMessage;
+import it.polimi.ingsw.network.message.clienttoserver.PingResponse;
 import it.polimi.ingsw.network.message.clienttoserver.gamecontroller.GameControllerMessage;
 import it.polimi.ingsw.network.message.clienttoserver.maincontroller.ConnectMessage;
 import it.polimi.ingsw.network.message.clienttoserver.UsernameMessage;
@@ -38,15 +39,25 @@ public class Server implements ServerInterface {
                     continue;
                 }
                 System.out.println("Received message: " + message.getClass());
-                if (message instanceof MainControllerMessage m) {
-                    m.execute(this.controller);
+
+                if (message instanceof PingResponse m) {
+                    // todo use execute?
+                    new Thread(() -> {
+                        this.controller.pingResponse(m.getUsername());
+                    }).start();
+
                 }
-                if (message instanceof GameControllerMessage m) {
+                else if (message instanceof MainControllerMessage m) {
+                    new Thread(() -> {
+                        m.execute(this.controller);
+                    }).start();
+                }
+                else if (message instanceof GameControllerMessage m) {
                     try {
                         GameController game = this.controller.getGameOfPlayer(m.getUsername());
                         m.execute(game);
                     } catch (UsernameNotPlayingException ignored) {
-                        //TODO ignore or catch excetion?
+                        //TODO ignore or catch exception?
                     }
                 }
             }

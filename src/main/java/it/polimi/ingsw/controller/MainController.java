@@ -3,20 +3,27 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.GameListener;
 import it.polimi.ingsw.network.message.servertoclient.CreateGameAckMessage;
+import it.polimi.ingsw.network.message.servertoclient.PingRequest;
 import it.polimi.ingsw.network.message.servertoclient.ServerToClientMessage;
 import it.polimi.ingsw.utilities.Config;
 
 import java.io.IOException;
 import java.util.*;
 
+import static java.lang.Thread.sleep;
+
 public class MainController {
     private static MainController instance;
     private final Map<Integer, GameController> games;
     private final Map<String, GameListener> usernameToListener;
+    private final Map<String, Timer> usernameToTimer;
+    //
 
     private MainController() {
         games = new HashMap<>();
         usernameToListener = new HashMap<>();
+        usernameToTimer = new HashMap<>();
+
     }
 
     public static MainController getInstance() {
@@ -24,6 +31,39 @@ public class MainController {
             instance = new MainController();
         }
         return instance;
+    }
+
+    synchronized public void pingResponse(String username) {
+        try {
+            // cancel timer
+            this.usernameToTimer.get(username).cancel();
+            // wait some time
+            wait(5000);
+            // send new request
+            this.pingRequest(username);
+        } catch (InterruptedException  | NullPointerException ignored) {
+            System.err.println("Could not find the user timer");
+        }
+    }
+
+    private void pingRequest(String username) {
+        // send ping request
+        notifyListener(username, new PingRequest(username));
+        // create new timer
+        Timer timer = new Timer();
+        // if the player doesn't respond leave the game
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    leaveGame(username);
+                } catch (UsernameNotPlayingException e) {
+                    System.err.println("Username not playing");
+                }
+            }
+        }, 5000);
+
+        usernameToTimer.put(username, timer);
     }
 
     synchronized public void connect(String username, GameListener listener) throws UsernameNotValidException, UsernameAlreadyTakenException {
@@ -34,6 +74,7 @@ public class MainController {
             throw new UsernameAlreadyTakenException();
         }
         this.usernameToListener.put(username, listener);
+        this.pingRequest(username);
     }
 
     synchronized public void notifyListener(String username, ServerToClientMessage message) {
@@ -75,6 +116,7 @@ public class MainController {
         if (!this.isUsernameConnected(username)) {
             return;
         }
+        System.err.println(username + " leaving the game");
         this.usernameToListener.remove(username);
         GameController game = getGameOfPlayer(username);
         game.removePlayer(username);

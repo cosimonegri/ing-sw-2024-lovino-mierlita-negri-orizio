@@ -1,13 +1,16 @@
 package it.polimi.ingsw.network.client;
 
 import it.polimi.ingsw.network.ConnectionType;
+import it.polimi.ingsw.network.message.clienttoserver.PingResponse;
 import it.polimi.ingsw.network.message.clienttoserver.UsernameMessage;
+import it.polimi.ingsw.network.message.servertoclient.PingRequest;
 import it.polimi.ingsw.network.message.servertoclient.ServerToClientMessage;
 import it.polimi.ingsw.network.server.ServerInterface;
 import it.polimi.ingsw.network.server.SocketServerStub;
 import it.polimi.ingsw.utilities.Config;
 import it.polimi.ingsw.view.View;
 
+import java.util.Timer;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -56,6 +59,7 @@ public class Client implements ClientInterface {
             try {
                 if (message instanceof UsernameMessage m) {
                     this.server.connectClient(m, this.skeleton);
+                    // this.server.messageFromClient(new PingResponse(m.getUsername()));
                 } else {
                     this.server.messageFromClient(message);
                 }
@@ -95,6 +99,10 @@ public class Client implements ClientInterface {
 
     @Override
     public void messageFromServer(ServerToClientMessage message) throws RemoteException {
+        if (message instanceof PingRequest m) {
+            System.err.println("New ping request");
+            this.server.messageFromClient(new PingResponse(m.getUsername()));
+        }
         view.addMessage(message);
     }
 }
