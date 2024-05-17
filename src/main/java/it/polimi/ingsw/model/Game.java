@@ -248,9 +248,4 @@ public class Game {
             this.objectives.add(this.board.getObjectiveDeck().draw());
         }
     }
-
-    public void end() {
-        this.notifyAllListeners(new GameEndedMessage("The game has ended."));
-        this.gamePhase = GamePhase.END;
-    }
 }

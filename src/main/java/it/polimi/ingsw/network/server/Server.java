@@ -3,6 +3,8 @@ package it.polimi.ingsw.network.server;
 import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.controller.MainController;
 import it.polimi.ingsw.exceptions.UsernameNotPlayingException;
+import it.polimi.ingsw.model.GamePhase;
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.client.ClientInterface;
 import it.polimi.ingsw.network.message.GameEndedMessage;
 import it.polimi.ingsw.network.message.clienttoserver.ClientToServerMessage;
@@ -11,6 +13,8 @@ import it.polimi.ingsw.network.message.clienttoserver.gamecontroller.GameControl
 import it.polimi.ingsw.network.message.clienttoserver.maincontroller.ConnectMessage;
 import it.polimi.ingsw.network.message.clienttoserver.UsernameMessage;
 import it.polimi.ingsw.network.message.clienttoserver.maincontroller.MainControllerMessage;
+import it.polimi.ingsw.network.message.servertoclient.DisconnectMessage;
+import it.polimi.ingsw.network.message.servertoclient.LobbyMessage;
 import it.polimi.ingsw.network.message.servertoclient.PingRequest;
 import it.polimi.ingsw.utilities.Config;
 
@@ -127,17 +131,24 @@ public class Server implements ServerInterface {
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    synchronized (usernameToTimer) {
-                        // if the player doesn't respond leave the game
-                        try {
-                            usernameToTimer.remove(username);
-                            controller.getGameOfPlayer(username).notifyAllListenersExcept(username, new GameEndedMessage(username + " left the lobby"));
-                            controller.leaveGame(username);
-                        }
-                        catch (UsernameNotPlayingException e) {
-                            System.err.println("Username not playing");
+                synchronized (usernameToTimer) {
+                    // if the player doesn't respond leave the game
+                    try {
+                        usernameToTimer.remove(username);
+                        GameController game = controller.leaveGame(username);
+                        game.notifyAllListeners(new DisconnectMessage(username));
+                        if (game.getPhase() == GamePhase.WAITING) {
+                            game.notifyAllListeners(new LobbyMessage(
+                                    game.getPlayers().stream().map(Player::getUsername).toList())
+                            );
+                        } else if (game.getPhase() == GamePhase.END) {
+                            game.notifyAllListeners(new GameEndedMessage("The game is ended"));
                         }
                     }
+                    catch (UsernameNotPlayingException e) {
+                        System.err.println("Username not playing");
+                    }
+                }
                 }
             }, Config.PING_TIME_MS);
 

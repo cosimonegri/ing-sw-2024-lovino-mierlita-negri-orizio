@@ -12,6 +12,9 @@ import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
 import it.polimi.ingsw.model.player.Coordinates;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.Marker;
+import it.polimi.ingsw.network.message.GameEndedMessage;
+import it.polimi.ingsw.network.message.servertoclient.DisconnectMessage;
+import it.polimi.ingsw.network.message.servertoclient.LobbyMessage;
 import it.polimi.ingsw.network.message.servertoclient.ServerToClientMessage;
 
 import java.util.Arrays;
@@ -55,6 +58,9 @@ public class GameController {
 
     synchronized public void removePlayer(String username) {
         model.removePlayer(username);
+        if (model.getGamePhase() != GamePhase.WAITING) {
+            model.setGamePhase(GamePhase.END);
+        }
     }
 
     synchronized public void chooseMarker(String username, Marker marker) throws MarkerNotValidException {
@@ -168,9 +174,5 @@ public class GameController {
 
     private boolean hasChosenObjective(Player player) {
         return player.getObjCard() != null;
-    }
-
-    public void endGame() {
-        this.model.end();
     }
 }

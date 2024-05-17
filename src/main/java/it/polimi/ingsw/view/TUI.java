@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.model.player.Marker;
+import it.polimi.ingsw.network.message.GameEndedMessage;
 import it.polimi.ingsw.network.message.clienttoserver.UsernameMessage;
 import it.polimi.ingsw.network.message.clienttoserver.gamecontroller.ChooseMarkerMessage;
 import it.polimi.ingsw.network.message.clienttoserver.gamecontroller.PlayStarterMessage;

@@ -4,6 +4,7 @@ import it.polimi.ingsw.network.ConnectionType;
 import it.polimi.ingsw.network.message.GameEndedMessage;
 import it.polimi.ingsw.network.message.clienttoserver.PingResponse;
 import it.polimi.ingsw.network.message.clienttoserver.UsernameMessage;
+import it.polimi.ingsw.network.message.servertoclient.DisconnectMessage;
 import it.polimi.ingsw.network.message.servertoclient.PingRequest;
 import it.polimi.ingsw.network.message.servertoclient.ServerToClientMessage;
 import it.polimi.ingsw.network.server.ServerInterface;
@@ -116,8 +117,12 @@ public class Client implements ClientInterface {
                 }
             }, 2 * Config.PING_TIME_MS);
         }
-        else if (message instanceof GameEndedMessage) {
-            System.out.println(message);
+        //todo move these 2 messages in the correct place in the view
+        else if (message instanceof GameEndedMessage m) {
+            System.out.println(m);
+        }
+        else if (message instanceof DisconnectMessage m) {
+            System.out.println(m);
         }
         view.addMessage(message);
     }

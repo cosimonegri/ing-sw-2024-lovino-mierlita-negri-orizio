@@ -2,6 +2,7 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.GameListener;
+import it.polimi.ingsw.model.GamePhase;
 import it.polimi.ingsw.network.message.servertoclient.CreateGameAckMessage;
 import it.polimi.ingsw.network.message.servertoclient.PingRequest;
 import it.polimi.ingsw.network.message.servertoclient.ServerToClientMessage;
@@ -29,8 +30,6 @@ public class MainController {
         }
         return instance;
     }
-
-
 
     synchronized public void connect(String username, GameListener listener) throws UsernameNotValidException, UsernameAlreadyTakenException {
         if (!Config.isUsernameValid(username)) {
@@ -77,15 +76,15 @@ public class MainController {
         return game;
     }
 
-    synchronized public void leaveGame(String username) throws UsernameNotPlayingException {
+    synchronized public GameController leaveGame(String username) throws UsernameNotPlayingException {
         if (!this.isUsernameConnected(username)) {
-            return;
+            //todo maybe handle this case
+            return null;
         }
-        System.err.println(username + " leaving the game");
         this.usernameToListener.remove(username);
         GameController game = getGameOfPlayer(username);
         game.removePlayer(username);
-        game.endGame();
+        return game;
     }
 
     synchronized public GameController getGameOfPlayer(String username) throws UsernameNotPlayingException {
