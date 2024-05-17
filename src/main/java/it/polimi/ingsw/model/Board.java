@@ -8,6 +8,7 @@ import it.polimi.ingsw.modelView.BoardView;
 import it.polimi.ingsw.utilities.CardsConfig;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * Board class contains the four different type of decks and the visible cards that players can take from the terrain
@@ -65,7 +66,7 @@ public class Board {
      */
     public void replaceVisibleCard(PlayableCard card) {
         for (int i = 0; i < this.visibleCards.length; i++) {
-            // skip to the next index if the card doesn't match woth the given one
+            // skip to the next index if the card doesn't match with the given one
             if (!this.visibleCards[i].equals(card)) {
                 continue;
             }

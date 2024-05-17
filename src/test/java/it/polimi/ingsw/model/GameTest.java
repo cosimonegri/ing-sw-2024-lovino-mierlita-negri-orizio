@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 import static org.junit.jupiter.api.Assertions.*;
 
+import it.polimi.ingsw.exceptions.CannotCreateGameException;
 import it.polimi.ingsw.exceptions.LobbyFullException;
 import it.polimi.ingsw.exceptions.UsernameAlreadyTakenException;
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
@@ -23,7 +24,7 @@ public class GameTest {
     private Game game;
 
     @BeforeEach
-    public void gameTest() { game = new Game(4); }
+    public void gameTest() throws CannotCreateGameException { game = new Game(4); }
 
     @Test
     @DisplayName("Constructor Test")
