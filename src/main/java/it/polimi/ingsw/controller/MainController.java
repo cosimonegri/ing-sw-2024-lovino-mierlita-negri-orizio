@@ -88,7 +88,7 @@ public class MainController {
         game.endGame();
     }
 
-    public GameController getGameOfPlayer(String username) throws UsernameNotPlayingException {
+    synchronized public GameController getGameOfPlayer(String username) throws UsernameNotPlayingException {
         for (int gameId : this.games.keySet()) {
             GameController game = this.games.get(gameId);
             if (game.getPlayers().stream().anyMatch(p -> p.getUsername().equals(username))) {

@@ -6,8 +6,4 @@ public class PingResponse extends ClientToServerMessage {
     public PingResponse(String username) {
         super(username);
     }
-
-    public void execute() {
-        Server.getInstance().pingResponse(this.getUsername());
-    }
 }

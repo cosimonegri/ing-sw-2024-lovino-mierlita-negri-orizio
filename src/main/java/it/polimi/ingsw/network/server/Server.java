@@ -10,8 +10,6 @@ import it.polimi.ingsw.network.message.clienttoserver.PingResponse;
 import it.polimi.ingsw.network.message.clienttoserver.gamecontroller.GameControllerMessage;
 import it.polimi.ingsw.network.message.clienttoserver.maincontroller.ConnectMessage;
 import it.polimi.ingsw.network.message.clienttoserver.UsernameMessage;
-import it.polimi.ingsw.network.message.clienttoserver.maincontroller.CreateGameMessage;
-import it.polimi.ingsw.network.message.clienttoserver.maincontroller.JoinGameMessage;
 import it.polimi.ingsw.network.message.clienttoserver.maincontroller.MainControllerMessage;
 import it.polimi.ingsw.network.message.servertoclient.PingRequest;
 import it.polimi.ingsw.utilities.Config;
@@ -44,16 +42,17 @@ public class Server implements ServerInterface {
                     }
                     continue;
                 }
-                System.out.println("Received message: " + message.getClass());
+                System.out.println("Received message: " + message.getClass() + " from " + message.getUsername());
 
                 switch (message) {
                     case PingResponse m ->
-                            new Thread(m::execute).start();
+                        new Thread(() -> {
+                            respondToPing(m.getUsername());
+                        }).start();
                     case MainControllerMessage m -> new Thread(() -> {
                         m.execute(this.controller);
-                        // Start ping timer
                         if (message instanceof ConnectMessage) {
-                            this.pingRequest(m.getUsername());
+                            requestPing(m.getUsername());
                         }
                     }).start();
                     case GameControllerMessage m -> {
@@ -104,41 +103,45 @@ public class Server implements ServerInterface {
         }
     }
 
-    public void pingResponse(String username) {
-        synchronized (usernameToTimer.get(username)) {
+    private void respondToPing(String username) {
+        synchronized (usernameToTimer) {
             try {
-                // cancel timer
-                this.usernameToTimer.get(username).cancel();
-                // wait some time
-                usernameToTimer.get(username).wait(5000);
-                // send new request
-                this.pingRequest(username);
-            } catch (InterruptedException  | NullPointerException ignored) {
+                if (usernameToTimer.containsKey(username)) {
+                    // cancel timer
+                    this.usernameToTimer.get(username).cancel();
+                    // wait some time before sending another ping request
+                    usernameToTimer.wait(Config.PING_TIME_MS);
+                    requestPing(username);
+                }
+            } catch (InterruptedException ignored) {
                 System.err.println("Could not find the user timer");
             }
         }
     }
 
-    private void pingRequest(String username) {
-        // send ping request
-        controller.notifyListener(username, new PingRequest(username));
-        // create new timer
-        Timer timer = new Timer();
-        // if the player doesn't respond leave the game
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    usernameToTimer.remove(username);
-                    controller.getGameOfPlayer(username).notifyAllListenersExcept(username, new GameEndedMessage(username + " left the lobby"));
-                    controller.leaveGame(username);
+    private void requestPing(String username) {
+        synchronized (usernameToTimer) {
+            Timer timer = new Timer();
+            controller.notifyListener(username, new PingRequest(username));
 
-                } catch (UsernameNotPlayingException e) {
-                    System.err.println("Username not playing");
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    synchronized (usernameToTimer) {
+                        // if the player doesn't respond leave the game
+                        try {
+                            usernameToTimer.remove(username);
+                            controller.getGameOfPlayer(username).notifyAllListenersExcept(username, new GameEndedMessage(username + " left the lobby"));
+                            controller.leaveGame(username);
+                        }
+                        catch (UsernameNotPlayingException e) {
+                            System.err.println("Username not playing");
+                        }
+                    }
                 }
-            }
-        }, 5000);
+            }, Config.PING_TIME_MS);
 
-        usernameToTimer.put(username, timer);
+            usernameToTimer.put(username, timer);
+        }
     }
 }

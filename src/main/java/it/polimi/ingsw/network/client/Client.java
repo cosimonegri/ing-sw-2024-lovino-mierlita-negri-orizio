@@ -18,12 +18,14 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.TimerTask;
 
 public class Client implements ClientInterface {
     private final View view;
     private final ConnectionType connection;
     private ClientInterface skeleton = null;
     private ServerInterface server = null;
+    private Timer timer;
 
     public Client(View view, ConnectionType connection) {
         this.view = view;
@@ -101,9 +103,20 @@ public class Client implements ClientInterface {
     @Override
     public void messageFromServer(ServerToClientMessage message) throws RemoteException {
         if (message instanceof PingRequest m) {
-            System.err.println("New ping request");
+            if (this.timer != null) {
+                this.timer.cancel();
+            }
             this.server.messageFromClient(new PingResponse(m.getUsername()));
-        } else if (message instanceof GameEndedMessage) {
+            this.timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    System.err.println("Cannot communicate with the server. Try to start another game.");
+                    System.exit(1);
+                }
+            }, 2 * Config.PING_TIME_MS);
+        }
+        else if (message instanceof GameEndedMessage) {
             System.out.println(message);
         }
         view.addMessage(message);

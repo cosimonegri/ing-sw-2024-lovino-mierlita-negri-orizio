@@ -11,6 +11,8 @@ public class Config {
 
     public static final int SLEEP_TIME_MS = 200;
 
+    public static final int PING_TIME_MS = 5000;
+
     public static boolean isUsernameValid(String username) {
         return !username.isEmpty() && !username.isBlank() && username.matches("[a-zA-Z_0-9]*");
     }
