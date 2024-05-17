@@ -30,7 +30,7 @@ public class SocketClientSkeleton implements ClientInterface, AutoCloseable {
             }
             return message;
         } catch (ClassNotFoundException | IOException e) {
-            throw new RemoteException("Cannot receive message from the client");
+            throw new RemoteException();
         }
     }
 
@@ -39,7 +39,7 @@ public class SocketClientSkeleton implements ClientInterface, AutoCloseable {
         try {
             this.output.writeObject(message);
         } catch (IOException e) {
-            throw new RemoteException("Cannot send message to the client");
+            throw new RemoteException();
         }
     }
 

@@ -24,13 +24,15 @@ import java.util.TimerTask;
 public class Client implements ClientInterface {
     private final View view;
     private final ConnectionType connection;
+    private final String ip;
     private ClientInterface skeleton = null;
     private ServerInterface server = null;
     private Timer timer;
 
-    public Client(View view, ConnectionType connection) {
+    public Client(View view, ConnectionType connection, String ip) {
         this.view = view;
         this.connection = connection;
+        this.ip = ip;
         try {
             if (connection == ConnectionType.RMI) {
                 this.skeleton = (ClientInterface) UnicastRemoteObject.exportObject(this, 0);
@@ -77,7 +79,7 @@ public class Client implements ClientInterface {
 
     private ServerInterface setupRmiConnection() throws RemoteException, NotBoundException {
         System.out.println("Connecting to the RMI server...");
-        Registry registry = LocateRegistry.getRegistry(Config.HOSTNAME, Config.RMI_PORT);
+        Registry registry = LocateRegistry.getRegistry(this.ip, Config.RMI_PORT);
         ServerInterface stub = (ServerInterface) registry.lookup(Config.RMI_NAME);
         System.out.println("Connection established successfully");
         return stub;
@@ -85,7 +87,7 @@ public class Client implements ClientInterface {
 
     private ServerInterface setupSocketConnection() throws IOException {
         System.out.println("Connecting to the socket server...");
-        SocketServerStub stub = new SocketServerStub();
+        SocketServerStub stub = new SocketServerStub(this.ip);
         System.out.println("Connection established successfully");
         new Thread(() -> {
             try {

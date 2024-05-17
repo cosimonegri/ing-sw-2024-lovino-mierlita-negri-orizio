@@ -146,7 +146,7 @@ public class Server implements ServerInterface {
                         }
                     }
                     catch (UsernameNotPlayingException e) {
-                        System.err.println("Username not playing");
+                        System.err.println(e.getMessage());
                     }
                 }
                 }

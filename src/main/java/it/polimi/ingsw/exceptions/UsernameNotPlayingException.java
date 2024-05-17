@@ -1,7 +1,7 @@
 package it.polimi.ingsw.exceptions;
 
 public class UsernameNotPlayingException extends Exception {
-    public UsernameNotPlayingException() {
-        super();
+    public UsernameNotPlayingException(String username) {
+        super(username + " is not playing");
     }
 }

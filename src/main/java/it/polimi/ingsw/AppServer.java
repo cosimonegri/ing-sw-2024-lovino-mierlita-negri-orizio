@@ -7,8 +7,10 @@ import it.polimi.ingsw.network.server.ServerInterface;
 import it.polimi.ingsw.utilities.Config;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -18,6 +20,14 @@ import java.util.concurrent.Executors;
 
 public class AppServer {
     public static void main(String[] args) {
+        try {
+            System.out.println("Starting server on " + InetAddress.getLocalHost().getHostAddress());
+            System.out.println();
+        } catch (UnknownHostException e) {
+            System.err.println("Cannot resolve IP address of this machine");
+            System.exit(1);
+        }
+
         Thread rmiThread = new Thread(() -> {
             try {
                 initRmiServer();

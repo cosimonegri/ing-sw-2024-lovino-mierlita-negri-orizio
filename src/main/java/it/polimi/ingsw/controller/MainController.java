@@ -78,8 +78,7 @@ public class MainController {
 
     synchronized public GameController leaveGame(String username) throws UsernameNotPlayingException {
         if (!this.isUsernameConnected(username)) {
-            //todo maybe handle this case
-            return null;
+            throw new UsernameNotPlayingException(username);
         }
         this.usernameToListener.remove(username);
         GameController game = getGameOfPlayer(username);
@@ -94,7 +93,7 @@ public class MainController {
                 return game;
             }
         }
-        throw new UsernameNotPlayingException();
+        throw new UsernameNotPlayingException(username);
     }
 
     private boolean isUsernameConnected(String username) {
