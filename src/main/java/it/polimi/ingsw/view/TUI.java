@@ -9,6 +9,7 @@ import it.polimi.ingsw.network.message.clienttoserver.maincontroller.JoinGameMes
 import it.polimi.ingsw.network.message.clienttoserver.maincontroller.CreateGameMessage;
 import it.polimi.ingsw.network.message.servertoclient.*;
 import it.polimi.ingsw.utilities.Printer;
+import javafx.stage.Stage;
 
 import java.util.InputMismatchException;
 import java.util.List;
@@ -21,6 +22,11 @@ public class TUI extends View {
     public TUI() {
         super();
         this.scanner = new Scanner(System.in);
+    }
+
+    @Override
+    public void start(Stage stage) throws Exception {
+
     }
 
     public void run() {

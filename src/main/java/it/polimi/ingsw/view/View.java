@@ -2,13 +2,14 @@ package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.network.message.clienttoserver.ClientToServerMessage;
 import it.polimi.ingsw.network.message.servertoclient.ServerToClientMessage;
+import javafx.application.Application;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-public abstract class View {
+public abstract class View extends Application {
     private final List<ViewListener> listeners;
     private final Queue<ServerToClientMessage> messages;
     protected String username;

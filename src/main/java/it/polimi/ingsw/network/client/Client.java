@@ -72,7 +72,9 @@ public class Client implements ClientInterface {
                 System.exit(1);
             }
         });
+
         this.view.run();
+
     }
 
     private ServerInterface setupRmiConnection() throws RemoteException, NotBoundException {
