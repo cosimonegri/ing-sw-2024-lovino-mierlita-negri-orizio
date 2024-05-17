@@ -21,7 +21,8 @@ public class GamePrinter {
         boolean flipped;
         gamePrinter.printBoard();
         gamePrinter.printField();
-        if(!cardPool.isEmpty()) gamePrinter.printHand();
+        if(!cardPool.isEmpty()) gamePrinter.printHand(false);
+        if(!cardPool.isEmpty()) gamePrinter.printHand(true);
         for(int i = 0; i < 3; i++) {
             switch (objectives.get(i)) {
                 case SymbolsObjectiveCard symbolsObjectiveCard ->
@@ -54,7 +55,8 @@ public class GamePrinter {
                 }
             }
             gamePrinter.printField();
-            if(!cardPool.isEmpty()) gamePrinter.printHand();
+            if(!cardPool.isEmpty()) gamePrinter.printHand(false);
+            if(!cardPool.isEmpty()) gamePrinter.printHand(true);
         }while(!cardPool.isEmpty());
     }
 
@@ -169,20 +171,30 @@ public class GamePrinter {
         printPlayerResources();
     }
 
-    public void printHand() {
+    /**
+     * Prints a list of cards, a player hand
+     * @param flipped false to show the owning player's hand, true to show an oppenent's hand, thus only the back of the cards
+     */
+    public void printHand(boolean flipped) {
         System.out.print("\n");
+        int startingIndex, endingIndex;
+        if(flipped) {
+            startingIndex = 4;
+            endingIndex = 7;
+        } else {
+            startingIndex = 0;
+            endingIndex = 3;
+        }
         PlayableCard card;
-        for (int rawPrinterIndex = 0; rawPrinterIndex < 7; rawPrinterIndex++) {
+        for (int rawPrinterIndex = startingIndex; rawPrinterIndex < endingIndex; rawPrinterIndex++) {
             int cornerIndex = 0;
-            if (rawPrinterIndex != 3) {
-                for (PlayableCard playableCard : cardPool) {
-                    if (rawPrinterIndex % 2 == 0 && rawPrinterIndex != 0) {
-                        cornerIndex = rawPrinterIndex;
-                    }
-                    card = playableCard;
-                    printRow(card, cornerIndex, rawPrinterIndex, false, rawPrinterIndex > 3, false, 0, null);
-                    System.out.print("   ");
+            for (PlayableCard playableCard : cardPool) {
+                if (rawPrinterIndex % 2 == 0 && rawPrinterIndex != 0) {
+                    cornerIndex = rawPrinterIndex;
                 }
+                card = playableCard;
+                printRow(card, cornerIndex, rawPrinterIndex, false, rawPrinterIndex > 3, false, 0, null);
+                System.out.print("   ");
             }
             System.out.print("\n");
         }
