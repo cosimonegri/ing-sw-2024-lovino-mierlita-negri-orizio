@@ -136,13 +136,13 @@ public class GamePrinter {
                             if(rowPrinterIndex == 0) {
                                 availablePlays++;
                                 validPlays.put(availablePlays, cell);
-                                if(availablePlays <= 9 ) { System.out.print(PlayableCell + availablePlays + "     " + RESET); }
-                                else { System.out.print(PlayableCell + availablePlays + "    " + RESET); }
+                                if(availablePlays <= 9 ) { System.out.print(PlayableCell + availablePlays + "      " + RESET); }
+                                else { System.out.print(PlayableCell + availablePlays + "     " + RESET); }
                             } else {
-                                System.out.print(PlayableCell + "      " + RESET);
+                                System.out.print(PlayableCell + "       " + RESET);
                             }
                         } else {
-                            System.out.print("      ");
+                            System.out.print("       ");
                         }
                     } else {
                         card = field.getPlacedCard(cell);
@@ -153,18 +153,19 @@ public class GamePrinter {
                         for(int dy = 1; dy >= -2; dy-=2) {
                             for(int dx = -1; dx < 2; dx+=2) {
                                 if(field.getPlacedCard(new Coordinates(cell.x() + dx, cell.y() + dy)) != null) {
-                                    neighborPlacementIndexes.add(field.getPlacedCard(new Coordinates(cell.x() + dx, cell.y() + dy)).placementIndex());
+                                    neighborPlacementIndexes.add(
+                                            field.getPlacedCard(
+                                                    new Coordinates(cell.x() + dx, cell.y() + dy)).placementIndex());
                                 } else { neighborPlacementIndexes.add(0); }
                             }
                         }
 
-                        printCard(card.card(), h, rowPrinterIndex, isStarter, card.flipped(), true, card.placementIndex(), neighborPlacementIndexes);
+                        printRow(card.card(), h, rowPrinterIndex, isStarter, card.flipped(), true, card.placementIndex(), neighborPlacementIndexes);
                     }
                 }
                 System.out.print("\n");
             }
         }
-
         printPlayerResources();
     }
 
@@ -179,7 +180,7 @@ public class GamePrinter {
                         cornerIndex = rawPrinterIndex;
                     }
                     card = playableCard;
-                    printCard(card, cornerIndex, rawPrinterIndex, false, rawPrinterIndex > 3, false, 0, null);
+                    printRow(card, cornerIndex, rawPrinterIndex, false, rawPrinterIndex > 3, false, 0, null);
                     System.out.print("   ");
                 }
             }
@@ -216,12 +217,12 @@ public class GamePrinter {
                 } else {
                     card = board.getResourceDeck().getCards().getFirst();
                 }
-                printCard(card, cornerIndex + 4, boardRowPrinterIndex + 4, false, true, false, 0, null);
+                printRow(card, cornerIndex + 4, boardRowPrinterIndex + 4, false, true, false, 0, null);
                 System.out.print("   ");
 
                 for (PlayableCard playableCard : visibleCards.subList(min, max)) {
                     card = playableCard;
-                    printCard(card, cornerIndex, boardRowPrinterIndex, false, false, false, 0, null);
+                    printRow(card, cornerIndex, boardRowPrinterIndex, false, false, false, 0, null);
                     System.out.print("   ");
                 }
             }
@@ -291,7 +292,7 @@ public class GamePrinter {
         }
     }
 
-    private void printCard(PlayableCard card, int cornerIndex, int j, boolean starter, boolean flipped, boolean onField, int placementIndex, List<Integer> neighborPlacementIndexes) {
+    private void printRow(PlayableCard card, int cornerIndex, int j, boolean starter, boolean flipped, boolean onField, int placementIndex, List<Integer> neighborPlacementIndexes) {
         String leftCorner = null, rightCorner = null, cardColor;
         List<Corner> corners;
 
@@ -319,24 +320,31 @@ public class GamePrinter {
 
         if(flipped && starter) {
             if(j == 0) {
-                System.out.print(cardColor + leftCorner + getSymbolName(card.getBackResources().getFirst()));
-                if(card.getBackResources().size()>1) {
-                    System.out.print(cardColor + getSymbolName(card.getBackResources().get(1)));
+                if(card.getBackResources().size() <= 2) {
+                    System.out.print(cardColor + leftCorner + " " + getSymbolName(card.getBackResources().getFirst()) + " ");
                 } else {
-                    System.out.print(cardColor + " ");
+                    System.out.print(cardColor + leftCorner + getSymbolName(card.getBackResources().getFirst()));
+                    System.out.print(cardColor + getSymbolName(card.getBackResources().get(1)));
+                    System.out.print(cardColor + getSymbolName(card.getBackResources().get(2)));
                 }
                 System.out.print(rightCorner + RESET);
             } else if(j == 1) {
-                if(card.getBackResources().size()>2) {
-                    System.out.print(cardColor + leftCorner + getSymbolName(card.getBackResources().get(2)) + " ");
+                if(card.getBackResources().size() == 4) {
+                    System.out.print(cardColor + leftCorner + " " + getSymbolName(card.getBackResources().get(3)) + " ");
+                } else if(card.getBackResources().size() == 2) {
+                    System.out.print(cardColor + leftCorner + " " + getSymbolName(card.getBackResources().get(1)) + " ");
                 } else {
-                    System.out.print(cardColor + leftCorner + "  ");
+                    System.out.print(cardColor + leftCorner + "   ");
                 }
                 System.out.print(cardColor + rightCorner + RESET);
             }
         } else {
             if(onField) {
-                System.out.print(cardColor + leftCorner + "  " + rightCorner + RESET);
+                if(flipped) {
+                    String backResource = getSymbolName(card.getBackResources().getFirst());
+                    System.out.print(cardColor + leftCorner + " " + (j == 0 ? StarterCard + backResource : " ")
+                            + cardColor + " " + cardColor + rightCorner + RESET);
+                } else { System.out.print(cardColor + leftCorner + "   " + rightCorner + RESET); }
             } else {
                 printCardInHand(card, flipped, cardColor, leftCorner, rightCorner, j);
             }

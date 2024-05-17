@@ -90,8 +90,8 @@ public class Board {
         }
     }
 
-    public BoardView getView(Board board){
-        return new BoardView(board);
+    public BoardView getView(){
+        return new BoardView(this);
     }
 
 }
