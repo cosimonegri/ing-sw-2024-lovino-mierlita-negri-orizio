@@ -7,20 +7,37 @@ import it.polimi.ingsw.view.TUI;
 import it.polimi.ingsw.view.View;
 
 public class AppClient {
+    private static final String IPV4_PATTERN = "^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\\.(?!$)|$)){4}$";
+    private View view;
+    private String connection;
+    private String ip;
 
+    private void parseArgs(String[] args) {
+        // parse connection
+
+
+
+    }
     public static void main(String[] args) {
-        if (args.length == 0) {
-            System.err.println("Command line argument for the network protocol not found");
-            return;
-        }
+        String connection = "SOCKET";
+        View view = new GUI();
+        String ip = "127.0.0.1";
 
-        try {
-            String connection = args[0].toUpperCase();
-            View view = new GUI();
-            Client client = new Client(view, ConnectionType.valueOf(connection));
-            client.run();
-        } catch (IllegalArgumentException e) {
-            System.err.println("The chosen network protocol doesn't exists");
+        for (int i = 0; i < args.length - 1; i++) {
+            switch (args[i]) {
+                // connection type, default socket
+                case "-n" -> connection = args[i + 1].equalsIgnoreCase("RMI") ? "RMI" : "SOCKET";
+                // user interface, default gui
+                case "-i" -> view = args[i + 1].equalsIgnoreCase("TUI") ? new TUI() : new GUI();
+                // ip, default localhost
+                case "-h" -> ip = args[i + 1].matches(IPV4_PATTERN) ? args[i + 1] : "127.0.0.1";
+            }
         }
+//        System.out.println("Connection: " + connection);
+//        System.out.println("View: " + view.getClass());
+//        System.out.println("Ip: " + ip);
+        Client client = new Client(view, ConnectionType.valueOf(connection));
+        client.run();
+
     }
 }
