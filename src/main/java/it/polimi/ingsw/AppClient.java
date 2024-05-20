@@ -4,7 +4,7 @@ import it.polimi.ingsw.network.ConnectionType;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.utilities.Config;
 import it.polimi.ingsw.view.GUI;
-import it.polimi.ingsw.view.TUI;
+import it.polimi.ingsw.view.tui.TUI;
 import it.polimi.ingsw.view.View;
 
 public class AppClient {

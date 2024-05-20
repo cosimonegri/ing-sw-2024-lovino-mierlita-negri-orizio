@@ -138,6 +138,44 @@ public class Field {
     }
 
     /**
+     * @return the top-left coordinates of the used portion of the field, including the cells in which
+     * the player could place a card
+     */
+    public Coordinates getTopLeftBound() {
+        int leftX = size() - 1;
+        int topY = 0;
+        for (int x = 0; x < size(); x++) {
+            for (int y = 0; y < size(); y++) {
+                if (getPlacedCard(new Coordinates(x, y)) == null) {
+                    continue;
+                }
+                leftX = Math.min(leftX, x);
+                topY = Math.max(topY, y);
+            }
+        }
+        return new Coordinates(Math.max(leftX - 1, 0), Math.min(topY + 1, size() - 1));
+    }
+
+    /**
+     * @return the bottom-right coordinates of the used portion of the field, including the cells in which
+     * the player could place a card
+     */
+    public Coordinates getBottomRightBound() {
+        int rightX = 0;
+        int bottomY = size() - 1;
+        for (int x = 0; x < size(); x++) {
+            for (int y = 0; y < size(); y++) {
+                if (getPlacedCard(new Coordinates(x, y)) == null) {
+                    continue;
+                }
+                rightX = Math.max(rightX, x);
+                bottomY = Math.min(bottomY, y);
+            }
+        }
+        return new Coordinates(Math.min(rightX + 1, size()), Math.max(bottomY - 1, 0));
+    }
+
+    /**
      * @param x x coordinate
      * @param y y coordinate
      * @return whether the coordinates are out of bound

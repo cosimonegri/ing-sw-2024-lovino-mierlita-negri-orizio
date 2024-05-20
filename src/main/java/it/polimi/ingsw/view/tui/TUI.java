@@ -1,7 +1,6 @@
-package it.polimi.ingsw.view;
+package it.polimi.ingsw.view.tui;
 
 import it.polimi.ingsw.model.player.Marker;
-import it.polimi.ingsw.network.message.GameEndedMessage;
 import it.polimi.ingsw.network.message.clienttoserver.UsernameMessage;
 import it.polimi.ingsw.network.message.clienttoserver.gamecontroller.ChooseMarkerMessage;
 import it.polimi.ingsw.network.message.clienttoserver.gamecontroller.PlayStarterMessage;
@@ -9,6 +8,7 @@ import it.polimi.ingsw.network.message.clienttoserver.maincontroller.JoinGameMes
 import it.polimi.ingsw.network.message.clienttoserver.maincontroller.CreateGameMessage;
 import it.polimi.ingsw.network.message.servertoclient.*;
 import it.polimi.ingsw.utilities.Printer;
+import it.polimi.ingsw.view.View;
 
 import java.util.InputMismatchException;
 import java.util.List;
