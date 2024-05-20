@@ -34,6 +34,15 @@ public class GameView implements Serializable {
         return Collections.unmodifiableList(this.players);
     }
 
+    public PlayerView getPlayer(String username) {
+        for (PlayerView p : this.players) {
+            if (p.getUsername().equals(username)) {
+                return p;
+            }
+        }
+        return null;
+    }
+
     public PlayerView getCurrentPlayer() {
         return currentPlayer;
     }

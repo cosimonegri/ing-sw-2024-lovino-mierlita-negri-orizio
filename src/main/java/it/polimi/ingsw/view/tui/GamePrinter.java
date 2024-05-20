@@ -5,10 +5,7 @@ import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.model.deck.card.objectivecard.SymbolsObjectiveCard;
 import it.polimi.ingsw.model.deck.card.objectivecard.VerticalPatternObjectiveCard;
 import it.polimi.ingsw.model.deck.card.playablecard.*;
-import it.polimi.ingsw.model.deck.card.playablecard.corner.Corner;
-import it.polimi.ingsw.model.deck.card.playablecard.corner.Item;
-import it.polimi.ingsw.model.deck.card.playablecard.corner.Resource;
-import it.polimi.ingsw.model.deck.card.playablecard.corner.Symbol;
+import it.polimi.ingsw.model.deck.card.playablecard.corner.*;
 import it.polimi.ingsw.model.player.Coordinates;
 import it.polimi.ingsw.model.player.PlacedCard;
 import it.polimi.ingsw.modelView.BoardView;
@@ -38,8 +35,10 @@ public class GamePrinter {
     private static final String StarterCard = Printer.WHITE_BACKGROUND;
 
     /**
+     * Print the cards in a field and an incremental integer in the cells where the player could place a card
+     *
      * @param field field to print
-     * @return an object that maps an integer to a coordinate where a card could be played
+     * @return an object that maps an integer to the coordinates where a card can be played
      */
     public static Map<Integer, Coordinates> printField(FieldView field) {
         Coordinates topLeftCoords = field.getTopLeftBound();
@@ -96,12 +95,19 @@ public class GamePrinter {
     }
 
     /**
+     * @param card card to print
+     * @param flipped false to show the front of the card, true to show its back
+     */
+    public static void printCard(PlayableCard card, boolean flipped) {
+        printHand(Collections.singletonList(card), flipped);
+    }
+
+    /**
      * Prints a list of cards, a player hand
      * @param cards list of cards
      * @param flipped false to show the owning player's hand, true to show an oppenent's hand, thus only the back of the cards
      */
     public static void printHand(List<PlayableCard> cards, boolean flipped) {
-        System.out.print("\n");
         int startingIndex, endingIndex;
         if(flipped) {
             startingIndex = 4;
@@ -116,24 +122,26 @@ public class GamePrinter {
                 if (rawPrinterIndex % 2 == 0 && rawPrinterIndex != 0) {
                     cornerIndex = rawPrinterIndex;
                 }
-                printRow(card, cornerIndex, rawPrinterIndex, rawPrinterIndex > 3, false, 0, null);
+                printRow(card, cornerIndex, rawPrinterIndex, flipped, false, 0, null);
                 System.out.print("   ");
             }
             System.out.print("\n");
         }
-        System.out.print("\n");
     }
 
-    public static void printObjectives(List<ObjectiveCard> objectives) {
-        for (ObjectiveCard objective : objectives) {
-            switch (objective) {
-                case SymbolsObjectiveCard symbolsObjectiveCard ->
-                        printSymbolsObjective(symbolsObjectiveCard);
-                case DiagonalPatternObjectiveCard diagonalPatternObjectiveCard ->
-                        printDiagonalObjective(diagonalPatternObjectiveCard);
-                case VerticalPatternObjectiveCard verticalPatternObjectiveCard ->
-                        printVerticalObjective(verticalPatternObjectiveCard);
-                default -> { }
+    public static String getObjectiveDescription(ObjectiveCard objective) {
+        switch (objective) {
+            case SymbolsObjectiveCard symbolsObjectiveCard -> {
+                return getSymbolsObjectiveDescr(symbolsObjectiveCard);
+            }
+            case DiagonalPatternObjectiveCard diagonalPatternObjectiveCard -> {
+                return getDiagonalObjectiveDescr(diagonalPatternObjectiveCard);
+            }
+            case VerticalPatternObjectiveCard verticalPatternObjectiveCard -> {
+                return getVerticalObjectiveDescr(verticalPatternObjectiveCard);
+            }
+            default -> {
+                return "";
             }
         }
     }
@@ -213,7 +221,7 @@ public class GamePrinter {
     }
 
     private static String assignCorner(String cardColor, Corner corner, int cornerIndex, boolean onField, boolean isLeft, int placementIndex, List<Integer> neighborPlacementIndexes) {
-        if (corner.type().name().equalsIgnoreCase("visible")) {
+        if (corner.type() == CornerType.VISIBLE) {
             if (onField) {
                 if(isLeft) {
                     if(neighborPlacementIndexes != null && neighborPlacementIndexes.get(cornerIndex) > placementIndex) {
@@ -257,8 +265,7 @@ public class GamePrinter {
             }
         }
 
-        if(card.isStarter()) { cardColor = StarterCard; }
-        else { cardColor = getCardColor(card.getColor()); }
+        cardColor = getCardColor(card.getColor());
 
         if((rowPrinterIndex != 1 && rowPrinterIndex != 5) || onField) {
             leftCorner = assignCorner(cardColor, corners.get(cornerIndex), cornerIndex, onField, true, placementIndex, neighborPlacementIndexes);
@@ -346,16 +353,26 @@ public class GamePrinter {
     }
 
     private static String getCardColor(Resource resource) {
-        if ("FUNGI".equalsIgnoreCase(resource.name())) {
-            return FungiCard;
-        } else if ("ANIMAL".equalsIgnoreCase(resource.name())) {
-            return AnimalCard;
-        } else if ("INSECT".equalsIgnoreCase(resource.name())) {
-            return InsectCard;
-        } else if ("PLANT".equalsIgnoreCase(resource.name())) {
-            return PlantCard;
+        if (resource == null) {
+            return StarterCard;
         }
-        return StarterCard;
+        switch (resource) {
+            case Resource.FUNGI -> {
+                return FungiCard;
+            }
+            case Resource.ANIMAL -> {
+                return AnimalCard;
+            }
+            case Resource.INSECT -> {
+                return InsectCard;
+            }
+            case Resource.PLANT -> {
+                return PlantCard;
+            }
+            default -> {
+                return StarterCard;
+            }
+        }
     }
 
     private static String getGoldCost(GoldCard goldCard) {
@@ -373,41 +390,31 @@ public class GamePrinter {
         return RESET + Printer.YELLOW_BACKGROUND_BRIGHT + Printer.BLACK + "$" + placeHolder + costList + Printer.YELLOW_BACKGROUND_BRIGHT + Printer.BLACK + "$";
     }
 
-    private static void printSymbolsObjective(SymbolsObjectiveCard objectiveCard) {
-        System.out.print("Objective: " + objectiveCard.getPoints() + " points for each set of: ");
-
-        for(Resource resource : Resource.values()) {
-            if(objectiveCard.getSymbols().containsKey(resource)) {
-                System.out.print(objectiveCard.getSymbols().get(resource) + " " + resource.name() + " ");
+    private static String getSymbolsObjectiveDescr(SymbolsObjectiveCard card) {
+        StringBuilder stb = new StringBuilder();
+        stb.append(card.getPoints()).append(" points for each set of ");
+        int last = card.getSymbols().size() - 1;
+        int i = 0;
+        for (Symbol symbol : card.getSymbols().keySet()) {
+            stb.append(card.getSymbols().get(symbol)).append(" ").append(symbol.toString());
+            if (i != last) {
+                stb.append(", ");
             }
+            i++;
         }
-
-        for(Item item : Item.values()) {
-            if(objectiveCard.getSymbols().containsKey(item)) {
-                System.out.print(objectiveCard.getSymbols().get(item) + " " + item.name() + " ");
-            }
-        }
-
-        System.out.print("\n");
+        return stb.toString();
     }
 
-    private static void printDiagonalObjective(DiagonalPatternObjectiveCard objectiveCard) {
-        System.out.print("Objective: " + objectiveCard.getPoints() + " points for each pattern of: 3 ");
-
-        if(!objectiveCard.getMainDiagonal()) {
-            System.out.print(objectiveCard.getColor().name() + " from top left to bottom right ");
-        } else {
-            System.out.print(objectiveCard.getColor().name() + " from bottom left to top right ");
-        }
-
-        System.out.print("\n");
+    private static String getDiagonalObjectiveDescr(DiagonalPatternObjectiveCard card) {
+        return card.getPoints() + " points for each pattern of 3 " + card.getColor().toString() + " cards " +
+                (card.getMainDiagonal() ? "from bottom-left to top-right" : "from top-left to bottom-right");
     }
 
-    private static void printVerticalObjective(VerticalPatternObjectiveCard objectiveCard) {
-        System.out.print("Objective: " + objectiveCard.getPoints() + " points for each pattern of: 2 vertical "
-                        + objectiveCard.getMainColor().name()
-                        + " and 1 " + objectiveCard.getThirdCardColor().name() + " on the "
-                        + objectiveCard.getThirdCardPos().name() + " corner of the column\n");
+    private static String getVerticalObjectiveDescr(VerticalPatternObjectiveCard card) {
+        return card.getPoints() + " points for each pattern of 2 vertical "
+                + card.getMainColor().toString() + " cards and 1 "
+                + card.getThirdCardColor().toString() + " card on the "
+                + card.getThirdCardPos().toString() + " corner of the column";
     }
 
 //    private int makeChoice(int max){

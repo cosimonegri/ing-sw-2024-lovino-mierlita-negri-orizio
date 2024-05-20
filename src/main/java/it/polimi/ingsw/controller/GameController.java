@@ -8,13 +8,12 @@ import it.polimi.ingsw.model.GamePhase;
 import it.polimi.ingsw.exceptions.LobbyFullException;
 import it.polimi.ingsw.model.TurnPhase;
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
+import it.polimi.ingsw.model.deck.card.playablecard.GoldCard;
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
 import it.polimi.ingsw.model.player.Coordinates;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.Marker;
-import it.polimi.ingsw.network.message.GameEndedMessage;
-import it.polimi.ingsw.network.message.servertoclient.DisconnectMessage;
-import it.polimi.ingsw.network.message.servertoclient.LobbyMessage;
+import it.polimi.ingsw.modelView.GameView;
 import it.polimi.ingsw.network.message.servertoclient.ServerToClientMessage;
 
 import java.util.Arrays;
@@ -69,10 +68,6 @@ public class GameController {
             return;
         }
         model.assignMarker(username, marker);
-        if (isGameSetupFinished()) {
-            model.setGamePhase(GamePhase.MAIN);
-            model.setTurnPhase(TurnPhase.PLAY);
-        }
     }
 
     synchronized public void playStarter(String username, boolean flipped) {
@@ -81,10 +76,6 @@ public class GameController {
             return;
         }
         player.getField().addStarter(player.getStarterCard(), flipped);
-        if (isGameSetupFinished()) {
-            model.setGamePhase(GamePhase.MAIN);
-            model.setTurnPhase(TurnPhase.PLAY);
-        }
     }
 
     synchronized public void chooseObjective(String username, ObjectiveCard objective) {
@@ -109,8 +100,10 @@ public class GameController {
         }
         model.getCurrentPlayer().getField().addCard(card, flipped, coords);
         model.getCurrentPlayer().removeFromHand(card);
-        //todo think about getTotalPoints()
-        model.getCurrentPlayer().increaseScore(card.getPoints());
+        model.getCurrentPlayer().increaseScore(card instanceof GoldCard c
+                ? c.getTotalPoints(model.getCurrentPlayer().getField())
+                : card.getPoints()
+        );
         model.setTurnPhase(TurnPhase.DRAW);
     }
 
@@ -174,5 +167,9 @@ public class GameController {
 
     private boolean hasChosenObjective(Player player) {
         return player.getObjCard() != null;
+    }
+
+    public GameView getModelView() {
+        return model.getView();
     }
 }

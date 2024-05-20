@@ -5,6 +5,7 @@ import it.polimi.ingsw.exceptions.MarkerNotValidException;
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.model.player.Marker;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.modelView.GameView;
 import it.polimi.ingsw.network.message.servertoclient.ServerToClientMessage;
 
 import java.io.IOException;
@@ -55,11 +56,11 @@ public class Game {
      */
     private final Set<Marker> markers;
 
+    //todo handle illlegal players count in controller
     /**
      * Constructor of the class
      *
      * @param playersCount the number of players wanted for the match
-     * @throws IllegalArgumentException when playersCount has not a legal value
      */
     public Game(int playersCount) throws CannotCreateGameException {
         this.playersCount = playersCount;
@@ -246,5 +247,9 @@ public class Game {
         for(int i=0; i<2; i++){
             this.objectives.add(this.board.getObjectiveDeck().draw());
         }
+    }
+
+    public GameView getView() {
+        return new GameView(this);
     }
 }
