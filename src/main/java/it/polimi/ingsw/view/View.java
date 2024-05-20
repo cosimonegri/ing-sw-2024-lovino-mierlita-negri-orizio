@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view;
 
+import it.polimi.ingsw.modelView.GameView;
 import it.polimi.ingsw.network.message.clienttoserver.ClientToServerMessage;
 import it.polimi.ingsw.network.message.servertoclient.ServerToClientMessage;
 
@@ -12,6 +13,7 @@ public abstract class View {
     private final List<ViewListener> listeners;
     private final Queue<ServerToClientMessage> messages;
     protected String username;
+    protected GameView gameView;
 
     public View() {
         this.listeners = new ArrayList<>();

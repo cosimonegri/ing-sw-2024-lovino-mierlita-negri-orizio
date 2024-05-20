@@ -1,27 +1,21 @@
-package it.polimi.ingsw.network.message;
+package it.polimi.ingsw.network.message.clienttoserver.gamecontroller;
 
+import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
 import it.polimi.ingsw.model.player.Coordinates;
 
-public class PlayCardMessage implements Message{
-
-    private final String username;
-
+public class PlayCardMessage extends GameControllerMessage {
     private final PlayableCard card;
 
     private final boolean flipped;
 
     private final Coordinates coords;
 
-    public PlayCardMessage(String username, PlayableCard card, boolean flipped, Coordinates coords){
-        this.username = username;
+    public PlayCardMessage (String username, PlayableCard card, boolean flipped, Coordinates coords) {
+        super(username);
         this.card = card;
         this.flipped = flipped;
         this.coords = coords;
-    }
-
-    public String getUsername() {
-        return username;
     }
 
     public PlayableCard getCard() {
@@ -34,5 +28,10 @@ public class PlayCardMessage implements Message{
 
     public Coordinates getCoords() {
         return coords;
+    }
+
+    @Override
+    public void execute(GameController controller) {
+        controller.playCard(this.getUsername(), this.card, this.flipped, this.coords);
     }
 }

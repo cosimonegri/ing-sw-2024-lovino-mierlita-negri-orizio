@@ -90,6 +90,7 @@ public class GameController {
         }
     }
 
+    // todo error if: coordinates not correct, card not in hand, not enough resources for gold card
     synchronized public void playCard(String username, PlayableCard card, boolean flipped, Coordinates coords) {
         if (model.getGamePhase() != GamePhase.MAIN ||
                 model.getTurnPhase() != TurnPhase.PLAY ||
@@ -107,6 +108,7 @@ public class GameController {
         model.setTurnPhase(TurnPhase.DRAW);
     }
 
+    // todo error if: card not visible
     synchronized public void drawCard(String username, DrawType type, PlayableCard card) {
         if (model.getGamePhase() != GamePhase.MAIN || model.getTurnPhase() != TurnPhase.DRAW || !isCurrentPlayer(username)) {
             return;
