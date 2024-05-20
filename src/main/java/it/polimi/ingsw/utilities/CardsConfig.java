@@ -23,9 +23,9 @@ import java.util.Map;
  */
 public class CardsConfig {
     private static final int FIRST_CARD_ID = 1;
-    private static final int FIRST_RESOURCE_ID = 41;
-    private static final int FIRST_OBJECTIVE_ID = 81;
-    private static final int FIRST_STARTER_ID = 97;
+    private static final int FIRST_GOLD_ID = 41;
+    private static final int FIRST_STARTER_ID = 81;
+    private static final int FIRST_OBJECTIVE_ID = 87;
     private static final int LAST_CARD_ID = 102;
 
     private static final String GOLD_PATH = "src/main/resources/cards/GoldCards.json";
@@ -126,16 +126,16 @@ public class CardsConfig {
         if (id < FIRST_CARD_ID || id > LAST_CARD_ID) {
             throw new IllegalArgumentException("The card id should be included between 1 and 102");
         }
-        if (id >= FIRST_STARTER_ID) {
-            return this.starterCards.get(id - FIRST_STARTER_ID);
-        }
         if (id >= FIRST_OBJECTIVE_ID) {
             return this.objectiveCards.get(id - FIRST_OBJECTIVE_ID);
         }
-        if (id >= FIRST_RESOURCE_ID) {
-            return this.resourceCards.get(id - FIRST_RESOURCE_ID);
+        if (id >= FIRST_STARTER_ID) {
+            return this.starterCards.get(id - FIRST_STARTER_ID);
         }
-        return this.goldCards.get(id - FIRST_CARD_ID);
+        if (id >= FIRST_GOLD_ID) {
+            return this.goldCards.get(id - FIRST_GOLD_ID);
+        }
+        return this.resourceCards.get(id - FIRST_CARD_ID);
     }
 
     /**

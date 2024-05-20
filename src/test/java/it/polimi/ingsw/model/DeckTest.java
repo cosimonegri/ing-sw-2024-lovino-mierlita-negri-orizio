@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.deck.Deck;
-import it.polimi.ingsw.model.deck.card.Card;
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
 import it.polimi.ingsw.utilities.CardsConfig;
 import org.junit.jupiter.api.BeforeEach;

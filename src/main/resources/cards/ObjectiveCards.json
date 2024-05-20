@@ -1,13 +1,81 @@
-[{
-  "id": 81,
-  "points": 2,
-  "type": "symbols",
-  "symbols": {
-    "fungi": 3
-  }
-},
+[
   {
-    "id": 82,
+    "id" : 87,
+    "points": 2,
+    "color" : "fungi",
+    "type": "diagonal",
+    "main-diagonal" : 1
+  },
+  {
+    "id" : 88,
+    "points": 2,
+    "color" : "plant",
+    "type": "diagonal",
+    "main-diagonal" : 0
+  },
+  {
+    "id" : 89,
+    "points": 2,
+    "color" : "animal",
+    "type": "diagonal",
+    "main-diagonal" : 1
+  },
+  {
+    "id" : 90,
+    "points": 2,
+    "color" : "insect",
+    "type": "diagonal",
+    "main-diagonal" : 0
+  },
+
+
+
+  {
+    "id" : 91,
+    "points": 3,
+    "type": "vertical",
+    "main-color": "fungi",
+    "thirdCard-color": "plant",
+    "thirdCard-position": "bottom-right"
+  },
+  {
+    "id" : 92,
+    "points": 3,
+    "type": "vertical",
+    "main-color": "plant",
+    "thirdCard-color": "insect",
+    "thirdCard-position": "bottom-left"
+  },
+  {
+    "id" : 93,
+    "points": 3,
+    "type": "vertical",
+    "main-color": "animal",
+    "thirdCard-color": "fungi",
+    "thirdCard-position":"top-right"
+
+  },
+  {
+    "id" : 94,
+    "points": 3,
+    "type": "vertical",
+    "main-color":"insect",
+    "thirdCard-color": "animal",
+    "thirdCard-position": "top-left"
+  },
+
+
+
+  {
+    "id": 95,
+    "points": 2,
+    "type": "symbols",
+    "symbols": {
+      "fungi": 3
+    }
+  },
+  {
+    "id": 96,
     "points": 2,
     "type": "symbols",
     "symbols": {
@@ -15,7 +83,7 @@
     }
   },
   {
-    "id" : 83,
+    "id" : 97,
     "points": 2,
     "type": "symbols",
     "symbols": {
@@ -23,15 +91,18 @@
     }
   },
   {
-    "id": 84,
+    "id": 98,
     "points": 2,
     "type": "symbols",
     "symbols": {
       "insect": 3
     }
   },
+
+
+
   {
-    "id": 85,
+    "id": 99,
     "points": 3,
     "type": "symbols",
     "symbols": {
@@ -41,15 +112,15 @@
     }
   },
   {
-    "id": 86,
+    "id" : 100,
     "points": 2,
     "type": "symbols",
     "symbols": {
-      "quill": 2
+      "manuscript": 2
     }
   },
   {
-    "id": 87,
+    "id": 101,
     "points": 2,
     "type": "symbols",
     "symbols": {
@@ -57,73 +128,11 @@
     }
   },
   {
-    "id" : 88,
+    "id": 102,
     "points": 2,
     "type": "symbols",
     "symbols": {
-      "manuscript": 2
+      "quill": 2
     }
-  },
-
-  {
-    "id" : 89,
-    "points": 2,
-    "color" : "fungi",
-    "type": "diagonal",
-    "main-diagonal" : 1
-  },
-  {
-    "id" : 90,
-    "points": 2,
-    "color" : "plant",
-    "type": "diagonal",
-    "main-diagonal" : 0
-
-  },
-  {
-    "id" : 91,
-    "points": 2,
-    "color" : "animal",
-    "type": "diagonal",
-    "main-diagonal" : 1
-  },
-  {
-    "id" : 92,
-    "points": 2,
-    "color" : "insect",
-    "type": "diagonal",
-    "main-diagonal" : 0
-  },{
-  "id" : 93,
-  "points": 3,
-  "type": "vertical",
-  "main-color": "fungi",
-  "thirdCard-color": "plant",
-  "thirdCard-position": "bottom-right"
-},
-  {
-    "id" : 94,
-    "points": 3,
-    "type": "vertical",
-    "main-color": "plant",
-    "thirdCard-color": "insect",
-    "thirdCard-position": "bottom-left"
-  },
-  {
-    "id" : 95,
-    "points": 3,
-    "type": "vertical",
-    "main-color": "animal",
-    "thirdCard-color": "fungi",
-    "thirdCard-position":"top-right"
-
-  },
-  {
-    "id" : 96,
-    "points": 3,
-    "type": "vertical",
-    "main-color":"insect",
-    "thirdCard-color": "animal",
-    "thirdCard-position": "top-left"
   }
 ]
