@@ -33,6 +33,7 @@ public class Deck<T extends Card> {
         return cards.removeLast();
     }
 
+    //todo maybe replace this with a getTop
     public List<T> getCards() {
         return Collections.unmodifiableList(cards);
     }

@@ -8,7 +8,6 @@ import it.polimi.ingsw.modelView.BoardView;
 import it.polimi.ingsw.utilities.CardsConfig;
 
 import java.io.IOException;
-import java.io.Serializable;
 
 /**
  * Board class contains the four different type of decks and the visible cards that players can take from the terrain

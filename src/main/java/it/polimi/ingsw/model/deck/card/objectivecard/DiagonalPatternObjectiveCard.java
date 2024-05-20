@@ -2,8 +2,6 @@ package it.polimi.ingsw.model.deck.card.objectivecard;
 
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Resource;
 import it.polimi.ingsw.model.player.Field;
-import it.polimi.ingsw.modelView.cardView.ObjectiveCardView.DiagonalPatternObjectiveCardView;
-import it.polimi.ingsw.modelView.cardView.ObjectiveCardView.ObjectiveCardView;
 
 /**
  * Class that represents the objective cards that need a diagonal pattern of cards to be completed
@@ -52,13 +50,4 @@ public class DiagonalPatternObjectiveCard extends ObjectiveCard {
     public Resource getColor() { return this.color; }
 
     public boolean getMainDiagonal() { return this.mainDiagonal; }
-
-    @Override
-    public DiagonalPatternObjectiveCardView getView() {
-        return new DiagonalPatternObjectiveCardView(this);
-    }
-
-
-
-
 }

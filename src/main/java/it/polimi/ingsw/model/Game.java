@@ -5,7 +5,6 @@ import it.polimi.ingsw.exceptions.MarkerNotValidException;
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.model.player.Marker;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.network.message.GameEndedMessage;
 import it.polimi.ingsw.network.message.servertoclient.ServerToClientMessage;
 
 import java.io.IOException;

@@ -2,7 +2,6 @@ package it.polimi.ingsw.model.deck.card.objectivecard;
 
 import it.polimi.ingsw.model.deck.card.Card;
 import it.polimi.ingsw.model.player.Field;
-import it.polimi.ingsw.modelView.cardView.ObjectiveCardView.ObjectiveCardView;
 
 public abstract class ObjectiveCard extends Card {
 
@@ -24,5 +23,4 @@ public abstract class ObjectiveCard extends Card {
      * @return the points of the card multiplied by the times the objective has been completed
      */
     public abstract int getTotalPoints(Field field);
-    public abstract ObjectiveCardView getView();
 }

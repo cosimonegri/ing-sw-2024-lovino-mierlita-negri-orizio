@@ -5,7 +5,6 @@ import it.polimi.ingsw.model.deck.card.playablecard.corner.Corner;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.CornerType;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Position;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Resource;
-import it.polimi.ingsw.modelView.cardView.PlayableCardView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -97,8 +96,5 @@ public class PlayableCard extends Card {
             return this.backResources.getFirst();
         }
         return null;
-    }
-    public PlayableCardView getView(){
-        return new PlayableCardView(this);
     }
 }

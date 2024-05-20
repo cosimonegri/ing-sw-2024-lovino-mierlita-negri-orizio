@@ -3,8 +3,6 @@ package it.polimi.ingsw.model.deck.card.playablecard;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Resource;
 import it.polimi.ingsw.model.player.Field;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Corner;
-import it.polimi.ingsw.modelView.cardView.GoldCardView;
-import it.polimi.ingsw.modelView.cardView.PlayableCardView;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -64,9 +62,4 @@ public abstract class GoldCard extends PlayableCard{
      * @param field field of the calling player
      */
     public abstract int getTotalPoints(Field field);
-
-    @Override
-    public GoldCardView getView() {
-        return new GoldCardView(this);
-    }
 }
