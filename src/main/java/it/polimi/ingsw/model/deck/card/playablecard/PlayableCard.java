@@ -78,23 +78,23 @@ public class PlayableCard extends Card {
      * @return true if the playable card is a starter card
      */
     public boolean isStarter() {
+        if (this.backResources.size() > 1) {
+            return true;
+        }
         // iterate over the back corners
         for (int i = Position.values().length; i < this.corners.size(); i++) {
             Corner corner = this.corners.get(i);
             if (corner.type() != CornerType.VISIBLE || corner.symbol() != null) {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     /**
      * @return the color (main resource) of the card if it is not a starter card, otherwise return null
      */
     public Resource getColor() {
-        if (!isStarter() && this.backResources.size() == 1) {
-            return this.backResources.getFirst();
-        }
-        return null;
+        return isStarter() ? null : this.backResources.getFirst();
     }
 }
