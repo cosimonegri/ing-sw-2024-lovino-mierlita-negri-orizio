@@ -36,4 +36,8 @@ public class Printer {
     public static void printError(String string, Exception e) {
         System.out.println(RED + string + ": " + e.getMessage() + RESET);
     }
+
+    public static void printDebug(String string) {
+        System.out.println(CYAN + string + RESET);
+    }
 }

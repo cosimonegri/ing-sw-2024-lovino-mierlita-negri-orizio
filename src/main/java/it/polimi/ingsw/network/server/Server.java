@@ -55,9 +55,6 @@ public class Server implements ServerInterface {
                         }).start();
                     case MainControllerMessage m -> new Thread(() -> {
                         m.execute(this.controller);
-                        if (message instanceof ConnectMessage) {
-                            requestPing(m.getUsername());
-                        }
                     }).start();
                     case GameControllerMessage m -> {
                         try {
@@ -115,15 +112,15 @@ public class Server implements ServerInterface {
                     this.usernameToTimer.get(username).cancel();
                     // wait some time before sending another ping request
                     usernameToTimer.wait(Config.PING_TIME_MS);
-                    requestPing(username);
+                    sendPing(username);
                 }
-            } catch (InterruptedException ignored) {
-                System.err.println("Could not find the user timer");
+            } catch (InterruptedException e) {
+                System.err.println("Cannot find timer of user " + username);
             }
         }
     }
 
-    private void requestPing(String username) {
+    public void sendPing(String username) {
         synchronized (usernameToTimer) {
             Timer timer = new Timer();
             controller.notifyListener(username, new PingRequest(username));
