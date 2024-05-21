@@ -274,6 +274,7 @@ public class GamePrinter {
         }
 
         if(flipped && card.isStarter()) {
+            if(!onField) { printCardInHand(card, true, cardColor, leftCorner, rightCorner, rowPrinterIndex); }
             if(rowPrinterIndex == 0) {
                 if(card.getBackResources().size() <= 2) {
                     System.out.print(cardColor + leftCorner + " " + getSymbolName(card.getBackResources().getFirst()) + " ");
@@ -306,18 +307,30 @@ public class GamePrinter {
         }
     }
 
-    private static void printCardInHand(PlayableCard card, boolean flipped, String cardColor, String leftCorner, String rightCorner, int j) {
+    private static void printCardInHand(PlayableCard card, boolean flipped, String cardColor, String leftCorner, String rightCorner, int rowPrinterIndex) {
         if(flipped) {
-            if(j != 1 && j != 5) {
-                System.out.print(cardColor + leftCorner + "      " + rightCorner + RESET);
+            if(rowPrinterIndex != 1 && rowPrinterIndex != 5) {
+                if(card instanceof GoldCard && (rowPrinterIndex == 3 || rowPrinterIndex == 6)) {
+                    System.out.print(cardColor + leftCorner + "  " + Printer.YELLOW_BACKGROUND_BRIGHT + Printer.BLACK + "$$" + cardColor + "  " + rightCorner + RESET);
+                } else { System.out.print(cardColor + leftCorner + "      " + rightCorner + RESET); }
             } else {
-                System.out.print(cardColor + "            " + RESET);
+                if(!card.isStarter()) { System.out.print(cardColor + "            " + RESET);
+                } else {
+                    System.out.print(cardColor + "     " + getSymbolName(card.getBackResources().getFirst()));
+                    if(card.getBackResources().size() > 1) {
+                        System.out.print(getSymbolName(card.getBackResources().get(1)));
+                    } else { System.out.print(" "); }
+                    if(card.getBackResources().size() > 2) {
+                        System.out.print(getSymbolName(card.getBackResources().get(2)));
+                    } else { System.out.print(" "); }
+                    System.out.print("    " + RESET);
+                }
             }
         } else {
-            if(j != 1 && j != 5){
+            if(rowPrinterIndex != 1 && rowPrinterIndex != 5){
                 switch (card) {
                     case SimpleGoldCard simpleGoldCard -> {
-                        if(j == 0) { System.out.print(cardColor + leftCorner + Printer.BLACK + "  " + Printer.BLACK +
+                        if(rowPrinterIndex == 0) { System.out.print(cardColor + leftCorner + Printer.BLACK + "  " + Printer.BLACK +
                                 simpleGoldCard.getPoints() + "   " + rightCorner + RESET);
                         }
                         else{
@@ -326,7 +339,7 @@ public class GamePrinter {
                     }
 
                     case CornerGoldCard cornerGoldCard -> {
-                        if(j == 0) { System.out.print(cardColor + leftCorner + Printer.BLACK + "  "
+                        if(rowPrinterIndex == 0) { System.out.print(cardColor + leftCorner + Printer.BLACK + "  "
                                 + Printer.BLACK + cornerGoldCard.getPoints() + "╔  " + rightCorner + RESET);
                         }
                         else {
@@ -335,7 +348,7 @@ public class GamePrinter {
                     }
 
                     case ItemGoldCard itemGoldCard -> {
-                        if(j == 0) { System.out.print(cardColor + leftCorner + Printer.BLACK + " "
+                        if(rowPrinterIndex == 0) { System.out.print(cardColor + leftCorner + Printer.BLACK + " "
                                 + Printer.BLACK + itemGoldCard.getPoints() + "x"
                                 + itemGoldCard.getItem().name().charAt(0) + "  " + rightCorner + RESET);
                         }
