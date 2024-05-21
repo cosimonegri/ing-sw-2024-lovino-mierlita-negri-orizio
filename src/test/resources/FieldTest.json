@@ -1,0 +1,26 @@
+[
+  {
+    "coords": {
+      "x": 40,
+      "y": 40
+    },
+    "card": 81,
+    "flipped": 0
+  },
+  {
+    "coords": {
+      "x": 39,
+      "y": 39
+    },
+    "card": 8,
+    "flipped": 0
+  },
+  {
+    "coords": {
+      "x": 38,
+      "y": 40
+    },
+    "card": 11,
+    "flipped": 0
+  }
+]

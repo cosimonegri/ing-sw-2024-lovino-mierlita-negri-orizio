@@ -42,15 +42,15 @@ public class CardsConfig {
     /**
      * Map string attribute of the JSON into a Resource
      */
-    protected final Map<String, Resource> stringToResource = new HashMap<>();
+    private final Map<String, Resource> stringToResource = new HashMap<>();
     /**
      * Map string attribute of the JSON into an Item
      */
-    protected final Map<String, Item> stringToItem = new HashMap<>();
+    private final Map<String, Item> stringToItem = new HashMap<>();
     /**
      * Map string attribute of the JSON into a Position
      */
-    protected final Map<String, Position> stringToPosition = new HashMap<>();
+    private final Map<String, Position> stringToPosition = new HashMap<>();
 
     /**
      * Constructor of the class

@@ -49,6 +49,6 @@ public class CornerGoldCard extends GoldCard {
      */
     @Override
     public int getTotalPoints(Field field) {
-        return field.numOfNeighbors(field.findCard(this.getId())) * this.getPoints();
+        return field.numOfNeighbors(field.findCard(this)) * this.getPoints();
     }
 }
