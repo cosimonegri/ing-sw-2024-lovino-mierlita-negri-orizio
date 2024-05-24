@@ -169,7 +169,7 @@ public class GameController {
         return player.getObjCard() != null;
     }
 
-    public GameView getModelView() {
+    synchronized public GameView getModelView() {
         return model.getView();
     }
 }

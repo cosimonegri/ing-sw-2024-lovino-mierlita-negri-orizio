@@ -20,7 +20,6 @@ import it.polimi.ingsw.utilities.Config;
 
 import java.rmi.RemoteException;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class Server implements ServerInterface {
     private static Server instance;
@@ -36,26 +35,12 @@ public class Server implements ServerInterface {
 
         Thread messagesThread = new Thread(() -> {
             while (true) {
-                ClientToServerMessage message = pollMessage();
-                if (message == null) {
-                    try {
-                        TimeUnit.MILLISECONDS.sleep(Config.SLEEP_TIME_MS);
-                    } catch (InterruptedException e) {
-                        System.err.println("Messages thread interrupted while sleeping");
-                        System.exit(1);
-                    }
-                    continue;
-                }
-                System.out.println("Received message: " + message.getClass() + " from " + message.getUsername());
+                ClientToServerMessage message = waitForMessage();
+                System.out.println("Received message: " + message.getClass().getSimpleName() + " from " + message.getUsername());
 
                 switch (message) {
-                    case PingResponse m ->
-                        new Thread(() -> {
-                            respondToPing(m.getUsername());
-                        }).start();
-                    case MainControllerMessage m -> new Thread(() -> {
-                        m.execute(this.controller);
-                    }).start();
+                    case PingResponse m -> new Thread(() -> respondToPing(m.getUsername())).start();
+                    case MainControllerMessage m -> m.execute(this.controller);
                     case GameControllerMessage m -> {
                         try {
                             GameController game = this.controller.getGameOfPlayer(m.getUsername());
@@ -64,9 +49,7 @@ public class Server implements ServerInterface {
                             //TODO ignore or catch exception?
                         }
                     }
-                    default -> {
-                        System.err.println("Message not valid");
-                    }
+                    default -> System.err.println("Message not valid");
                 }
             }
         });
@@ -85,6 +68,7 @@ public class Server implements ServerInterface {
         synchronized (messages) {
             if (message != null) {
                 messages.add(new ConnectMessage(message.getUsername(), client));
+                messages.notifyAll();
             }
         }
     }
@@ -94,13 +78,22 @@ public class Server implements ServerInterface {
         synchronized (messages) {
             if (message != null) {
                 messages.add(message);
+                messages.notifyAll();
             }
         }
     }
 
-    private ClientToServerMessage pollMessage() {
+    private ClientToServerMessage waitForMessage() {
         synchronized (messages) {
-            return messages.poll();
+            while (this.messages.isEmpty()) {
+                try {
+                    messages.wait();
+                } catch (InterruptedException e) {
+                    System.err.println("Interrupted while waiting for a message");
+                    System.exit(1);
+                }
+            }
+            return this.messages.poll();
         }
     }
 
