@@ -26,7 +26,7 @@ public class TUI extends View {
 
     @Override
     public void start(Stage stage) throws Exception {
-
+        throw new IllegalStateException();
     }
 
     public void run() {

@@ -9,19 +9,19 @@ import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-import java.io.File;
-import java.net.URL;
-import java.util.Stack;
-
 
 public class GUI extends View {
 
@@ -43,46 +43,12 @@ public class GUI extends View {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // create page to insert username and connect
-        StackPane root = createWelcomePage();
-        this.root = root;
-
-        // create a new scene
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add("file:src/main/resources/css/style.css");
-        primaryStage.setScene(scene);
-        primaryStage.setFullScreen(true);
-        primaryStage.setFullScreenExitHint("");
-        primaryStage.setTitle("Code Naturalis");
-
-        primaryStage.setOnCloseRequest(e -> {
-                Platform.exit();
-                System.exit(0);
-        });
-
-        primaryStage.show();
-    }
-
-    private Pane getBackgroundPane() {
-        String backgroundPath = "file:src/main/resources/images/background.jpg";
-        Image backgroundImage = new Image(backgroundPath);
-        BackgroundImage background = new BackgroundImage(backgroundImage,
-                BackgroundRepeat.NO_REPEAT,
-                BackgroundRepeat.NO_REPEAT,
-                BackgroundPosition.CENTER,
-                new BackgroundSize(1.0,
-                        BackgroundSize.AUTO, true, true, false, false));
-        // set background image
-        Pane backgroundPane = new Pane();
-        backgroundPane.setBackground(new Background(background));
-        return backgroundPane;
-    }
-
-    private StackPane createWelcomePage() {
+        // Set background
         Pane backgroundPane = getBackgroundPane();
 
         VBox vbox = new VBox();
-        vbox.setAlignment(Pos.CENTER);
+        vbox.getStyleClass().addAll("vbox", "welcome-box");
+        vbox.setOpacity(0);
 
         // welcome text
         Text welcomeText = new Text("Welcome to Code Naturalis");
@@ -90,10 +56,11 @@ public class GUI extends View {
 
         // contains the username form
         VBox connectForm = new VBox();
-        connectForm.getStyleClass().addAll("box", "form-box");
+        connectForm.getStyleClass().addAll("vbox");
+        connectForm.setOpacity(0);
 
         HBox usernameForm = new HBox();
-        usernameForm.getStyleClass().addAll("box");
+        usernameForm.getStyleClass().addAll("username-box");
 
         // form elements
         Label usernameLabel = new Label("Username: ");
@@ -106,16 +73,18 @@ public class GUI extends View {
 
         TextField usernameField = new TextField();
         usernameField.setPromptText("Enter username");
+        usernameField.getStyleClass().addAll("label");
+
 
         Button connectButton = new Button("Connect");
-        connectButton.getStyleClass().add("button");
+//        connectButton.getStyleClass().add("button");
 
         // add elements to the form
         usernameForm.setSpacing(10);
-        usernameForm.getChildren().addAll(usernameLabel, usernameField);
+        usernameForm.getChildren().addAll(usernameLabel, usernameField, connectButton);
 
         connectForm.setSpacing(10);
-        connectForm.getChildren().addAll(errorLabel, usernameForm, connectButton);
+        connectForm.getChildren().addAll(errorLabel, usernameForm);
 
         vbox.getChildren().addAll(welcomeText, connectForm);
 
@@ -124,6 +93,21 @@ public class GUI extends View {
 
         root.getChildren().addAll(backgroundPane, vbox);
         //root.getChildren().addAll(vbox);
+
+        // add transition
+        PauseTransition stageShow = new PauseTransition(Duration.seconds(2));
+        FadeTransition vboxFadeIn = fadeIn(vbox, 2);
+        PauseTransition vboxShow = new PauseTransition(Duration.seconds(1));
+        FadeTransition welcomeTextFadeIn = fadeIn(welcomeText, 2);
+        PauseTransition welcomeTestShow = new PauseTransition(Duration.seconds(1));
+        FadeTransition connectFormFadeIn = fadeIn(connectForm, 2);
+
+        stageShow.setOnFinished(e -> vboxFadeIn.play());
+        vboxFadeIn.setOnFinished(e -> vboxShow.play());
+        vboxShow.setOnFinished(e -> welcomeTextFadeIn.play());
+        welcomeTextFadeIn.setOnFinished(e -> welcomeTestShow.play());
+        welcomeTestShow.setOnFinished(e -> connectFormFadeIn.play());
+
 
         // connect button
         connectButton.setOnAction(e -> {
@@ -139,16 +123,14 @@ public class GUI extends View {
                     if (response instanceof UsernameAckMessage) {
                         Platform.runLater(() -> {
                             setUsername(username);
-                            createLobbyPage();
+                            createJoinCreateGame();
                         });
                         System.out.println("Connect successful");
                     }
                     else if (response instanceof UsernameNotValidMessage m) {
                         Printer.printError(m.getMessage());
                         Platform.runLater(() -> {
-                            errorLabel.setText(m.getMessage());
-                            errorLabel.setVisible(true);
-                            errorLabel.setManaged(true);
+                            showErrorMessage(m.getMessage(), errorLabel);
                         });
 
                     }
@@ -161,14 +143,105 @@ public class GUI extends View {
             };
             new Thread(connectTask).start();
         });
-        return root;
+
+        usernameField.setOnKeyPressed( event -> {
+            if( event.getCode() == KeyCode.ENTER) {
+                connectButton.fire();
+            }
+        } );
+
+        this.root = root;
+
+        // create a new scene
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add("file:src/main/resources/css/style.css");
+        primaryStage.setScene(scene);
+        primaryStage.setFullScreen(true);
+        primaryStage.setFullScreenExitHint("");
+        primaryStage.setTitle("Code Naturalis");
+
+        primaryStage.setOnCloseRequest(e -> {
+                Platform.exit();
+                System.exit(0);
+        });
+
+        primaryStage.setOnShown(e -> {
+            vboxFadeIn.play();
+        });
+        // disable auto focus
+        Platform.runLater(vbox::requestFocus);
+
+        // skip animation
+        EventHandler<Event> skipTransitionEvent = e -> {
+            if ((e instanceof KeyEvent && ((KeyEvent) e).getCode() == KeyCode.ENTER) ||
+            e instanceof MouseEvent && ((MouseEvent) e).isPrimaryButtonDown()) {
+                stageShow.stop();
+                vboxFadeIn.stop();
+                vbox.setOpacity(1);
+                vboxShow.stop();
+                welcomeTextFadeIn.stop();
+                welcomeText.setOpacity(1);
+                welcomeTestShow.stop();
+                connectFormFadeIn.stop();
+                connectForm.setOpacity(1);
+            }
+        };
+        scene.addEventHandler(MouseEvent.MOUSE_PRESSED, skipTransitionEvent);
+        scene.addEventHandler(KeyEvent.KEY_PRESSED, skipTransitionEvent);
+
+        primaryStage.show();
+    }
+
+    private void showErrorMessage(String message, Label errorLabel) {
+        errorLabel.setText(message);
+        errorLabel.setVisible(true);
+        errorLabel.setManaged(true);
+        PauseTransition errorShow = new PauseTransition(Duration.seconds(3));
+        FadeTransition errorFadeOut = fadeOut(errorLabel, 5);
+
+        errorShow.setOnFinished(e -> errorFadeOut.play());
+        errorFadeOut.setOnFinished(e -> {
+            errorLabel.setVisible(false);
+            errorLabel.setManaged(false);
+        });
+        errorShow.play();
+    }
+
+    private FadeTransition fadeOut(Node node, int i) {
+        FadeTransition fadeNodeOut = new FadeTransition(Duration.seconds(i), node);
+        fadeNodeOut.setFromValue(1);
+        fadeNodeOut.setToValue(0);
+        return fadeNodeOut;
+    }
+
+
+    private FadeTransition fadeIn(Node node, int sec) {
+        FadeTransition fadeNodeIn = new FadeTransition(Duration.seconds(sec), node);
+        fadeNodeIn.setFromValue(0);
+        fadeNodeIn.setToValue(1);
+        return fadeNodeIn;
+    }
+    private Pane getBackgroundPane() {
+        String backgroundPath = "file:src/main/resources/images/background.jpg";
+        backgroundPath = "file:/home/dolby/Downloads/codex-background.jpg";
+        Image backgroundImage = new Image(backgroundPath);
+        BackgroundImage background = new BackgroundImage(backgroundImage,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                new BackgroundSize(1.0,
+                        BackgroundSize.AUTO, true, true, false, false));
+        // set background image
+        Pane backgroundPane = new Pane();
+        backgroundPane.setBackground(new Background(background));
+        return backgroundPane;
     }
 
     private void setUsername(String username) {
         this.username = username;
     }
 
-    private void createLobbyPage() {
+    private void createJoinCreateGame() {
         Text lobbyText = new Text("Welcome " +  this.username);
         lobbyText.getStyleClass().addAll("text", "current-action");
 
@@ -232,7 +305,7 @@ public class GUI extends View {
 
                         if (response instanceof CreateGameAckMessage r) {
                             System.out.println("Created game with ID " + r.getGameId() + ". Waiting for players to join...");
-                            new Thread(() -> waitingPage(null)).start();
+                            new Thread(() -> createWaitingLobbyPage(null)).start();
                         } else if (response instanceof CreateGameErrorMessage) {
                             // cannot read json files in the server
                             Printer.printError("Cannot create a game. Try again later...");
@@ -271,7 +344,7 @@ public class GUI extends View {
 
                         if (response instanceof LobbyMessage r) {
                             System.out.println("Entered lobby");
-                            new Thread(() -> waitingPage(r)).start();
+                            new Thread(() -> createWaitingLobbyPage(r)).start();
                         }
                         else if (response instanceof LobbyNotValidMessage r) {
                             Printer.printError(r.getMessage());
@@ -300,7 +373,7 @@ public class GUI extends View {
         return this.username;
     }
 
-    private void waitingPage(LobbyMessage message) {
+    private void createWaitingLobbyPage(LobbyMessage message) {
         System.out.println("Waiting page");
         VBox vbox = new VBox();
         vbox.setAlignment(Pos.CENTER);
@@ -347,9 +420,5 @@ public class GUI extends View {
                 System.exit(0);
             }
         }
-    }
-
-    private void setupGame() {
-        System.exit(3);
     }
 }

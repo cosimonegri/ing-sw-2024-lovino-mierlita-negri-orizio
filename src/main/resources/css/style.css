@@ -1,17 +1,37 @@
-.text {
-    -fx-font-family: 'Arial';
-    -fx-font-size: 30;
-    -fx-fill: black;
-}
-
-.current-action {
-    -fx-font-size: 50;
+.none {
+    -fx-fill:  #7FDEFF;
+    -fx-fill: #B02E0C;
+    -fx-fill:  #688E26;
+    -fx-fill:  #8A4F7D;
+    -fx-fill:  #FFAE03;
 }
 
 .welcome-text {
     -fx-font-family: 'Arial';
-    -fx-fill: black;
+    -fx-fill: #FFAE03;
     -fx-font-size: 80;
+    -fx-opacity: 0;
+}
+
+.username-box {
+    -fx-spacing: 20px;
+    -fx-alignment: center;
+    -fx-max-width: 800px;
+    -fx-padding: 15px;
+    -fx-background-color: #8A4F7D;
+    -fx-background-radius: 15px;
+    -fx-border-radius: 15px;
+    -fx-border-color: #FFAE03;
+    -fx-border-style: solid;
+}
+
+.welcome-box {
+    -fx-spacing: 50px;
+    -fx-background-color: rgb(0,0,0,0.5);
+}
+
+.vbox {
+    -fx-alignment: center;
 }
 
 .label {
@@ -24,9 +44,33 @@
     -fx-font-size: 30;
     -fx-text-fill: black;
     -fx-background-color: red;
+    -fx-background-radius: 15px;
     -fx-padding: 15px;
     -fx-border-radius: 10px;
 }
+
+.button {
+    -fx-padding: 10px;
+    -fx-font-family: 'Arial';
+    -fx-font-size: 16;
+    -fx-background-color: #B02E0C;
+    -fx-background-radius: 15px;
+    -fx-text-fill: #FFAE03;
+}
+/*
+.text {
+    -fx-font-family: 'Arial';
+    -fx-font-size: 30;
+    -fx-fill: black;
+}
+
+.current-action {
+    -fx-font-size: 50;
+}
+
+
+
+
 
 .text-field {
     -fx-background-color: lightgray;
@@ -39,16 +83,22 @@
     -fx-spacing: 10;
 }
 
+.vbox {
+    -fx-background-color: brown;
+    -fx-border-color: white;
+}
+
 .form-box {
     -fx-background-color: gray;
     -fx-border-color: #ccc;
 }
 
-.button {
-    -fx-padding: 10px;
-    -fx-font-family: 'Arial';
-    -fx-font-size: 16;
-    -fx-background-color: lightblue;
-    -fx-text-fill: black;
+.text-field {
+    -fx-background-color: #a9a9a9 , white , white;
+    -fx-background-insets: 0 -1 -1 -1, 0 0 0 0, 0 -1 3 -1;
 }
 
+.text-field:focused {
+    -fx-background-color: #a9a9a9 , white , white;
+    -fx-background-insets: 0 -1 -1 -1, 0 0 0 0, 0 -1 3 -1;
+}
