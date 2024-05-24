@@ -113,9 +113,7 @@ public class TUI extends View {
                 break;
             case 2:
                 System.out.print("Type the ID of the game you want to join: ");
-                int gameId = this.scanner.nextInt();
-                // flush
-                this.scanner.nextLine();
+                int gameId = readInt();
                 notifyAllListeners(new JoinGameMessage(this.username, gameId));
                 break;
         }
@@ -181,21 +179,30 @@ public class TUI extends View {
         return readInt(1, options.length);
     }
 
+    private int readInt() {
+        while (true) {
+            try {
+                int choice = this.scanner.nextInt();
+                // flush
+                this.scanner.nextLine();
+                return choice;
+            } catch (InputMismatchException e) {
+                this.scanner.nextLine();
+                Printer.printError("You should type a number");
+                System.out.print("> ");
+            }
+        }
+    }
+
     private int readInt(int min, int max) {
         int choice = max + 1;
         boolean firstIter = true;
         while (choice < min || choice > max) {
             if (!firstIter) {
-                Printer.printError("Choose a number between " + min + " and " + max);
+                Printer.printError("You should type a number between " + min + " and " + max);
                 System.out.print("> ");
             }
-            try {
-                choice = this.scanner.nextInt();
-                // flush
-                this.scanner.nextLine();
-            } catch (InputMismatchException e) {
-                this.scanner.nextLine();
-            }
+            choice = readInt();
             firstIter = false;
         }
         return choice;
