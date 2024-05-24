@@ -189,14 +189,10 @@ public class GamePrinter {
     }
 
     private static void printPlayerResources(FieldView field) {
-        System.out.print("Player's resources: "
-                + "\n-Fungi: " + field.getSymbolCount(Resource.FUNGI)
-                + "\n-Animals: " + field.getSymbolCount(Resource.ANIMAL)
-                + "\n-Plant: " + field.getSymbolCount(Resource.PLANT)
-                + "\n-Insects: " + field.getSymbolCount(Resource.INSECT)
-                + "\n-Quill: " + field.getSymbolCount(Item.QUILL)
-                + "\n-Inkwell: " + field.getSymbolCount(Item.INKWELL)
-                + "\n-Manuscript: " + field.getSymbolCount(Item.MANUSCRIPT) + "\n");
+        System.out.println("Resources available:");
+        for (Symbol symbol : Symbol.values()) {
+            System.out.println(symbol.toString() + ": " + field.getSymbolCount(symbol));
+        }
     }
 
     private static String getSymbolName(Symbol symbol) {
