@@ -14,8 +14,6 @@ public class Config {
     public static final int MIN_GAME_ID = 0;
     public static final int MAX_GAME_ID = 999999;
 
-    public static final int SLEEP_TIME_MS = 200;
-
     public static final int PING_TIME_MS = 5000;
 
     public static boolean isUsernameValid(String username) {

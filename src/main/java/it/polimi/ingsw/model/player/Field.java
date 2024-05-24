@@ -7,9 +7,9 @@ import it.polimi.ingsw.model.deck.card.playablecard.GoldCard;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Position;
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.*;
-import it.polimi.ingsw.model.exceptions.CoordinatesAreNotValidException;
+import it.polimi.ingsw.exceptions.CoordinatesNotValidException;
+import it.polimi.ingsw.exceptions.NotEnoughResourcesException;
 import it.polimi.ingsw.modelView.FieldView;
-import it.polimi.ingsw.model.exceptions.NotEnoughResourcesException;
 
 /**
  * Field class to represent the placed cards of a player.
@@ -53,15 +53,16 @@ public class Field {
      * Add a card to the field.
      *
      * @param card the card to add
-     * @param flipped true if the card is placed on its back, false if it is placed on its front
+     * @param flipped true if the back side should be visible, false otherwise
      * @param coords x and y coordinates
-     * @throws CoordinatesAreNotValidException when the player cannot place a card at the given coordinates
+     * @throws CoordinatesNotValidException when the player cannot place a card at the given coordinates
+     * @throws NotEnoughResourcesException when the player doesn't have enought resource to place a gold card
      */
-    public void addCard(PlayableCard card, boolean flipped, Coordinates coords) {
+    public void addCard(PlayableCard card, boolean flipped, Coordinates coords) throws CoordinatesNotValidException, NotEnoughResourcesException {
         if (!areCoordsValid(coords.x(), coords.y())) {
-            throw new CoordinatesAreNotValidException();
+            throw new CoordinatesNotValidException();
         }
-        if (card instanceof GoldCard c && !flipped && c.hasResourcesNeeded(this)) {
+        if (card instanceof GoldCard c && !flipped && !c.hasResourcesNeeded(this)) {
             throw new NotEnoughResourcesException();
         }
         this.placedCards[coords.x()][coords.y()] = new PlacedCard(card, flipped, this.cardsCount);
@@ -69,17 +70,19 @@ public class Field {
     }
 
     /**
-     * Add the starter card in the central position of the field.
+     * Add a card in the central position of the field.
      *
-     * @param card the starter card
-     * @param flipped true if the card is placed on its back, false if it is placed on its front
+     * @param card the card to add
+     * @param flipped true if the back side should be visible, false otherwise
+     * @throws CoordinatesNotValidException when the player cannot place a card at the given coordinates
+     * @throws NotEnoughResourcesException when the player doesn't have enought resource to place a gold card
      */
-    public void addStarter(PlayableCard card, boolean flipped) {
+    public void addCentralCard(PlayableCard card, boolean flipped) throws CoordinatesNotValidException, NotEnoughResourcesException {
         addCard(card, flipped, new Coordinates(SIZE / 2, SIZE / 2));
     }
 
     /**
-     * @param coords x and y coordinates
+     * @param coords x and y coordinates; they must be valid
      * @return the placed card at the given coordinates
      */
     public PlacedCard getPlacedCard(Coordinates coords) {

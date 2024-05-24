@@ -131,7 +131,7 @@ public class Server implements ServerInterface {
                             game.notifyAllListeners(new LobbyMessage(
                                     game.getPlayers().stream().map(Player::getUsername).toList())
                             );
-                        } else if (game.getPhase() == GamePhase.END) {
+                        } else if (game.getPhase() == GamePhase.ENDED) {
                             game.notifyAllListeners(new GameEndedMessage("The game is ended"));
                         }
                     }

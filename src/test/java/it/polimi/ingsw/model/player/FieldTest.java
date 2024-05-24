@@ -3,7 +3,7 @@ package it.polimi.ingsw.model.player;
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Item;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Resource;
-import it.polimi.ingsw.model.exceptions.CoordinatesAreNotValidException;
+import it.polimi.ingsw.exceptions.CoordinatesNotValidException;
 import it.polimi.ingsw.utilities.CardsConfig;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,10 +48,10 @@ public class FieldTest {
         Coordinates coords24 = new Coordinates(39, 39);
         PlayableCard card32 = (PlayableCard) cardsConfig.getCard(32);
         Coordinates coords32 = new Coordinates(38, 38);
-        assertThrows(CoordinatesAreNotValidException.class, () -> field.addCard(card86, false, coords24));
-        field.addCard(card86, false, coords86);
-        field.addCard(card24, true, coords24);
-        field.addCard(card32, false, coords32);
+        assertThrows(CoordinatesNotValidException.class, () -> field.addCard(card86, false, coords24));
+        assertDoesNotThrow(() -> field.addCard(card86, false, coords86));
+        assertDoesNotThrow(() -> field.addCard(card24, true, coords24));
+        assertDoesNotThrow(() -> field.addCard(card32, false, coords32));
         assertEquals(3, field.getCardsCount());
         for (int x = 0; x < field.size(); x++) {
             for (int y = 0; y < field.size(); y++) {
@@ -72,7 +72,7 @@ public class FieldTest {
                 }
             }
         }
-        assertThrows(CoordinatesAreNotValidException.class, () -> field.addCard(card32, false, coords86));
+        assertThrows(CoordinatesNotValidException.class, () -> field.addCard(card32, false, coords86));
     }
 
     @Test
@@ -88,10 +88,10 @@ public class FieldTest {
         List<Coordinates> coords = field.getAllValidCoords();
         assertEquals(1, coords.size());
         assertEquals(new Coordinates(40, 40), coords.getFirst());
-        field.addCard((PlayableCard) cardsConfig.getCard(81), false, new Coordinates(40, 40));
-        field.addCard((PlayableCard) cardsConfig.getCard(8), false, new Coordinates(39, 39));
-        field.addCard((PlayableCard) cardsConfig.getCard(11), false, new Coordinates(38, 40));
-        field.addCard((PlayableCard) cardsConfig.getCard(26), true, new Coordinates(39, 41));
+        assertDoesNotThrow(() -> field.addCard((PlayableCard) cardsConfig.getCard(81), false, new Coordinates(40, 40)));
+        assertDoesNotThrow(() -> field.addCard((PlayableCard) cardsConfig.getCard(8), false, new Coordinates(39, 39)));
+        assertDoesNotThrow(() -> field.addCard((PlayableCard) cardsConfig.getCard(11), false, new Coordinates(38, 40)));
+        assertDoesNotThrow(() -> field.addCard((PlayableCard) cardsConfig.getCard(26), true, new Coordinates(39, 41)));
         // assertEquals(7, field.getAllValidCoords().size());
     }
 
@@ -104,7 +104,7 @@ public class FieldTest {
         coordsList.add(new Coordinates(81, 80));
         PlayableCard card = Mockito.mock(PlayableCard.class);
         for (Coordinates coords : coordsList) {
-            assertThrows(CoordinatesAreNotValidException.class, () -> {
+            assertThrows(CoordinatesNotValidException.class, () -> {
                 field.addCard(card, true, coords);
             });
         }
@@ -119,8 +119,8 @@ public class FieldTest {
         Coordinates coords84 = new Coordinates(40, 40);
         assertNull(field.findCard(card7));
         assertNull(field.findCard(card84));
-        field.addCard(card84, true, coords84);
-        field.addCard(card7, false, coords7);
+        assertDoesNotThrow(() -> field.addCard(card84, true, coords84));
+        assertDoesNotThrow(() -> field.addCard(card7, false, coords7));
         assertEquals(coords7, field.findCard(card7));
         assertEquals(coords84, field.findCard(card84));
     }
@@ -144,7 +144,7 @@ public class FieldTest {
         List<Coordinates> coordsList = field.getAllValidCoords();
         while (!coordsList.isEmpty()) {
             for (Coordinates coords : coordsList) {
-                field.addCard(card, true, coords);
+                assertDoesNotThrow(() -> field.addCard(card, true, coords));
             }
             coordsList = field.getAllValidCoords();
         }

@@ -5,7 +5,7 @@ import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
 import it.polimi.ingsw.model.player.Coordinates;
 import it.polimi.ingsw.model.player.Marker;
-import it.polimi.ingsw.network.message.DrawCardMessage;
+import it.polimi.ingsw.network.message.clienttoserver.gamecontroller.DrawCardMessage;
 import it.polimi.ingsw.network.message.clienttoserver.UsernameMessage;
 import it.polimi.ingsw.network.message.clienttoserver.gamecontroller.ChooseMarkerMessage;
 import it.polimi.ingsw.network.message.clienttoserver.gamecontroller.ChooseObjectiveMessage;
@@ -14,22 +14,18 @@ import it.polimi.ingsw.network.message.clienttoserver.gamecontroller.PlayStarter
 import it.polimi.ingsw.network.message.clienttoserver.maincontroller.JoinGameMessage;
 import it.polimi.ingsw.network.message.clienttoserver.maincontroller.CreateGameMessage;
 import it.polimi.ingsw.network.message.servertoclient.*;
-import it.polimi.ingsw.utilities.Config;
 import it.polimi.ingsw.utilities.Printer;
 import it.polimi.ingsw.view.View;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class TUI extends View {
     private final Scanner scanner;
     private Map<Integer, Coordinates> numToCoordinates;
-    private final Object updateLock;
 
     public TUI() {
         super();
         this.scanner = new Scanner(System.in);
-        this.updateLock = new Object();
     }
 
     public void run() {
@@ -40,16 +36,8 @@ public class TUI extends View {
 
         Thread messagesThread = new Thread(() -> {
             while (true) {
-                ServerToClientMessage message = pollMessage();
-                if (message == null) {
-                    try {
-                        TimeUnit.MILLISECONDS.sleep(Config.SLEEP_TIME_MS);
-                    } catch (InterruptedException e) {
-                        System.err.println("Messages thread interrupted while sleeping");
-                        System.exit(1);
-                    }
-                    continue;
-                }
+                ServerToClientMessage message = waitForMessage();
+
                 if (message instanceof ViewUpdateMessage m) {
                     this.gameView = m.getGameView();
                     if (this.gameView.getCurrentPlayer().getUsername().equals(this.username)) {
@@ -200,12 +188,19 @@ public class TUI extends View {
             if (response instanceof ChooseMarkerAckMessage) {
                 chooseStarter();
                 chooseObjective();
-                System.out.println();
-                System.out.println("Waiting for the other players to finish the setup phase...");
             }
             else if (response instanceof ChooseMarkerErrorMessage) {
                 Printer.printError("This marker has already been taken");
                 chooseMarker();
+            }
+            else if (response instanceof ChooseObjectiveAckMessage r) {
+                System.out.println();
+                System.out.println("Waiting for the other players to finish their setup...");
+            }
+            else if (response instanceof ChooseObjectiveErrorMessage r) {
+                //todo this error should never happen
+                Printer.printError("You cannot choose this objective");
+                chooseObjective();
             }
             else if (response instanceof ViewUpdateMessage) {
                 addMessage(response);
@@ -252,27 +247,28 @@ public class TUI extends View {
 
     private void playTurn() {
         playCard();
-        drawCard();
 
-//        while (true) {
-//            ServerToClientMessage response = waitForMessage();
-//
-//            if (response instanceof PlayCardAckMessage r) {
-//                drawCard();
-//            }
-//            else if (response instanceof PlayCardErrorMessage r) {
-//                playCard();
-//            }
-//            else if (response instanceof DrawCardAckMessage r) {
-//                break;
-//            }
-//            else if (response instanceof DrawCardErrorMessage r) {
-//                drawCard();
-//            }
-//            else {
-//                addMessage(response);
-//            }
-//        }
+        while (true) {
+            ServerToClientMessage response = waitForMessage();
+
+            if (response instanceof PlayCardAckMessage) {
+                drawCard();
+            }
+            else if (response instanceof PlayCardErrorMessage r) {
+                Printer.printError(r.getMessage() + "Choose another card");
+                playCard();
+            }
+            else if (response instanceof DrawCardAckMessage) {
+                break;
+            }
+            else if (response instanceof DrawCardErrorMessage r) {
+                Printer.printError(r.getMessage() + "Choose another card");
+                drawCard();
+            }
+            else {
+                addMessage(response);
+            }
+        }
 
     }
 
@@ -290,10 +286,27 @@ public class TUI extends View {
     private void drawCard() {
         System.out.println();
         System.out.println("Which card do you want to draw?");
-        int choice = chooseOption("Resource", "Gold");
-        notifyAllListeners(new DrawCardMessage(
-                this.username, choice == 1 ? DrawType.RESOURCE : DrawType.GOLD, null)
+        int choice = chooseOption(
+                "Visible top-left",
+                "Visible top-right",
+                "Visible bottom-left",
+                "Visible bottom-right",
+                "Gold from deck",
+                "Resource from deck"
         );
+        DrawType type = switch (choice) {
+            case 5 -> DrawType.GOLD;
+            case 6 -> DrawType.RESOURCE;
+            default -> DrawType.VISIBLE;
+        };
+        PlayableCard card = switch (choice) {
+            case 1 -> this.gameView.getBoard().getVisibleCards()[0];
+            case 2 -> this.gameView.getBoard().getVisibleCards()[1];
+            case 3 -> this.gameView.getBoard().getVisibleCards()[2];
+            case 4 -> this.gameView.getBoard().getVisibleCards()[3];
+            default -> null;
+        };
+        notifyAllListeners(new DrawCardMessage(this.username, type, card));
     }
 
     private int chooseOption(String... options) {

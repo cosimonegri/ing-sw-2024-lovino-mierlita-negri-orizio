@@ -7,6 +7,5 @@ public enum GamePhase {
     WAITING,
     SETUP,
     MAIN,
-    LASTROUND,
-    END
+    ENDED
 }

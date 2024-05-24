@@ -43,12 +43,6 @@ public abstract class View {
         }
     }
 
-    protected ServerToClientMessage pollMessage() {
-        synchronized (messages) {
-            return messages.poll();
-        }
-    }
-
     protected ServerToClientMessage waitForMessage() {
         synchronized (messages) {
             while (this.messages.isEmpty()) {

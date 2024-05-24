@@ -51,10 +51,6 @@ public class Game {
      * Current turn phase of the round
      */
     private TurnPhase turnPhase;
-    /**
-     * Set of available markers
-     */
-    private final Set<Marker> markers;
 
     //todo handle illlegal players count in controller
     /**
@@ -68,8 +64,6 @@ public class Game {
         this.players = new ArrayList<>(playersCount);
         this.playerToListener = new HashMap<>(playersCount);
         this.currentPlayer = null;
-
-        this.markers = new HashSet<>(List.of(Marker.values()));
 
         this.currentTurn = 0; // todo maybe remove
         this.gamePhase = GamePhase.WAITING;
@@ -214,23 +208,6 @@ public class Game {
 
     public void setTurnPhase(TurnPhase turnPhase) {
         this.turnPhase = turnPhase;
-    }
-
-    /**
-     * @param username username of a player
-     * @param marker marker to be assigned to the player
-     * @throws MarkerNotValidException when the marker has already been choosen
-     */
-    public void assignMarker(String username, Marker marker) throws MarkerNotValidException {
-        if (!this.markers.contains(marker)) {
-            throw new MarkerNotValidException();
-        }
-        for (Player p : players) {
-            if (p.getUsername().equals(username)) {
-                p.setMarker(marker);
-                markers.remove(marker);
-            }
-        }
     }
 
     /**
