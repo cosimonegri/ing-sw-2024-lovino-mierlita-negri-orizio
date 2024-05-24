@@ -1,20 +1,31 @@
 .text {
     -fx-font-family: 'Arial';
-    -fx-font-size: 20;
-    -fx-fill: white;
+    -fx-font-size: 30;
+    -fx-fill: black;
+}
+
+.current-action {
+    -fx-font-size: 50;
 }
 
 .welcome-text {
-    -fx-font-size: 60;
+    -fx-font-family: 'Arial';
+    -fx-fill: black;
+    -fx-font-size: 80;
 }
 
 .label {
+    -fx-font-family: 'Arial';
+    -fx-font-size: 30;
 }
 
-.username-label {
-}
 .error-label {
-    -fx-fill: red;
+    -fx-font-family: 'Arial';
+    -fx-font-size: 30;
+    -fx-text-fill: black;
+    -fx-background-color: red;
+    -fx-padding: 15px;
+    -fx-border-radius: 10px;
 }
 
 .text-field {
@@ -24,29 +35,20 @@
 
 .box {
     -fx-alignment: center;
-    -fx-background-color: rgba(0,0,0,0.5);
     -fx-padding: 20px;
-    -fx-opacity: 0;
+    -fx-spacing: 10;
 }
 
-.welcome-box {
-}
-.text-box {
-}
 .form-box {
-    /*
-    -fx-pref-width: 30%;
-    -fx-padding: 20px;
-    -fx-background-color: white;
+    -fx-background-color: gray;
     -fx-border-color: #ccc;
-    -fx-border-radius: 10px;
-    /*-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 0);*/
 }
 
 .button {
+    -fx-padding: 10px;
     -fx-font-family: 'Arial';
     -fx-font-size: 16;
-    -fx-background-color: darkblue;
-    -fx-text-fill: white;
+    -fx-background-color: lightblue;
+    -fx-text-fill: black;
 }
 

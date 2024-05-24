@@ -66,6 +66,7 @@ public class MainController {
     synchronized public GameController joinGame(String username, int gameId) throws LobbyNotValidException, LobbyFullException {
         if (!this.isUsernameConnected(username)) {
             //todo maybe handle this case
+            // check where the pings start
             return null;
         }
         if (!this.games.containsKey(gameId)) {
@@ -78,8 +79,7 @@ public class MainController {
 
     synchronized public GameController leaveGame(String username) throws UsernameNotPlayingException {
         if (!this.isUsernameConnected(username)) {
-            //todo maybe handle this case
-            return null;
+            throw new UsernameNotPlayingException();
         }
         this.usernameToListener.remove(username);
         GameController game = getGameOfPlayer(username);

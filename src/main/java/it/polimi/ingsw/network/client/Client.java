@@ -126,6 +126,9 @@ public class Client implements ClientInterface {
         else if (message instanceof DisconnectMessage m) {
             System.out.println(m);
         }
-        view.addMessage(message);
+        else {
+            view.addMessage(message);
+        }
+
     }
 }
