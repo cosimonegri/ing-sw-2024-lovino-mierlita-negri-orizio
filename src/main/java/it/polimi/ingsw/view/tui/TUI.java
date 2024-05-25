@@ -320,10 +320,16 @@ public class TUI extends View {
                     Printer.printError("Wait for your turn");
                     break;
                 }
+                System.out.println();
+                System.out.println("BOARD:");
                 printBoard();
-                printHand();
+                System.out.println();
+                System.out.println("YOUR FIELD:");
                 System.out.println();
                 this.numToCoordinates = GamePrinter.printField(this.gameView.getPlayer(this.username).getField());
+                System.out.println();
+                System.out.println("YOUR HAND:");
+                printHand();
                 playTurn();
             }
             case 2 -> printBoard();
