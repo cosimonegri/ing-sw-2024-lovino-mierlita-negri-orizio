@@ -40,7 +40,7 @@ public class Printer {
         System.out.println(CONSOLE_ERROR + string + ": " + e.getMessage() + RESET);
     }
 
-    public static void printDebug(String string) {
+    public static void printInfo(String string) {
         System.out.println(CYAN + string + RESET);
     }
 }

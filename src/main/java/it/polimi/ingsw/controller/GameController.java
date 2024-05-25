@@ -156,6 +156,10 @@ public class GameController {
         return model.getPlayers();
     }
 
+    synchronized public Player getCurrentPlayer() {
+        return model.getCurrentPlayer();
+    }
+
     synchronized public GamePhase getPhase() {
         return this.model.getGamePhase();
     }

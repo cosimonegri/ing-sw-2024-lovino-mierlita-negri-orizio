@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
 import it.polimi.ingsw.model.player.Coordinates;
 import it.polimi.ingsw.model.player.Marker;
+import it.polimi.ingsw.modelView.PlayerView;
 import it.polimi.ingsw.network.message.clienttoserver.gamecontroller.DrawCardMessage;
 import it.polimi.ingsw.network.message.clienttoserver.UsernameMessage;
 import it.polimi.ingsw.network.message.clienttoserver.gamecontroller.ChooseMarkerMessage;
@@ -34,17 +35,22 @@ public class TUI extends View {
         createOrJoinGame();
         setupGame();
 
-        Thread messagesThread = new Thread(() -> {
+        Thread mainThread = new Thread(() -> {
+            while (true) {
+                chooseAction();
+            }
+        });
+        mainThread.start();
+
+        Thread updateThread = new Thread(() -> {
             while (true) {
                 ServerToClientMessage message = waitForMessage();
 
                 if (message instanceof ViewUpdateMessage m) {
                     this.gameView = m.getGameView();
-                    if (this.gameView.getCurrentPlayer().getUsername().equals(this.username)) {
-                        GamePrinter.printBoard(this.gameView.getBoard());
-                        this.numToCoordinates = GamePrinter.printField(this.gameView.getCurrentPlayer().getField());
-                        GamePrinter.printHand(this.gameView.getCurrentPlayer().getHand(), false);
-                        playTurn();
+                    Printer.printInfo(m.getMessage());
+                    if (this.gameView.isCurrentPlayer(this.username)) {
+                        Printer.printInfo("It's your turn");
                     }
                 }
                 else if (message instanceof LobbyMessage m) {
@@ -55,27 +61,7 @@ public class TUI extends View {
                 }
             }
         });
-        messagesThread.start();
-
-//        Thread mainThread = new Thread(() -> {
-//            while (true) {
-//                synchronized (updateLock) {
-//                    while (!this.gameView.getCurrentPlayer().getUsername().equals(this.username)) {
-//                        try {
-//                            updateLock.wait();
-//                        } catch (InterruptedException e) {
-//                            System.err.println("Interrupted while waiting for view update");
-//                            System.exit(1);
-//                        }
-//                    }
-//                    GamePrinter.printBoard(this.gameView.getBoard());
-//                    GamePrinter.printField(this.gameView.getCurrentPlayer().getField());
-//                    GamePrinter.printHand(this.gameView.getCurrentPlayer().getHand(), true);
-//                    // playTurn();
-//                }
-//            }
-//        });
-//        mainThread.start();
+        updateThread.start();
     }
 
     private void printTitle() {
@@ -151,7 +137,7 @@ public class TUI extends View {
     private void chooseCreateOrJoin() {
         System.out.println();
         System.out.println("What do you want to do?");
-        int choice = chooseOption("Create a new game", "Join a game");
+        int choice = chooseOption(true, "Create a new game", "Join a game");
         switch (choice) {
             case 1:
                 int playersCount = chooseInRange("How many players do you want in the lobby", 2, 4);
@@ -159,7 +145,7 @@ public class TUI extends View {
                 break;
             case 2:
                 System.out.print("Type the ID of the game you want to join: ");
-                int gameId = readInt();
+                int gameId = readInt(true);
                 notifyAllListeners(new JoinGameMessage(this.username, gameId));
                 break;
         }
@@ -215,7 +201,7 @@ public class TUI extends View {
     private void chooseMarker() {
         System.out.println();
         System.out.println("Which marker do you want?");
-        int choice = chooseOption("Blue", "Green", "Red", "Yellow");
+        int choice = chooseOption(true, "Blue", "Green", "Red", "Yellow");
         Marker marker = switch (choice) {
             case 1 -> Marker.BLUE;
             case 2 -> Marker.GREEN;
@@ -233,7 +219,7 @@ public class TUI extends View {
         System.out.println("Back");
         GamePrinter.printCard(starter, true);
         System.out.println("How do you want to play your starter card?");
-        int choice = chooseOption("Front visible", "Back visible");
+        int choice = chooseOption(true, "Front visible", "Back visible");
         notifyAllListeners(new PlayStarterMessage(this.username, choice == 2));
     }
 
@@ -241,7 +227,7 @@ public class TUI extends View {
         System.out.println();
         System.out.println("Choose one of the following personal personal objectives:");
         List<ObjectiveCard> objectives = this.gameView.getPlayer(this.username).getObjectiveOptions();
-        int choice = chooseOption(objectives.stream().map(GamePrinter::getObjectiveDescription).toList());
+        int choice = chooseOption(true, objectives.stream().map(GamePrinter::getObjectiveDescription).toList());
         notifyAllListeners(new ChooseObjectiveMessage(this.username, objectives.get(choice - 1)));
     }
 
@@ -252,17 +238,18 @@ public class TUI extends View {
             ServerToClientMessage response = waitForMessage();
 
             if (response instanceof PlayCardAckMessage) {
+                printBoard();
                 drawCard();
             }
             else if (response instanceof PlayCardErrorMessage r) {
-                Printer.printError(r.getMessage() + "Choose another card");
+                Printer.printError(r.getMessage() + " Choose another card");
                 playCard();
             }
             else if (response instanceof DrawCardAckMessage) {
                 break;
             }
             else if (response instanceof DrawCardErrorMessage r) {
-                Printer.printError(r.getMessage() + "Choose another card");
+                Printer.printError(r.getMessage() + " Choose another card");
                 drawCard();
             }
             else {
@@ -276,7 +263,7 @@ public class TUI extends View {
         List<PlayableCard> hand = this.gameView.getCurrentPlayer().getHand();
         System.out.println();
         int cardChoice = chooseInRange("Which card do you want to play", 1, hand.size());
-        int flippedChoice = chooseOption("Front visible", "Back visible");
+        int flippedChoice = chooseOption(true, "Front visible", "Back visible");
         int coordsChoice = chooseInRange("Where do you want to place it", 1, this.numToCoordinates.size());
         notifyAllListeners(new PlayCardMessage(
                 this.username, hand.get(cardChoice - 1), flippedChoice == 2, this.numToCoordinates.get(coordsChoice))
@@ -287,6 +274,7 @@ public class TUI extends View {
         System.out.println();
         System.out.println("Which card do you want to draw?");
         int choice = chooseOption(
+                true,
                 "Visible top-left",
                 "Visible top-right",
                 "Visible bottom-left",
@@ -309,25 +297,94 @@ public class TUI extends View {
         notifyAllListeners(new DrawCardMessage(this.username, type, card));
     }
 
-    private int chooseOption(String... options) {
-        return chooseOption(Arrays.asList(options));
+    private void chooseAction() {
+        List<String> options = new ArrayList<>(Arrays.asList(
+                "Play turn", "Print board", "Print leaderboard", "Print my field", "Print my hand"
+        ));
+        Map<Integer, String> choiceToUsername = new HashMap<>();
+        int playerChoiceIndex  = options.size() + 1;
+        for (PlayerView player : this.gameView.getPlayers()) {
+            if (player.getUsername().equals(this.username)) {
+                continue;
+            }
+            choiceToUsername.put(playerChoiceIndex, player.getUsername());
+            options.add("Print " + player.getUsername() + "'s field and hand");
+            playerChoiceIndex++;
+        }
+        System.out.println();
+        System.out.println("What do you want to do?");
+        int choice = chooseOption(false, options);
+        switch (choice) {
+            case 1 -> {
+                if (!this.gameView.isCurrentPlayer(this.username)) {
+                    Printer.printError("Wait for your turn");
+                    break;
+                }
+                printBoard();
+                printHand();
+                System.out.println();
+                this.numToCoordinates = GamePrinter.printField(this.gameView.getPlayer(this.username).getField());
+                playTurn();
+            }
+            case 2 -> printBoard();
+            case 3 -> {
+                for (PlayerView player : this.gameView.getSortedPlayers()) {
+                    System.out.println(player.getUsername() + ": " + player.getScore() + " points");
+                }
+            }
+            case 4 -> {
+                System.out.println();
+                GamePrinter.printField(this.gameView.getPlayer(this.username).getField());
+            }
+            case 5 -> printHand();
+            default -> printOpponent(this.gameView.getPlayer(choiceToUsername.get(choice)));
+        }
     }
 
-    private int chooseOption(List<String> options) {
+    private void printBoard() {
+        System.out.println();
+        GamePrinter.printBoard(this.gameView.getBoard());
+        System.out.println();
+        for (ObjectiveCard obj : this.gameView.getObjectives()) {
+            System.out.println("Common objective: " + GamePrinter.getObjectiveDescription(obj));
+        }
+    }
+
+    private void printHand() {
+        System.out.println();
+        GamePrinter.printHand(this.gameView.getPlayer(this.username).getHand(), false);
+        System.out.println();
+        System.out.println("Private objective: " + GamePrinter.getObjectiveDescription(this.gameView.getPlayer(this.username).getObjective()));
+    }
+
+    private void printOpponent(PlayerView player) {
+        System.out.println();
+        GamePrinter.printField(player.getField());
+        System.out.println();
+        GamePrinter.printHand(player.getHand(), true);
+    }
+
+    private int chooseOption(boolean hasAngle, String... options) {
+        return chooseOption(hasAngle, Arrays.asList(options));
+    }
+
+    private int chooseOption(boolean hasAngle, List<String> options) {
         for (int i = 0; i < options.size(); i++) {
             int num = i + 1;
             System.out.println(num + ") " + options.get(i));
         }
-        System.out.print("> ");
-        return readInt(1, options.size());
+        if (hasAngle) {
+            System.out.print("> ");
+        }
+        return readInt(1, options.size(), hasAngle);
     }
 
     private int chooseInRange(String prompt, int min, int max) {
         System.out.print(prompt + " [" + min + "-" + max + "]: ");
-        return readInt(min, max);
+        return readInt(min, max, true);
     }
 
-    private int readInt() {
+    private int readInt(boolean hasAngleOnError) {
         while (true) {
             try {
                 int choice = this.scanner.nextInt();
@@ -337,20 +394,24 @@ public class TUI extends View {
             } catch (InputMismatchException e) {
                 this.scanner.nextLine();
                 Printer.printError("You should type a number");
-                System.out.print("> ");
+                if (hasAngleOnError) {
+                    System.out.print("> ");
+                }
             }
         }
     }
 
-    private int readInt(int min, int max) {
+    private int readInt(int min, int max, boolean hasAngleOnError) {
         int choice = max + 1;
         boolean firstIter = true;
         while (choice < min || choice > max) {
             if (!firstIter) {
                 Printer.printError("You should type a number between " + min + " and " + max);
-                System.out.print("> ");
+                if (hasAngleOnError) {
+                    System.out.print("> ");
+                }
             }
-            choice = readInt();
+            choice = readInt(hasAngleOnError);
             firstIter = false;
         }
         return choice;

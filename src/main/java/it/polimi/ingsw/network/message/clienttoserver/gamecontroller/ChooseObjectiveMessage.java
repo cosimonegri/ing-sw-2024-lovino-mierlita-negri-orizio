@@ -26,7 +26,7 @@ public class ChooseObjectiveMessage extends GameControllerMessage {
             controller.chooseObjective(this.getUsername(), this.objective);
             controller.notifyListener(this.getUsername(), new ChooseObjectiveAckMessage());
             if (controller.getPhase() == GamePhase.MAIN) {
-                controller.notifyAllListeners(new ViewUpdateMessage(controller.getModelView()));
+                controller.notifyAllListeners(new ViewUpdateMessage(controller.getModelView(), "The game has started"));
             }
         } catch (CardNotInHandException e) {
             controller.notifyListener(this.getUsername(), new ChooseObjectiveErrorMessage());

@@ -5,9 +5,7 @@ import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.model.player.Player;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class GameView implements Serializable {
     private final int playersCount;
@@ -34,6 +32,15 @@ public class GameView implements Serializable {
         return Collections.unmodifiableList(this.players);
     }
 
+    /**
+     * @return list of players sorted from highest to lowest score
+     */
+    public List<PlayerView> getSortedPlayers() {
+        List<PlayerView> players = new ArrayList<>(this.players);
+        players.sort(PlayerView::compareTo);
+        return players;
+    }
+
     public PlayerView getPlayer(String username) {
         for (PlayerView p : this.players) {
             if (p.getUsername().equals(username)) {
@@ -45,6 +52,10 @@ public class GameView implements Serializable {
 
     public PlayerView getCurrentPlayer() {
         return currentPlayer;
+    }
+
+    public boolean isCurrentPlayer(String username) {
+        return this.getCurrentPlayer().getUsername().equals(username);
     }
 
     public BoardView getBoard() {

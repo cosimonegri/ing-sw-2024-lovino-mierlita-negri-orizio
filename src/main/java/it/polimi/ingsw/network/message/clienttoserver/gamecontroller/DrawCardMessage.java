@@ -5,6 +5,7 @@ import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.exceptions.CardNotOnBoardException;
 import it.polimi.ingsw.exceptions.EmptyDeckException;
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.message.servertoclient.DrawCardAckMessage;
 import it.polimi.ingsw.network.message.servertoclient.DrawCardErrorMessage;
 import it.polimi.ingsw.network.message.servertoclient.ViewUpdateMessage;
@@ -29,9 +30,10 @@ public class DrawCardMessage extends GameControllerMessage {
 
     public void execute(GameController controller) {
         try {
+            Player player = controller.getCurrentPlayer();
             controller.drawCard(this.getUsername(), this.type, this.card);
             controller.notifyListener(this.getUsername(), new DrawCardAckMessage());
-            controller.notifyAllListeners(new ViewUpdateMessage(controller.getModelView()));
+            controller.notifyAllListeners(new ViewUpdateMessage(controller.getModelView(), player.getUsername() + " has finished his turn"));
         } catch (EmptyDeckException | CardNotOnBoardException e) {
             controller.notifyListener(this.getUsername(), new DrawCardErrorMessage(e.getMessage()));
         }

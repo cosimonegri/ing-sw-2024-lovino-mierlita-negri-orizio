@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class PlayerView implements Serializable {
+public class PlayerView implements Serializable, Comparable<PlayerView> {
     private final String username;
     private final Marker marker;
     private final int score;
@@ -68,5 +68,10 @@ public class PlayerView implements Serializable {
 
     public boolean isWinner() {
         return winner;
+    }
+
+    @Override
+    public int compareTo(PlayerView other) {
+        return Integer.compare(other.score, this.score);
     }
 }

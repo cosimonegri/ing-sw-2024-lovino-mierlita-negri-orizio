@@ -90,7 +90,6 @@ public class GamePrinter {
                 System.out.print("\n");
             }
         }
-        printPlayerResources(field);
         return validPlays;
     }
 
@@ -147,7 +146,6 @@ public class GamePrinter {
     }
 
     public static void printBoard(BoardView board) {
-        System.out.print("\n");
         PlayableCard card;
 
         for(int rowPrinterIndex = 0; rowPrinterIndex < 7; rowPrinterIndex++) {
@@ -184,8 +182,6 @@ public class GamePrinter {
             }
             System.out.print("\n");
         }
-
-        System.out.print("\n");
     }
 
     private static void printPlayerResources(FieldView field) {
