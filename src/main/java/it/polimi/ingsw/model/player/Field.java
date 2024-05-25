@@ -161,7 +161,11 @@ public class Field {
                 topY = Math.max(topY, y);
             }
         }
-        return new Coordinates(Math.max(leftX - 1, 0), Math.min(topY + 1, size() - 1));
+        for (Coordinates coords : getAllValidCoords()) {
+            leftX = Math.min(leftX, coords.x());
+            topY = Math.max(topY, coords.y());
+        }
+        return new Coordinates(leftX, topY);
     }
 
     /**
@@ -180,7 +184,11 @@ public class Field {
                 bottomY = Math.min(bottomY, y);
             }
         }
-        return new Coordinates(Math.min(rightX + 1, size()), Math.max(bottomY - 1, 0));
+        for (Coordinates coords : getAllValidCoords()) {
+            rightX = Math.max(rightX, coords.x());
+            bottomY = Math.min(bottomY, coords.y());
+        }
+        return new Coordinates(rightX, bottomY);
     }
 
     /**
