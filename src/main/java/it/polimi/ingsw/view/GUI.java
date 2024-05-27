@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view;
 
+import com.sun.scenario.DelayedRunnable;
 import it.polimi.ingsw.network.message.clienttoserver.UsernameMessage;
 import it.polimi.ingsw.network.message.clienttoserver.maincontroller.CreateGameMessage;
 import it.polimi.ingsw.network.message.clienttoserver.maincontroller.JoinGameMessage;
@@ -7,6 +8,7 @@ import it.polimi.ingsw.network.message.servertoclient.*;
 import it.polimi.ingsw.utilities.Printer;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
+import javafx.animation.Transition;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.Event;
@@ -19,13 +21,19 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class GUI extends View {
 
     private StackPane root;
+    private int gameId;
 
 
     public GUI () {
@@ -47,11 +55,11 @@ public class GUI extends View {
         Pane backgroundPane = getBackgroundPane();
 
         VBox vbox = new VBox();
-        vbox.getStyleClass().addAll("vbox", "welcome-box");
+        vbox.getStyleClass().addAll("welcome-box");
         vbox.setOpacity(0);
 
         // welcome text
-        Text welcomeText = new Text("Welcome to Code Naturalis");
+        Text welcomeText = new Text("Welcome to Codex Naturalis");
         welcomeText.getStyleClass().addAll("welcome-text");
 
         // contains the username form
@@ -77,7 +85,7 @@ public class GUI extends View {
 
 
         Button connectButton = new Button("Connect");
-//        connectButton.getStyleClass().add("button");
+        connectButton.getStyleClass().add("button");
 
         // add elements to the form
         usernameForm.setSpacing(10);
@@ -107,6 +115,7 @@ public class GUI extends View {
         vboxShow.setOnFinished(e -> welcomeTextFadeIn.play());
         welcomeTextFadeIn.setOnFinished(e -> welcomeTestShow.play());
         welcomeTestShow.setOnFinished(e -> connectFormFadeIn.play());
+//        transitionOnCreateScene(true, vbox, welcomeText, connectForm);
 
 
         // connect button
@@ -186,8 +195,8 @@ public class GUI extends View {
                 connectForm.setOpacity(1);
             }
         };
-        scene.addEventHandler(MouseEvent.MOUSE_PRESSED, skipTransitionEvent);
-        scene.addEventHandler(KeyEvent.KEY_PRESSED, skipTransitionEvent);
+        vbox.addEventHandler(MouseEvent.MOUSE_PRESSED, skipTransitionEvent);
+        vbox.addEventHandler(KeyEvent.KEY_PRESSED, skipTransitionEvent);
 
         primaryStage.show();
     }
@@ -206,15 +215,12 @@ public class GUI extends View {
         });
         errorShow.play();
     }
-
-    private FadeTransition fadeOut(Node node, int i) {
-        FadeTransition fadeNodeOut = new FadeTransition(Duration.seconds(i), node);
+    private FadeTransition fadeOut(Node node, int sec) {
+        FadeTransition fadeNodeOut = new FadeTransition(Duration.seconds(sec), node);
         fadeNodeOut.setFromValue(1);
         fadeNodeOut.setToValue(0);
         return fadeNodeOut;
     }
-
-
     private FadeTransition fadeIn(Node node, int sec) {
         FadeTransition fadeNodeIn = new FadeTransition(Duration.seconds(sec), node);
         fadeNodeIn.setFromValue(0);
@@ -240,26 +246,28 @@ public class GUI extends View {
     private void setUsername(String username) {
         this.username = username;
     }
-
     private void createJoinCreateGame() {
         Text lobbyText = new Text("Welcome " +  this.username);
-        lobbyText.getStyleClass().addAll("text", "current-action");
+        lobbyText.getStyleClass().addAll("welcome-text");
 
         VBox choiceBox = new VBox();
-        choiceBox.getStyleClass().addAll("box", "form-box");
+        choiceBox.getStyleClass().addAll("vbox");
 
         HBox createGameBox = new HBox();
-        createGameBox.getStyleClass().addAll("box");
+        createGameBox.setOpacity(0);
+        createGameBox.getStyleClass().addAll("username-box", "create-game-box");
         HBox joinGameBox = new HBox();
-        joinGameBox.getStyleClass().addAll("box");
+        joinGameBox.setOpacity(0);
+        joinGameBox.getStyleClass().addAll("username-box", "create-game-box");
 
         Label playersCountLabel = new Label("Players count");
         TextField playersCountField = new TextField();
+        playersCountField.getStyleClass().addAll("label");
         playersCountField.setPromptText("Players count");
         playersCountLabel.getStyleClass().addAll("label");
         playersCountField.getStyleClass().addAll();
 
-        Button createGameButton = new Button("Create a new game");
+        Button createGameButton = new Button("New game");
         createGameButton.getStyleClass().add("button");
 
         createGameBox.getChildren().addAll(playersCountLabel, playersCountField, createGameButton);
@@ -267,6 +275,7 @@ public class GUI extends View {
         Label gameIdLabel = new Label("Game ID");
         gameIdLabel.getStyleClass().addAll("label");
         TextField gameIdField = new TextField();
+        gameIdField.getStyleClass().addAll("label");
         gameIdField.setPromptText("Game ID");
 
         Button joinGameButton = new Button("Join game");
@@ -282,7 +291,7 @@ public class GUI extends View {
         choiceBox.getChildren().addAll(createGameBox, joinGameBox, errorLabel);
 
         VBox vbox = new VBox();
-        vbox.setAlignment(Pos.CENTER);
+        vbox.getStyleClass().addAll("welcome-box");
         vbox.getChildren().addAll(lobbyText, choiceBox);
 
         root.getChildren().removeLast();
@@ -305,6 +314,7 @@ public class GUI extends View {
 
                         if (response instanceof CreateGameAckMessage r) {
                             System.out.println("Created game with ID " + r.getGameId() + ". Waiting for players to join...");
+                            setGameId(r.getGameId());
                             new Thread(() -> createWaitingLobbyPage(null)).start();
                         } else if (response instanceof CreateGameErrorMessage) {
                             // cannot read json files in the server
@@ -344,6 +354,7 @@ public class GUI extends View {
 
                         if (response instanceof LobbyMessage r) {
                             System.out.println("Entered lobby");
+                            setGameId(id);
                             new Thread(() -> createWaitingLobbyPage(r)).start();
                         }
                         else if (response instanceof LobbyNotValidMessage r) {
@@ -367,6 +378,47 @@ public class GUI extends View {
             };
             new Thread(joinGameTask).start();
         });
+
+        // add transition
+        PauseTransition stageShow = new PauseTransition(Duration.seconds(0.5));
+        FadeTransition lobbyTextFadeIn = fadeIn(lobbyText, 2);
+        PauseTransition lobbyTextShow = new PauseTransition(Duration.seconds(1));
+        FadeTransition createGameChoiceFadeIn = fadeIn(createGameBox, 2);
+        PauseTransition showCreateGameChoice = new PauseTransition(Duration.seconds(1));
+        FadeTransition joinGameChoiceFadeIn = fadeIn(joinGameBox, 2);
+
+        stageShow.setOnFinished(e -> lobbyTextFadeIn.play());
+        lobbyTextFadeIn.setOnFinished(e -> lobbyTextShow.play());
+        lobbyTextShow.setOnFinished(e -> createGameChoiceFadeIn.play());
+        createGameChoiceFadeIn.setOnFinished(e -> showCreateGameChoice.play());
+        showCreateGameChoice.setOnFinished(e -> joinGameChoiceFadeIn.play());
+
+        stageShow.play();
+
+        // disable auto focus
+        Platform.runLater(vbox::requestFocus);
+
+        // skip animation
+        EventHandler<Event> skipTransitionEvent = e -> {
+            if ((e instanceof KeyEvent && ((KeyEvent) e).getCode() == KeyCode.ENTER) ||
+                    e instanceof MouseEvent && ((MouseEvent) e).isPrimaryButtonDown()) {
+                stageShow.stop();
+                lobbyTextFadeIn.stop();
+                lobbyText.setOpacity(1);
+                lobbyTextShow.stop();
+                createGameChoiceFadeIn.stop();
+                createGameBox.setOpacity(1);
+                showCreateGameChoice.stop();
+                joinGameChoiceFadeIn.stop();
+                joinGameBox.setOpacity(1);
+            }
+        };
+        vbox.addEventHandler(MouseEvent.MOUSE_PRESSED, skipTransitionEvent);
+        vbox.addEventHandler(KeyEvent.KEY_PRESSED, skipTransitionEvent);
+    }
+
+    private void setGameId(int gameId) {
+        this.gameId = gameId;
     }
 
     private String getUsername() {
@@ -376,20 +428,25 @@ public class GUI extends View {
     private void createWaitingLobbyPage(LobbyMessage message) {
         System.out.println("Waiting page");
         VBox vbox = new VBox();
+        vbox.getStyleClass().addAll("welcome-box");
         vbox.setAlignment(Pos.CENTER);
         Text playerUsername = new Text(getUsername());
-        playerUsername.getStyleClass().addAll("text");
+        playerUsername.setOpacity(0);
+        playerUsername.getStyleClass().addAll("welcome-text");
 
-        Text waitingLobbyText = new Text("Waiting for other players");
-        waitingLobbyText.getStyleClass().addAll("text", "current-action");
+        Text waitingLobbyText = new Text("Lobby " + getGameId() + ": waiting for other players");
+        waitingLobbyText.setOpacity(0);
+        waitingLobbyText.getStyleClass().addAll("lobby-text");
 
         HBox lobbyUsernames = new HBox();
-        lobbyUsernames.getStyleClass().addAll("box");
+        lobbyUsernames.setOpacity(0);
+        lobbyUsernames.getStyleClass().addAll("hbox");
+
         if (message != null) {
             lobbyUsernames.getChildren().clear();
             for (String s :  message.getUsernames()) {
                 Text player = new Text(s);
-                player.getStyleClass().addAll("text");
+                player.getStyleClass().addAll("lobby-text");
                 lobbyUsernames.getChildren().add(player);
             }
         }
@@ -400,6 +457,38 @@ public class GUI extends View {
             root.getChildren().addAll(vbox);
         });
 
+        PauseTransition showPage = new PauseTransition(Duration.seconds(0.5));
+        FadeTransition usernameFadeIn = fadeIn(playerUsername, 2);
+        PauseTransition showUsername = new PauseTransition(Duration.seconds(1));
+        FadeTransition waitingTextFadeIn = fadeIn(waitingLobbyText, 2);
+        PauseTransition showWaitingText = new PauseTransition(Duration.seconds(1));
+        FadeTransition lobbyUsernamesFadeIn = fadeIn(lobbyUsernames, 2);
+
+        showPage.setOnFinished(e -> usernameFadeIn.play());
+        usernameFadeIn.setOnFinished(e -> showUsername.play());
+        showUsername.setOnFinished(e -> waitingTextFadeIn.play());
+        waitingTextFadeIn.setOnFinished(e -> showWaitingText.play());
+        showWaitingText.setOnFinished(e -> lobbyUsernamesFadeIn.play());
+
+        showPage.play();
+
+        // skip animation
+        EventHandler<Event> skipTransitionEvent = e -> {
+            if ((e instanceof KeyEvent && ((KeyEvent) e).getCode() == KeyCode.ENTER) ||
+                    e instanceof MouseEvent && ((MouseEvent) e).isPrimaryButtonDown()) {
+                showPage.stop();
+                usernameFadeIn.stop();
+                playerUsername.setOpacity(1);
+                showUsername.stop();
+                waitingTextFadeIn.stop();
+                waitingLobbyText.setOpacity(1);
+                showWaitingText.stop();
+                lobbyUsernamesFadeIn.stop();
+                lobbyUsernames.setOpacity(1);
+            }
+        };
+        vbox.addEventHandler(MouseEvent.MOUSE_PRESSED, skipTransitionEvent);
+        vbox.addEventHandler(KeyEvent.KEY_PRESSED, skipTransitionEvent);
 
         while (true) {
             ServerToClientMessage response = waitForMessage();
@@ -407,11 +496,13 @@ public class GUI extends View {
             if (response instanceof LobbyMessage r) {
                 Platform.runLater(() -> {
                     lobbyUsernames.getChildren().clear();
+                    lobbyUsernames.setOpacity(0);
                     for (String s : r.getUsernames()) {
                         Text player = new Text(s);
-                        player.getStyleClass().addAll("text");
+                        player.getStyleClass().addAll("lobby-text");
                         lobbyUsernames.getChildren().add(player);
                     }
+                    lobbyUsernamesFadeIn.play();
                 });
 
             }
@@ -420,5 +511,9 @@ public class GUI extends View {
                 System.exit(0);
             }
         }
+    }
+
+    private int getGameId() {
+        return this.gameId;
     }
 }
