@@ -65,7 +65,7 @@ public class Board {
      */
     public void replaceVisibleCard(PlayableCard card) {
         for (int i = 0; i < this.visibleCards.length; i++) {
-            // skip to the next index if the card doesn't match woth the given one
+            // skip to the next index if the card doesn't match with the given one
             if (!this.visibleCards[i].equals(card)) {
                 continue;
             }

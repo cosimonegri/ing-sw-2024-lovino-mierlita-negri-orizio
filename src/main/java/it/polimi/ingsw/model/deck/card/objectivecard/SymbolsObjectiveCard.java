@@ -2,8 +2,6 @@ package it.polimi.ingsw.model.deck.card.objectivecard;
 
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Symbol;
 import it.polimi.ingsw.model.player.Field;
-import it.polimi.ingsw.modelView.cardView.CardView;
-import it.polimi.ingsw.modelView.cardView.ObjectiveCardView.SymbolsObjectiveCardView;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -55,10 +53,6 @@ public class SymbolsObjectiveCard extends ObjectiveCard {
             return 0;
         }
         return timesCompleted * this.getPoints();
-    }
-    public SymbolsObjectiveCardView getView(){
-        return new SymbolsObjectiveCardView(this);
-
     }
 
     public Map<Symbol, Integer> getSymbols() { return Collections.unmodifiableMap(this.symbols); }

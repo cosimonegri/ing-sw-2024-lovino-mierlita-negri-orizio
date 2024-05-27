@@ -1,20 +1,17 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.exceptions.CannotCreateGameException;
-import it.polimi.ingsw.exceptions.MarkerNotValidException;
+import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.GameListener;
 import it.polimi.ingsw.model.GamePhase;
-import it.polimi.ingsw.exceptions.LobbyFullException;
 import it.polimi.ingsw.model.TurnPhase;
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
+import it.polimi.ingsw.model.deck.card.playablecard.GoldCard;
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
 import it.polimi.ingsw.model.player.Coordinates;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.Marker;
-import it.polimi.ingsw.network.message.GameEndedMessage;
-import it.polimi.ingsw.network.message.servertoclient.DisconnectMessage;
-import it.polimi.ingsw.network.message.servertoclient.LobbyMessage;
+import it.polimi.ingsw.modelView.GameView;
 import it.polimi.ingsw.network.message.servertoclient.ServerToClientMessage;
 
 import java.util.Arrays;
@@ -59,38 +56,43 @@ public class GameController {
     synchronized public void removePlayer(String username) {
         model.removePlayer(username);
         if (model.getGamePhase() != GamePhase.WAITING) {
-            model.setGamePhase(GamePhase.END);
+            model.setGamePhase(GamePhase.ENDED);
         }
     }
 
     synchronized public void chooseMarker(String username, Marker marker) throws MarkerNotValidException {
         Player player = model.getPlayer(username);
         if (model.getGamePhase() != GamePhase.SETUP || player == null || hasChosenMarker(player)) {
+            //todo
             return;
         }
-        model.assignMarker(username, marker);
-        if (isGameSetupFinished()) {
-            model.setGamePhase(GamePhase.MAIN);
-            model.setTurnPhase(TurnPhase.PLAY);
+        for (Player p : model.getPlayers()) {
+            if (p.getMarker() == marker) {
+                throw new MarkerNotValidException();
+            }
         }
+        player.setMarker(marker);
     }
 
     synchronized public void playStarter(String username, boolean flipped) {
         Player player = model.getPlayer(username);
         if (model.getGamePhase() != GamePhase.SETUP || player == null || hasPlayedStarter(player)) {
+            //todo
             return;
         }
-        player.getField().addStarter(player.getStarterCard(), flipped);
-        if (isGameSetupFinished()) {
-            model.setGamePhase(GamePhase.MAIN);
-            model.setTurnPhase(TurnPhase.PLAY);
-        }
+        try {
+            player.getField().addCentralCard(player.getStarterCard(), flipped);
+        } catch (CoordinatesNotValidException | NotEnoughResourcesException ignored) { }
     }
 
-    synchronized public void chooseObjective(String username, ObjectiveCard objective) {
+    synchronized public void chooseObjective(String username, ObjectiveCard objective) throws CardNotInHandException {
         Player player = model.getPlayer(username);
         if (model.getGamePhase() != GamePhase.SETUP || player == null || hasChosenObjective(player) || !player.getObjOptions().contains(objective)) {
+            //todo
             return;
+        }
+        if (!player.getObjOptions().contains(objective)) {
+            throw new CardNotInHandException();
         }
         player.setObjCard(objective);
         if (isGameSetupFinished()) {
@@ -99,41 +101,48 @@ public class GameController {
         }
     }
 
-    synchronized public void playCard(String username, PlayableCard card, boolean flipped, Coordinates coords) {
-        if (model.getGamePhase() != GamePhase.MAIN ||
-                model.getTurnPhase() != TurnPhase.PLAY ||
-                !isCurrentPlayer(username) ||
-                !model.getCurrentPlayer().getHand().contains(card)
-        ) {
+    synchronized public void playCard(String username, PlayableCard card, boolean flipped, Coordinates coords)
+            throws CardNotInHandException, CoordinatesNotValidException, NotEnoughResourcesException
+    {
+        if (model.getGamePhase() != GamePhase.MAIN || model.getTurnPhase() != TurnPhase.PLAY || !isCurrentPlayer(username)) {
+            //todo
             return;
+        }
+        if (!model.getCurrentPlayer().getHand().contains(card)) {
+            throw new CardNotInHandException();
         }
         model.getCurrentPlayer().getField().addCard(card, flipped, coords);
         model.getCurrentPlayer().removeFromHand(card);
-        //todo think about getTotalPoints()
-        model.getCurrentPlayer().increaseScore(card.getPoints());
+        model.getCurrentPlayer().increaseScore(card instanceof GoldCard c
+                ? c.getTotalPoints(model.getCurrentPlayer().getField())
+                : card.getPoints()
+        );
         model.setTurnPhase(TurnPhase.DRAW);
     }
 
-    synchronized public void drawCard(String username, DrawType type, PlayableCard card) {
+    synchronized public void drawCard(String username, DrawType type, PlayableCard card)
+            throws EmptyDeckException, CardNotOnBoardException
+    {
         if (model.getGamePhase() != GamePhase.MAIN || model.getTurnPhase() != TurnPhase.DRAW || !isCurrentPlayer(username)) {
+            //todo
             return;
         }
         switch (type) {
             case RESOURCE:
                 if (model.getBoard().getResourceDeck().isEmpty()) {
-                    return;
+                    throw new EmptyDeckException();
                 }
                 model.getCurrentPlayer().addToHand(model.getBoard().getResourceDeck().draw());
                 break;
             case GOLD:
                 if (model.getBoard().getGoldDeck().isEmpty()) {
-                    return;
+                    throw new EmptyDeckException();
                 }
                 model.getCurrentPlayer().addToHand(model.getBoard().getGoldDeck().draw());
                 break;
             default:
-                if (!Arrays.asList(model.getBoard().getVisibleCards()).contains(card)) {
-                    return;
+                if (card == null || !Arrays.asList(model.getBoard().getVisibleCards()).contains(card)) {
+                    throw new CardNotOnBoardException();
                 }
                 model.getCurrentPlayer().addToHand(card);
                 model.getBoard().replaceVisibleCard(card);
@@ -145,6 +154,10 @@ public class GameController {
 
     synchronized public List<Player> getPlayers() {
         return model.getPlayers();
+    }
+
+    synchronized public Player getCurrentPlayer() {
+        return model.getCurrentPlayer();
     }
 
     synchronized public GamePhase getPhase() {
@@ -174,5 +187,9 @@ public class GameController {
 
     private boolean hasChosenObjective(Player player) {
         return player.getObjCard() != null;
+    }
+
+    synchronized public GameView getModelView() {
+        return model.getView();
     }
 }

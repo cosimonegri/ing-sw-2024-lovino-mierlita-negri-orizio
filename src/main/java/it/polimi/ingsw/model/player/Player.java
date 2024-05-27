@@ -172,6 +172,7 @@ public class Player {
     public Marker getMarker() {
         return this.marker;
     }
+
     public PlayerView getView(){
         return new PlayerView(this);
     }

@@ -1,6 +1,6 @@
 [
   {
-    "id" : 41,
+    "id" : 1,
     "color": "fungi",
     "points": 0,
     "top-left": "fungi",
@@ -9,7 +9,7 @@
     "bottom-right": null
   },
   {
-    "id" : 42,
+    "id" : 2,
     "color": "fungi",
     "points": 0,
     "top-left": "fungi",
@@ -18,7 +18,7 @@
     "bottom-right": "empty"
   },
   {
-    "id" : 43,
+    "id" : 3,
     "color": "fungi",
     "points": 0,
     "top-left": "empty",
@@ -27,7 +27,7 @@
     "bottom-right": "fungi"
   },
   {
-    "id" : 44,
+    "id" : 4,
     "color": "fungi",
     "points": 0,
     "top-left": null,
@@ -36,7 +36,7 @@
     "bottom-right": "fungi"
   },
   {
-    "id" : 45,
+    "id" : 5,
     "color": "fungi",
     "points": 0,
     "top-left": null,
@@ -45,7 +45,7 @@
     "bottom-right": "fungi"
   },
   {
-    "id" : 46,
+    "id" : 6,
     "color": "fungi",
     "points": 0,
     "top-left": "inkwell",
@@ -54,7 +54,7 @@
     "bottom-right": "animal"
   },
   {
-    "id" : 47 ,
+    "id" : 7 ,
     "color": "fungi",
     "points": 0,
     "top-left": "fungi",
@@ -62,7 +62,7 @@
     "bottom-left": "manuscript",
     "bottom-right": "empty"
   },
-  { "id" : 48,
+  { "id" : 8,
     "color": "fungi",
     "points": 1,
     "top-left": "empty",
@@ -71,7 +71,7 @@
     "bottom-right": null
   },
   {
-    "id" : 49,
+    "id" : 9,
     "color": "fungi",
     "points": 1,
     "top-left": "fungi",
@@ -80,7 +80,7 @@
     "bottom-right": "empty"
   },
   {
-    "id" : 50,
+    "id" : 10,
     "color": "fungi",
     "points": 1,
     "top-left": null,
@@ -89,8 +89,10 @@
     "bottom-right": "empty"
   },
 
+
+
   {
-    "id" : 51,
+    "id" : 11,
     "color": "plant",
     "points": 0,
     "top-left": "plant",
@@ -99,7 +101,7 @@
     "bottom-right": null
   },
   {
-    "id" : 52,
+    "id" : 12,
     "color": "plant",
     "points": 0,
     "top-left": "plant",
@@ -108,7 +110,7 @@
     "bottom-right": "empty"
   },
   {
-    "id" : 53,
+    "id" : 13,
     "color": "plant",
     "points": 0,
     "top-left": "empty",
@@ -117,7 +119,7 @@
     "bottom-right": "plant"
   },
   {
-    "id" : 54,
+    "id" : 14,
     "color": "plant",
     "points": 0,
     "top-left": null,
@@ -126,7 +128,7 @@
     "bottom-right": "plant"
   },
   {
-    "id" : 55,
+    "id" : 15,
     "color": "plant",
     "points": 0,
     "top-left": null,
@@ -135,7 +137,7 @@
     "bottom-right": "plant"
   },
   {
-    "id" : 56,
+    "id" : 16,
     "color": "plant",
     "points": 0,
     "top-left": "fungi",
@@ -144,7 +146,7 @@
     "bottom-right": "inkwell"
   },
   {
-    "id" : 57,
+    "id" : 17,
     "color": "plant",
     "points": 0,
     "top-left": "manuscript",
@@ -153,7 +155,7 @@
     "bottom-right": "animal"
   },
   {
-    "id" : 58,
+    "id" : 18,
     "color": "plant",
     "points": 1,
     "top-left": "empty",
@@ -162,7 +164,7 @@
     "bottom-right": null
   },
   {
-    "id" : 59,
+    "id" : 19,
     "color": "plant",
     "points": 1,
     "top-left": "empty",
@@ -171,7 +173,7 @@
     "bottom-right": "plant"
   },
   {
-    "id" : 60,
+    "id" : 20,
     "color": "plant",
     "points": 1,
     "top-left": null,
@@ -180,8 +182,10 @@
     "bottom-right": "empty"
   },
 
+
+
   {
-    "id" : 61,
+    "id" : 21,
     "color": "animal",
     "points": 0,
     "top-left": "animal",
@@ -190,7 +194,7 @@
     "bottom-right": null
   },
   {
-    "id" : 62,
+    "id" : 22,
     "color": "animal",
     "points": 0,
     "top-left": null,
@@ -199,7 +203,7 @@
     "bottom-right": "animal"
   },
   {
-    "id" : 63,
+    "id" : 23,
     "color": "animal",
     "points": 0,
     "top-left": "animal",
@@ -208,7 +212,7 @@
     "bottom-right": "empty"
   },
   {
-    "id" : 64,
+    "id" : 24,
     "color": "animal",
     "points": 0,
     "top-left": "empty",
@@ -217,7 +221,7 @@
     "bottom-right": "animal"
   },
   {
-    "id" : 65,
+    "id" : 25,
     "color": "animal",
     "points": 0,
     "top-left": null,
@@ -226,7 +230,7 @@
     "bottom-right": "animal"
   },
   {
-    "id" : 66,
+    "id" : 26,
     "color": "animal",
     "points": 0,
     "top-left": "plant",
@@ -235,7 +239,7 @@
     "bottom-right": "manuscript"
   },
   {
-    "id" : 67,
+    "id" : 27,
     "color": "animal",
     "points": 0,
     "top-left": "quill",
@@ -244,7 +248,7 @@
     "bottom-right": "fungi"
   },
   {
-    "id" : 68,
+    "id" : 28,
     "color": "animal",
     "points": 1,
     "top-left": null,
@@ -253,7 +257,7 @@
     "bottom-right": "empty"
   },
   {
-    "id" : 69,
+    "id" : 29,
     "color": "animal",
     "points": 1,
     "top-left": "empty",
@@ -262,7 +266,7 @@
     "bottom-right": "animal"
   },
   {
-    "id" : 70,
+    "id" : 30,
     "color": "animal",
     "points": 1,
     "top-left": "empty",
@@ -271,8 +275,10 @@
     "bottom-right": null
   },
 
+
+
   {
-    "id" : 71,
+    "id" : 31,
     "color": "insect",
     "points": 0,
     "top-left": "insect",
@@ -281,7 +287,7 @@
     "bottom-right": null
   },
   {
-    "id" : 72,
+    "id" : 32,
     "color": "insect",
     "points": 0,
     "top-left": null,
@@ -290,7 +296,7 @@
     "bottom-right": "insect"
   },
   {
-    "id" : 73,
+    "id" : 33,
     "color": "insect",
     "points": 0,
     "top-left": "insect",
@@ -299,7 +305,7 @@
     "bottom-right": "empty"
   },
   {
-    "id" : 74,
+    "id" : 34,
     "color": "insect",
     "points": 0,
     "top-left": "empty",
@@ -308,7 +314,7 @@
     "bottom-right": "insect"
   },
   {
-    "id" : 75,
+    "id" : 35,
     "color": "insect",
     "points": 0,
     "top-left": null,
@@ -317,7 +323,7 @@
     "bottom-right": "insect"
   },
   {
-    "id" : 76,
+    "id" : 36,
     "color": "insect",
     "points": 0,
     "top-left": "manuscript",
@@ -326,7 +332,7 @@
     "bottom-right": "fungi"
   },
   {
-    "id" : 77,
+    "id" : 37,
     "color": "insect",
     "points": 0,
     "top-left": "insect",
@@ -335,7 +341,7 @@
     "bottom-right": null
   },
   {
-    "id" : 78,
+    "id" : 38,
     "color": "insect",
     "points": 1,
     "top-left": "insect",
@@ -344,7 +350,7 @@
     "bottom-right": "empty"
   },
   {
-    "id" : 79,
+    "id" : 39,
     "color": "insect",
     "points": 1,
     "top-left": "empty",
@@ -353,7 +359,7 @@
     "bottom-right": "insect"
   },
   {
-    "id" : 80,
+    "id" : 40,
     "color": "insect",
     "points": 1,
     "top-left": null,

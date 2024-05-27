@@ -1,4 +1,4 @@
-package it.polimi.ingsw.view;
+package it.polimi.ingsw.view.gui;
 
 import com.sun.scenario.DelayedRunnable;
 import it.polimi.ingsw.network.message.clienttoserver.UsernameMessage;
@@ -6,6 +6,7 @@ import it.polimi.ingsw.network.message.clienttoserver.maincontroller.CreateGameM
 import it.polimi.ingsw.network.message.clienttoserver.maincontroller.JoinGameMessage;
 import it.polimi.ingsw.network.message.servertoclient.*;
 import it.polimi.ingsw.utilities.Printer;
+import it.polimi.ingsw.view.View;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
 import javafx.animation.Transition;
@@ -506,7 +507,7 @@ public class GUI extends View {
                 });
 
             }
-            else if (response instanceof GameSetupStartedMessage) {
+            else if (response instanceof ViewUpdateMessage) {
                 System.out.println("Game started");
                 System.exit(0);
             }

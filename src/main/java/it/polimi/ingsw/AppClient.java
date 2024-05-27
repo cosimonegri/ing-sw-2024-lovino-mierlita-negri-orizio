@@ -2,7 +2,7 @@ package it.polimi.ingsw;
 
 import it.polimi.ingsw.network.ConnectionType;
 import it.polimi.ingsw.network.client.Client;
-import it.polimi.ingsw.view.GUI;
+import it.polimi.ingsw.view.gui.GUI;
 import it.polimi.ingsw.view.TUI;
 import it.polimi.ingsw.view.View;
 

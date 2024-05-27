@@ -1,6 +1,6 @@
 [
   {
-    "id" : 97,
+    "id" : 81,
     "points": 0,
     "frontImage": null,
     "backImage": null,
@@ -13,10 +13,9 @@
     "back-top-right": "plant",
     "back-bottom-left": "insect",
     "back-bottom-right": "empty"
-
   },
   {
-    "id" : 98,
+    "id" : 82,
     "points": 0,
     "frontImage": null,
     "backImage": null,
@@ -29,10 +28,9 @@
     "back-top-right": "empty",
     "back-bottom-left": "empty",
     "back-bottom-right": "fungi"
-
   },
   {
-    "id" : 99,
+    "id" : 83,
     "points": 0,
     "frontImage": null,
     "backImage": null,
@@ -45,10 +43,9 @@
     "back-top-right": "empty",
     "back-bottom-left": "empty",
     "back-bottom-right": "empty"
-
   },
   {
-    "id" : 100,
+    "id" : 84,
     "points": 0,
     "frontImage": null,
     "backImage": null,
@@ -61,11 +58,9 @@
     "back-top-right": "empty",
     "back-bottom-left": "empty",
     "back-bottom-right": "empty"
-
-
   },
   {
-    "id" : 101,
+    "id" : 85,
     "points": 0,
     "frontImage": null,
     "backImage": null,
@@ -78,10 +73,9 @@
     "back-top-right": "empty",
     "back-bottom-left": null,
     "back-bottom-right": null
-
   },
   {
-    "id" : 102,
+    "id" : 86,
     "points": 0,
     "frontImage": null,
     "backImage": null,

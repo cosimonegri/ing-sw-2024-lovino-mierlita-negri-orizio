@@ -3,6 +3,9 @@ package it.polimi.ingsw.utilities;
 public class Printer {
     public static final String RESET = "\u001B[0m";
 
+    // 38 for foreground, 48 for background
+    public static final String CONSOLE_ERROR = "\u001b[38;2;247;84;100m";
+
     public static final String BLACK = "\u001B[30m";
     public static final String RED = "\u001B[31m";
     public static final String GREEN = "\u001B[32m";
@@ -31,9 +34,13 @@ public class Printer {
     public static final String WHITE_BACKGROUND_BRIGHT = "\033[0;107m";   // WHITE
 
     public static void printError(String string) {
-        System.out.println(RED + string + RESET);
+        System.out.println(CONSOLE_ERROR + string + RESET);
     }
     public static void printError(String string, Exception e) {
-        System.out.println(RED + string + ": " + e.getMessage() + RESET);
+        System.out.println(CONSOLE_ERROR + string + ": " + e.getMessage() + RESET);
+    }
+
+    public static void printInfo(String string) {
+        System.out.println(CYAN + string + RESET);
     }
 }

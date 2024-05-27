@@ -1,11 +1,11 @@
 package it.polimi.ingsw.model.deck.card;
 
-import it.polimi.ingsw.modelView.cardView.CardView;
+import java.io.Serializable;
 
 /**
  * A general card.
  */
-public abstract class Card {
+public abstract class Card implements Serializable {
     /**
      * Number of points given by the card.
      */
@@ -55,6 +55,7 @@ public abstract class Card {
     }
 
     public int getId() { return this.id; }
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Card other)) {

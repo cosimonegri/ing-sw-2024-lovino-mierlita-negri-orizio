@@ -2,9 +2,9 @@ package it.polimi.ingsw.model.deck.card.playablecard;
 
 import it.polimi.ingsw.model.deck.card.Card;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Corner;
+import it.polimi.ingsw.model.deck.card.playablecard.corner.CornerType;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Position;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Resource;
-import it.polimi.ingsw.modelView.cardView.PlayableCardView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -67,7 +67,6 @@ public class PlayableCard extends Card {
     }
 
     /**
-     *
      * @return an unmodifiable list of resources
      * containing the resources on the back of the card.
      */
@@ -76,15 +75,26 @@ public class PlayableCard extends Card {
     }
 
     /**
-     * @return the color (main resource) of the card if there is only one resource on its back, otherwise return null
+     * @return true if the playable card is a starter card
+     */
+    public boolean isStarter() {
+        if (this.backResources.size() > 1) {
+            return true;
+        }
+        // iterate over the back corners
+        for (int i = Position.values().length; i < this.corners.size(); i++) {
+            Corner corner = this.corners.get(i);
+            if (corner.type() != CornerType.VISIBLE || corner.symbol() != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return the color (main resource) of the card if it is not a starter card, otherwise return null
      */
     public Resource getColor() {
-        if (this.backResources.size() == 1) {
-            return this.backResources.getFirst();
-        }
-        return null;
-    }
-    public PlayableCardView getView(){
-        return new PlayableCardView(this);
+        return isStarter() ? null : this.backResources.getFirst();
     }
 }

@@ -16,7 +16,7 @@ public class PlayerTest {
      */
     @BeforeEach
     public void playerSetUp() {
-        p = new Player("dolby", Marker.GREEN);
+        p = new Player("dolby");
     }
 
     /**

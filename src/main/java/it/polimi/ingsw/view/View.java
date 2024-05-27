@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view;
 
+import it.polimi.ingsw.modelView.GameView;
 import it.polimi.ingsw.network.message.clienttoserver.ClientToServerMessage;
 import it.polimi.ingsw.network.message.servertoclient.ServerToClientMessage;
 import javafx.application.Application;
@@ -13,6 +14,7 @@ public abstract class View extends Application {
     private final List<ViewListener> listeners;
     private final Queue<ServerToClientMessage> messages;
     protected String username;
+    protected GameView gameView;
 
     public View() {
         this.listeners = new ArrayList<>();
@@ -39,12 +41,6 @@ public abstract class View extends Application {
                 this.messages.add(message);
                 messages.notifyAll();
             }
-        }
-    }
-
-    protected ServerToClientMessage pollMessage() {
-        synchronized (messages) {
-            return messages.poll();
         }
     }
 

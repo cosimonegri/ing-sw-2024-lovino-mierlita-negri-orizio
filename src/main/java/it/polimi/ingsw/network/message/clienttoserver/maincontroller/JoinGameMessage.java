@@ -6,7 +6,7 @@ import it.polimi.ingsw.exceptions.LobbyFullException;
 import it.polimi.ingsw.exceptions.LobbyNotValidException;
 import it.polimi.ingsw.model.GamePhase;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.network.message.servertoclient.GameSetupStartedMessage;
+import it.polimi.ingsw.network.message.servertoclient.ViewUpdateMessage;
 import it.polimi.ingsw.network.message.servertoclient.LobbyMessage;
 import it.polimi.ingsw.network.message.servertoclient.LobbyNotValidMessage;
 
@@ -28,8 +28,7 @@ public class JoinGameMessage extends MainControllerMessage {
             GameController game = controller.joinGame(this.getUsername(), this.gameId);
             game.notifyAllListeners(new LobbyMessage(game.getPlayers().stream().map(Player::getUsername).toList()));
             if (game.getPhase() == GamePhase.SETUP) {
-                //TODO change this with an update view message
-                game.notifyAllListeners(new GameSetupStartedMessage());
+                game.notifyAllListeners(new ViewUpdateMessage(game.getModelView(), "The setup phase has started"));
             }
         } catch (LobbyNotValidException | LobbyFullException e) {
             controller.notifyListener(this.getUsername(), new LobbyNotValidMessage(e.getMessage()));

@@ -1,34 +1,32 @@
 package it.polimi.ingsw.modelView;
 
 import it.polimi.ingsw.model.Board;
-import it.polimi.ingsw.modelView.cardView.PlacedCardView;
-import it.polimi.ingsw.modelView.cardView.PlayableCardView;
+import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class BoardView implements Serializable {
-    private final PlayableCardView resourceTopCard;
-    private final PlayableCardView goldTopCard;
-    private final PlayableCardView[] visibleCards = new PlayableCardView[4];
+    private final PlayableCard resourceTopCard;
+    private final PlayableCard goldTopCard;
+    private final PlayableCard[] visibleCards = new PlayableCard[4];
 
-    public BoardView(Board board){
-        for(int i = 0; i < board.getVisibleCards().length; i++)
-            this.visibleCards[i]= board.getVisibleCards()[i].getView();
-        this.resourceTopCard = board.getResourceDeck().getCards().getFirst().getView();
-        this.goldTopCard = board.getGoldDeck().getCards().getFirst().getView();
+    public BoardView(Board board) {
+        for (int i = 0; i < board.getVisibleCards().length; i++) {
+            this.visibleCards[i]= board.getVisibleCards()[i];
+        }
+        this.resourceTopCard = !board.getResourceDeck().isEmpty() ? board.getResourceDeck().getCards().getLast() : null;
+        this.goldTopCard = !board.getGoldDeck().isEmpty() ? board.getGoldDeck().getCards().getLast() : null;
     }
 
-    public PlayableCardView[] getVisibleCards(){
+    public PlayableCard[] getVisibleCards(){
         return this.visibleCards.clone();
     }
 
-    public PlayableCardView getResourceTopCard() {
+    public PlayableCard getResourceTopCard() {
         return resourceTopCard;
     }
 
-    public PlayableCardView getGoldTopCard() {
+    public PlayableCard getGoldTopCard() {
         return goldTopCard;
     }
 }

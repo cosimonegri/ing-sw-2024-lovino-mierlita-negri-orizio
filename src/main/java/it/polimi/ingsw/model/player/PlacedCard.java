@@ -1,8 +1,8 @@
 package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
-import it.polimi.ingsw.modelView.cardView.PlacedCardView;
-import it.polimi.ingsw.modelView.cardView.PlayableCardView;
+
+import java.io.Serializable;
 
 /**
  * PlacedCard class that represent a card placed on the filed with its relevant data
@@ -11,5 +11,4 @@ import it.polimi.ingsw.modelView.cardView.PlayableCardView;
  * @param flipped true if the card's back is visible, false if the card's front is visible
  * @param placementIndex the card with a higher index covers the card with a lower one
  */
-public record PlacedCard(PlayableCard card, boolean flipped, int placementIndex) {
-}
+public record PlacedCard(PlayableCard card, boolean flipped, int placementIndex) implements Serializable { }

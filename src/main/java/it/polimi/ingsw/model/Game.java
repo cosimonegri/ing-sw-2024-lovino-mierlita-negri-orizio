@@ -5,7 +5,7 @@ import it.polimi.ingsw.exceptions.MarkerNotValidException;
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.model.player.Marker;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.network.message.GameEndedMessage;
+import it.polimi.ingsw.modelView.GameView;
 import it.polimi.ingsw.network.message.servertoclient.ServerToClientMessage;
 
 import java.io.IOException;
@@ -51,16 +51,12 @@ public class Game {
      * Current turn phase of the round
      */
     private TurnPhase turnPhase;
-    /**
-     * Set of available markers
-     */
-    private final Set<Marker> markers;
 
+    //todo handle illlegal players count in controller
     /**
      * Constructor of the class
      *
      * @param playersCount the number of players wanted for the match
-     * @throws IllegalArgumentException when playersCount has not a legal value
      */
     public Game(int playersCount) throws CannotCreateGameException {
         this.playersCount = playersCount;
@@ -68,8 +64,6 @@ public class Game {
         this.players = new ArrayList<>(playersCount);
         this.playerToListener = new HashMap<>(playersCount);
         this.currentPlayer = null;
-
-        this.markers = new HashSet<>(List.of(Marker.values()));
 
         this.currentTurn = 0; // todo maybe remove
         this.gamePhase = GamePhase.WAITING;
@@ -217,23 +211,6 @@ public class Game {
     }
 
     /**
-     * @param username username of a player
-     * @param marker marker to be assigned to the player
-     * @throws MarkerNotValidException when the marker has already been choosen
-     */
-    public void assignMarker(String username, Marker marker) throws MarkerNotValidException {
-        if (!this.markers.contains(marker)) {
-            throw new MarkerNotValidException();
-        }
-        for (Player p : players) {
-            if (p.getUsername().equals(username)) {
-                p.setMarker(marker);
-                markers.remove(marker);
-            }
-        }
-    }
-
-    /**
      * @return true if the lobby is full
      */
     public boolean isLobbyFull() {
@@ -247,5 +224,9 @@ public class Game {
         for(int i=0; i<2; i++){
             this.objectives.add(this.board.getObjectiveDeck().draw());
         }
+    }
+
+    public GameView getView() {
+        return new GameView(this);
     }
 }

@@ -3,10 +3,13 @@ package it.polimi.ingsw.model.player;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.polimi.ingsw.model.deck.card.playablecard.GoldCard;
+import it.polimi.ingsw.model.deck.card.playablecard.corner.Position;
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.*;
-import it.polimi.ingsw.model.exceptions.CoordinatesAreNotValidException;
-import it.polimi.ingsw.modelView.cardView.PlacedCardView;
+import it.polimi.ingsw.exceptions.CoordinatesNotValidException;
+import it.polimi.ingsw.exceptions.NotEnoughResourcesException;
+import it.polimi.ingsw.modelView.FieldView;
 
 /**
  * Field class to represent the placed cards of a player.
@@ -50,31 +53,36 @@ public class Field {
      * Add a card to the field.
      *
      * @param card the card to add
-     * @param flipped true if the card is placed on its back, false if it is placed on its front
+     * @param flipped true if the back side should be visible, false otherwise
      * @param coords x and y coordinates
-     * @throws CoordinatesAreNotValidException when the player cannot place a card at the given coordinates
+     * @throws CoordinatesNotValidException when the player cannot place a card at the given coordinates
+     * @throws NotEnoughResourcesException when the player doesn't have enought resource to place a gold card
      */
-    public void addCard(PlayableCard card, boolean flipped, Coordinates coords) throws CoordinatesAreNotValidException {
+    public void addCard(PlayableCard card, boolean flipped, Coordinates coords) throws CoordinatesNotValidException, NotEnoughResourcesException {
         if (!areCoordsValid(coords.x(), coords.y())) {
-            throw new CoordinatesAreNotValidException();
+            throw new CoordinatesNotValidException();
+        }
+        if (card instanceof GoldCard c && !flipped && !c.hasResourcesNeeded(this)) {
+            throw new NotEnoughResourcesException();
         }
         this.placedCards[coords.x()][coords.y()] = new PlacedCard(card, flipped, this.cardsCount);
         this.cardsCount++;
     }
 
     /**
-     * Add the starter card in the central position of the field.
+     * Add a card in the central position of the field.
      *
-     * @param card the starter card
-     * @param flipped true if the card is placed on its back, false if it is placed on its front
-     * @throws CoordinatesAreNotValidException when the player cannot place a card at the given coordinates
+     * @param card the card to add
+     * @param flipped true if the back side should be visible, false otherwise
+     * @throws CoordinatesNotValidException when the player cannot place a card at the given coordinates
+     * @throws NotEnoughResourcesException when the player doesn't have enought resource to place a gold card
      */
-    public void addStarter(PlayableCard card, boolean flipped) throws CoordinatesAreNotValidException {
+    public void addCentralCard(PlayableCard card, boolean flipped) throws CoordinatesNotValidException, NotEnoughResourcesException {
         addCard(card, flipped, new Coordinates(SIZE / 2, SIZE / 2));
     }
 
     /**
-     * @param coords x and y coordinates
+     * @param coords x and y coordinates; they must be valid
      * @return the placed card at the given coordinates
      */
     public PlacedCard getPlacedCard(Coordinates coords) {
@@ -82,7 +90,7 @@ public class Field {
     }
 
     /**
-     * @return a list containing all the coordinates where the player could place a card
+     * @return a list containing all the coordinates where the player can place a card
      */
     public List<Coordinates> getAllValidCoords() {
         List<Coordinates> coords = new ArrayList<>();
@@ -135,6 +143,52 @@ public class Field {
             }
         }
         return count;
+    }
+
+    /**
+     * @return the top-left coordinates of the used portion of the field, including the cells in which
+     * the player could place a card
+     */
+    public Coordinates getTopLeftBound() {
+        int leftX = size() - 1;
+        int topY = 0;
+        for (int x = 0; x < size(); x++) {
+            for (int y = 0; y < size(); y++) {
+                if (getPlacedCard(new Coordinates(x, y)) == null) {
+                    continue;
+                }
+                leftX = Math.min(leftX, x);
+                topY = Math.max(topY, y);
+            }
+        }
+        for (Coordinates coords : getAllValidCoords()) {
+            leftX = Math.min(leftX, coords.x());
+            topY = Math.max(topY, coords.y());
+        }
+        return new Coordinates(leftX, topY);
+    }
+
+    /**
+     * @return the bottom-right coordinates of the used portion of the field, including the cells in which
+     * the player could place a card
+     */
+    public Coordinates getBottomRightBound() {
+        int rightX = 0;
+        int bottomY = size() - 1;
+        for (int x = 0; x < size(); x++) {
+            for (int y = 0; y < size(); y++) {
+                if (getPlacedCard(new Coordinates(x, y)) == null) {
+                    continue;
+                }
+                rightX = Math.max(rightX, x);
+                bottomY = Math.min(bottomY, y);
+            }
+        }
+        for (Coordinates coords : getAllValidCoords()) {
+            rightX = Math.max(rightX, coords.x());
+            bottomY = Math.min(bottomY, coords.y());
+        }
+        return new Coordinates(rightX, bottomY);
     }
 
     /**
@@ -250,14 +304,15 @@ public class Field {
     /**
      * Get the coordinates of the required card
      *
-     * @param id id of the card
+     * @param card card to find on the field
      * @return the coordinates of the card if it exists in the field, otherwise null
      */
-    public Coordinates findCard(int id) {
+    public Coordinates findCard(PlayableCard card) {
         for (int x = 0; x < SIZE; x++) {
             for (int y = 0; y < SIZE; y++) {
-                // if the ids match
-                if (this.placedCards[x][y] != null && this.placedCards[x][y].card().getId() == id) return new Coordinates(x, y);
+                if (this.placedCards[x][y] != null && this.placedCards[x][y].card().equals(card)) {
+                    return new Coordinates(x, y);
+                }
             }
         }
         return null;
@@ -267,7 +322,7 @@ public class Field {
      * @param coords of the given position
      * @return the number of cards around the given position
      */
-    public int numOfNeighbors(Coordinates coords){
+    public int numOfNeighbors(Coordinates coords) {
         int neighborsCount = 0;
         for (int dx = -1; dx <= 1; dx += 2) {
             for (int dy = -1; dy <= 1; dy += 2) {
@@ -386,5 +441,9 @@ public class Field {
             return new Coordinates(x + 1, y - 3);
         }
     }
+
+    public FieldView getView() {
+        return new FieldView(this);
     }
+}
 

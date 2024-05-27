@@ -17,9 +17,8 @@ public class SocketServerStub implements ServerInterface {
     private final ObjectOutputStream output;
     private final ObjectInputStream input;
 
-    //TODO add ip as parameter
-    public SocketServerStub() throws IOException {
-        this.clientSocket = new Socket(Config.HOSTNAME, Config.SOCKET_PORT);
+    public SocketServerStub(String ip) throws IOException {
+        this.clientSocket = new Socket(ip, Config.SOCKET_PORT);
         this.output = new ObjectOutputStream(this.clientSocket.getOutputStream());
         this.input = new ObjectInputStream(this.clientSocket.getInputStream());
     }

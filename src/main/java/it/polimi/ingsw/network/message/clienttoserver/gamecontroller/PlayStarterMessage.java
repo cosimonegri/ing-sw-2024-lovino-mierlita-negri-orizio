@@ -16,5 +16,6 @@ public class PlayStarterMessage extends GameControllerMessage {
 
     @Override
     public void execute(GameController controller) {
+        controller.playStarter(this.getUsername(), this.flipped);
     }
 }

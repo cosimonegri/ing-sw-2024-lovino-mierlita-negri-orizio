@@ -24,15 +24,15 @@ public class Deck<T extends Card> {
     }
 
     /**
-     * Remove the card at the top of the deck and return it
+     * Remove the card at the top of the deck and return it. The deck must not be empty.
      *
      * @return the card at the top of the deck
      */
     public T draw() {
-        if (cards.isEmpty()) throw new IllegalStateException("Deck is empty");
         return cards.removeLast();
     }
 
+    //todo maybe replace this with a getTop
     public List<T> getCards() {
         return Collections.unmodifiableList(cards);
     }
