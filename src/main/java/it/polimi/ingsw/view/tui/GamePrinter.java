@@ -349,7 +349,15 @@ public class GamePrinter {
                         }
                     }
 
-                    default -> System.out.print(cardColor + leftCorner + "      " + rightCorner + RESET);
+                    default -> {
+                        if (card.getPoints() == 1 && rowPrinterIndex == 0) {
+                            System.out.print(cardColor + leftCorner + "  "
+                                    + Printer.YELLOW_BACKGROUND_BRIGHT + Printer.BLACK + "1$" + cardColor
+                                    + "  " + rightCorner + RESET);
+                        } else{
+                            System.out.print(cardColor + leftCorner + "      " + rightCorner + RESET);
+                        }
+                    }
                 }
             } else {
                 System.out.print(cardColor + "            " + RESET);
