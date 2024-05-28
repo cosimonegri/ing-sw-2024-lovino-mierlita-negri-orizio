@@ -274,15 +274,15 @@ public class TUI extends View {
         System.out.println();
         int choice = chooseInRange("Which card do you want to draw", 1, 6);
         DrawType type = switch (choice) {
-            case 5 -> DrawType.GOLD;
-            case 6 -> DrawType.RESOURCE;
+            case 1 -> DrawType.GOLD;
+            case 4 -> DrawType.RESOURCE;
             default -> DrawType.VISIBLE;
         };
         PlayableCard card = switch (choice) {
-            case 1 -> this.gameView.getBoard().getVisibleCards()[0];
-            case 2 -> this.gameView.getBoard().getVisibleCards()[1];
-            case 3 -> this.gameView.getBoard().getVisibleCards()[2];
-            case 4 -> this.gameView.getBoard().getVisibleCards()[3];
+            case 2 -> this.gameView.getBoard().getVisibleCards()[0];
+            case 3 -> this.gameView.getBoard().getVisibleCards()[1];
+            case 5 -> this.gameView.getBoard().getVisibleCards()[2];
+            case 6 -> this.gameView.getBoard().getVisibleCards()[3];
             default -> null;
         };
         notifyAllListeners(new DrawCardMessage(this.username, type, card));
