@@ -6,10 +6,6 @@ public class Config {
     public static final int RMI_PORT = 1099;
     public static final String RMI_NAME = "CodexNaturalisServer-PSP33";
 
-    public static final String PARAM_TUI = "tui";
-    public static final String PARAM_GUI = "gui";
-    public static final String PARAM_RMI = "rmi";
-    public static final String PARAM_SOCKET = "socket";
 
     public static final int MIN_GAME_ID = 0;
     public static final int MAX_GAME_ID = 999999;

@@ -2,8 +2,8 @@ package it.polimi.ingsw;
 
 import it.polimi.ingsw.network.ConnectionType;
 import it.polimi.ingsw.network.client.Client;
+import it.polimi.ingsw.view.tui.TUI;
 import it.polimi.ingsw.view.gui.GUI;
-import it.polimi.ingsw.view.TUI;
 import it.polimi.ingsw.view.View;
 
 public class AppClient {
@@ -26,17 +26,21 @@ public class AppClient {
         for (int i = 0; i < args.length - 1; i++) {
             switch (args[i]) {
                 // connection type, default socket
-                case "-n" -> connection = args[i + 1].equalsIgnoreCase("RMI") ? "RMI" : "SOCKET";
+                case "-n" -> connection = args[i + 1].equalsIgnoreCase("RMI") ? "RMI" : null;
                 // user interface, default gui
-                case "-i" -> view = args[i + 1].equalsIgnoreCase("TUI") ? new TUI() : new GUI();
+                case "-i" -> view = args[i + 1].equalsIgnoreCase("TUI") ? new TUI() : null;
                 // ip, default localhost
-                case "-h" -> ip = args[i + 1].matches(IPV4_PATTERN) ? args[i + 1] : "127.0.0.1";
+                case "-h" -> ip = args[i + 1].matches(IPV4_PATTERN) ? args[i + 1] : null;
             }
+        }
+        if (connection == null || view == null || ip == null) {
+            System.err.println("Invalid parameters.");
+            System.exit(1);
         }
 //        System.out.println("Connection: " + connection);
 //        System.out.println("View: " + view.getClass());
 //        System.out.println("Ip: " + ip);
-        Client client = new Client(view, ConnectionType.valueOf(connection));
+        Client client = new Client(view, ConnectionType.valueOf(connection), ip);
         client.run();
 
     }

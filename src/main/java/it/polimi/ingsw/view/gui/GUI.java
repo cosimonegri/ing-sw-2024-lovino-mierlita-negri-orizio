@@ -380,6 +380,18 @@ public class GUI extends View {
             new Thread(joinGameTask).start();
         });
 
+        gameIdField.setOnKeyPressed( event -> {
+            if( event.getCode() == KeyCode.ENTER) {
+                joinGameButton.fire();
+            }
+        } );
+
+        playersCountField.setOnKeyPressed( event -> {
+            if( event.getCode() == KeyCode.ENTER) {
+                createGameButton.fire();
+            }
+        } );
+
         // add transition
         PauseTransition stageShow = new PauseTransition(Duration.seconds(0.5));
         FadeTransition lobbyTextFadeIn = fadeIn(lobbyText, 2);

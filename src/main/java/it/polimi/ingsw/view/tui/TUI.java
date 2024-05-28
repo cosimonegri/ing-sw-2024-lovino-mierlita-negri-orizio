@@ -17,6 +17,7 @@ import it.polimi.ingsw.network.message.clienttoserver.maincontroller.CreateGameM
 import it.polimi.ingsw.network.message.servertoclient.*;
 import it.polimi.ingsw.utilities.Printer;
 import it.polimi.ingsw.view.View;
+import javafx.stage.Stage;
 
 import java.util.*;
 
@@ -27,6 +28,11 @@ public class TUI extends View {
     public TUI() {
         super();
         this.scanner = new Scanner(System.in);
+    }
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        System.exit(1);
     }
 
     public void run() {
