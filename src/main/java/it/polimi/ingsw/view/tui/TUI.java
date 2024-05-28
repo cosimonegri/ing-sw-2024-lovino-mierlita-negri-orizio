@@ -238,7 +238,7 @@ public class TUI extends View {
             ServerToClientMessage response = waitForMessage();
 
             if (response instanceof PlayCardAckMessage) {
-                printBoard();
+                printBoard(true);
                 drawCard();
             }
             else if (response instanceof PlayCardErrorMessage r) {
@@ -272,16 +272,7 @@ public class TUI extends View {
 
     private void drawCard() {
         System.out.println();
-        System.out.println("Which card do you want to draw?");
-        int choice = chooseOption(
-                true,
-                "Visible top-left",
-                "Visible top-right",
-                "Visible bottom-left",
-                "Visible bottom-right",
-                "Gold from deck",
-                "Resource from deck"
-        );
+        int choice = chooseInRange("Which card do you want to draw", 1, 6);
         DrawType type = switch (choice) {
             case 5 -> DrawType.GOLD;
             case 6 -> DrawType.RESOURCE;
@@ -322,17 +313,17 @@ public class TUI extends View {
                 }
                 System.out.println();
                 System.out.println("BOARD:");
-                printBoard();
+                printBoard(false);
                 System.out.println();
                 System.out.println("YOUR FIELD:");
                 System.out.println();
                 this.numToCoordinates = GamePrinter.printField(this.gameView.getPlayer(this.username).getField());
                 System.out.println();
                 System.out.println("YOUR HAND:");
-                printHand();
+                printHand(true);
                 playTurn();
             }
-            case 2 -> printBoard();
+            case 2 -> printBoard(false);
             case 3 -> {
                 for (PlayerView player : this.gameView.getSortedPlayers()) {
                     System.out.println(player.getUsername() + ": " + player.getScore() + " points");
@@ -342,22 +333,31 @@ public class TUI extends View {
                 System.out.println();
                 GamePrinter.printField(this.gameView.getPlayer(this.username).getField());
             }
-            case 5 -> printHand();
+            case 5 -> printHand(false);
             default -> printOpponent(this.gameView.getPlayer(choiceToUsername.get(choice)));
         }
     }
 
-    private void printBoard() {
+    private void printBoard(boolean hasOptions) {
         System.out.println();
+        if (hasOptions) {
+            System.out.println(" 1              2              3");
+        }
         GamePrinter.printBoard(this.gameView.getBoard());
+        if (hasOptions) {
+            System.out.println(" 4              5              6");
+        }
         System.out.println();
         for (ObjectiveCard obj : this.gameView.getObjectives()) {
             System.out.println("Common objective: " + GamePrinter.getObjectiveDescription(obj));
         }
     }
 
-    private void printHand() {
+    private void printHand(boolean hasOptions) {
         System.out.println();
+        if (hasOptions) {
+            System.out.println(" 1              2              3");
+        }
         GamePrinter.printHand(this.gameView.getPlayer(this.username).getHand(), false);
         System.out.println();
         System.out.println("Private objective: " + GamePrinter.getObjectiveDescription(this.gameView.getPlayer(this.username).getObjective()));
