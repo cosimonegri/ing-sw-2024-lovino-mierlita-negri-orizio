@@ -26,9 +26,11 @@ public class JoinGameMessage extends MainControllerMessage {
     public void execute(MainController controller) {
         try {
             GameController game = controller.joinGame(this.getUsername(), this.gameId);
-            game.notifyAllListeners(new LobbyMessage(game.getPlayers().stream().map(Player::getUsername).toList()));
+            game.notifyAllListeners(new LobbyMessage(
+                    game.getPlayers().stream().map(Player::getUsername).toList(), this.getUsername() + " has joined."
+            ));
             if (game.getPhase() == GamePhase.SETUP) {
-                game.notifyAllListeners(new ViewUpdateMessage(game.getModelView(), "The setup phase has started"));
+                game.notifyAllListeners(new ViewUpdateMessage(game.getModelView(), "Lobby full. The game has started."));
             }
         } catch (LobbyNotValidException | LobbyFullException e) {
             controller.notifyListener(this.getUsername(), new LobbyNotValidMessage(e.getMessage()));

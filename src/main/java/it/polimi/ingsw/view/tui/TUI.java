@@ -39,9 +39,9 @@ public class TUI extends View {
         printTitle();
         connectUsername();
         createOrJoinGame();
-        setupGame();
 
         Thread mainThread = new Thread(() -> {
+            setupGame();
             while (true) {
                 chooseAction();
             }
@@ -52,18 +52,23 @@ public class TUI extends View {
             while (true) {
                 ServerToClientMessage message = waitForMessage();
 
-                if (message instanceof ViewUpdateMessage m) {
-                    this.gameView = m.getGameView();
-                    Printer.printInfo(m.getMessage());
-                    if (this.gameView.isCurrentPlayer(this.username)) {
-                        Printer.printInfo("It's your turn");
+                switch (message) {
+                    case ViewUpdateMessage m -> {
+                        this.gameView = m.getGameView();
+                        Printer.printInfo(m.getMessage());
+                        if (this.gameView.isEnded()) {
+                            printLeaderboard();
+                            System.exit(0);
+                        }
+                        if (this.gameView.isCurrentPlayer(this.username)) {
+                            Printer.printInfo("It's your turn");
+                        }
                     }
-                }
-                else if (message instanceof LobbyMessage m) {
-                    printLobbyUsernames(m.getUsernames());
-                }
-                else {
-                    addMessage(message);
+                    case LobbyMessage m -> {
+                        Printer.printInfo(m.getMessage());
+                        printLobbyUsernames(m.getUsernames());
+                    }
+                    case null, default -> addMessage(message);
                 }
             }
         });
@@ -123,6 +128,7 @@ public class TUI extends View {
                 System.exit(1);
             }
             else if (response instanceof LobbyMessage r) {
+                Printer.printInfo(r.getMessage());
                 printLobbyUsernames(r.getUsernames());
             }
             else if (response instanceof LobbyNotValidMessage r) {
@@ -131,7 +137,7 @@ public class TUI extends View {
             }
             else if (response instanceof ViewUpdateMessage r) {
                 this.gameView = r.getGameView();
-                System.out.println("Lobby full. The game is starting...");
+                Printer.printInfo(r.getMessage());
                 break;
             }
             else {
@@ -194,8 +200,7 @@ public class TUI extends View {
                 Printer.printError("You cannot choose this objective");
                 chooseObjective();
             }
-            else if (response instanceof ViewUpdateMessage) {
-                addMessage(response);
+            else if (response instanceof SetupEndedMessage) {
                 break;
             }
             else {
@@ -330,11 +335,7 @@ public class TUI extends View {
                 playTurn();
             }
             case 2 -> printBoard(false);
-            case 3 -> {
-                for (PlayerView player : this.gameView.getSortedPlayers()) {
-                    System.out.println(player.getUsername() + ": " + player.getScore() + " points");
-                }
-            }
+            case 3 -> printLeaderboard();
             case 4 -> {
                 System.out.println();
                 GamePrinter.printField(this.gameView.getPlayer(this.username).getField());
@@ -356,6 +357,13 @@ public class TUI extends View {
         System.out.println();
         for (ObjectiveCard obj : this.gameView.getObjectives()) {
             System.out.println("Common objective: " + GamePrinter.getObjectiveDescription(obj));
+        }
+    }
+
+    private void printLeaderboard() {
+        System.out.println();
+        for (PlayerView player : this.gameView.getSortedPlayers()) {
+            System.out.println(player.getUsername() + ": " + player.getScore() + " points");
         }
     }
 

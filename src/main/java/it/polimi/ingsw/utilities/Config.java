@@ -7,12 +7,21 @@ public class Config {
     public static final String RMI_NAME = "CodexNaturalisServer-PSP33";
 
 
+    public static final int PING_TIME_MS = 5000;
+
     public static final int MIN_GAME_ID = 0;
     public static final int MAX_GAME_ID = 999999;
 
-    public static final int PING_TIME_MS = 5000;
+    public static final int SCORE_FOR_FINAL_PHASE = 20;
 
     public static boolean isUsernameValid(String username) {
         return !username.isEmpty() && !username.isBlank() && username.matches("[a-zA-Z_0-9]*");
+    }
+
+    public static String pluralize(String string, int count) {
+        if (count == 1) {
+            return count + " " + string;
+        }
+        return count + " " + string + "s";
     }
 }

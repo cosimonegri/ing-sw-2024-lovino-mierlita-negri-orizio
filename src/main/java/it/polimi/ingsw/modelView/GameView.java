@@ -1,6 +1,7 @@
 package it.polimi.ingsw.modelView;
 
 import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.GamePhase;
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.model.player.Player;
 
@@ -13,6 +14,7 @@ public class GameView implements Serializable {
     private final PlayerView currentPlayer;
     private final BoardView board;
     private final List<ObjectiveCard> objectives = new ArrayList<>();
+    private final boolean isEnded;
 
     public GameView(Game game) {
         this.playersCount = game.getPlayersCount();
@@ -22,6 +24,7 @@ public class GameView implements Serializable {
         }
         this.board = game.getBoard().getView();
         this.objectives.addAll(game.getObjectives());
+        this.isEnded = game.getGamePhase() == GamePhase.ENDED;
     }
 
     public int getPlayersCount() {
@@ -64,5 +67,9 @@ public class GameView implements Serializable {
 
     public List<ObjectiveCard> getObjectives() {
         return Collections.unmodifiableList(this.objectives);
+    }
+
+    public boolean isEnded() {
+        return this.isEnded;
     }
 }

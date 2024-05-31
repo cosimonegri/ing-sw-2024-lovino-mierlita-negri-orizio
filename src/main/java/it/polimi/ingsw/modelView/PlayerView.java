@@ -14,6 +14,7 @@ public class PlayerView implements Serializable, Comparable<PlayerView> {
     private final String username;
     private final Marker marker;
     private final int score;
+    private final int objectiveScore;
     private final PlayableCard starterCard;
     private final ObjectiveCard objective;
     private final List<ObjectiveCard> objectiveOptions;
@@ -27,6 +28,7 @@ public class PlayerView implements Serializable, Comparable<PlayerView> {
         this.score = player.getScore();
         this.starterCard = player.getStarterCard();
         this.objective = player.getObjCard();
+        this.objectiveScore = player.getObjectiveScore();
         this.objectiveOptions = new ArrayList<>(player.getObjOptions());
         this.hand = new ArrayList<>(player.getHand());
         this.field = player.getField().getView();
@@ -44,6 +46,10 @@ public class PlayerView implements Serializable, Comparable<PlayerView> {
 
     public int getScore() {
         return score;
+    }
+
+    public int getObjectiveScore() {
+        return objectiveScore;
     }
 
     public PlayableCard getStarterCard() {

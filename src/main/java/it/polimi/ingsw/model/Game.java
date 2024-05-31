@@ -1,12 +1,11 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.CannotCreateGameException;
-import it.polimi.ingsw.exceptions.MarkerNotValidException;
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
-import it.polimi.ingsw.model.player.Marker;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.modelView.GameView;
 import it.polimi.ingsw.network.message.servertoclient.ServerToClientMessage;
+import it.polimi.ingsw.utilities.Config;
 
 import java.io.IOException;
 import java.util.*;
@@ -40,6 +39,10 @@ public class Game {
      */
     private int currentTurn;
     /**
+     * Number representing the last turn of the game. Null if it is not already defined
+     */
+    private Optional<Integer> lastTurn;
+    /**
      * List of the two public objectives
      */
     private final List<ObjectiveCard> objectives;
@@ -65,7 +68,8 @@ public class Game {
         this.playerToListener = new HashMap<>(playersCount);
         this.currentPlayer = null;
 
-        this.currentTurn = 0; // todo maybe remove
+        this.currentTurn = 0;
+        this.lastTurn = Optional.empty();
         this.gamePhase = GamePhase.WAITING;
 
         this.objectives = new ArrayList<>(2);
@@ -145,7 +149,9 @@ public class Game {
      * gives to all players their starting hands and assigns the first turn and player.
      */
     public void start() {
-        this.addObjectives();
+        this.objectives.add(this.board.getObjectiveDeck().draw());
+        this.objectives.add(this.board.getObjectiveDeck().draw());
+
         this.currentTurn = 1;
         this.currentPlayer = this.players.getFirst();
 
@@ -165,9 +171,29 @@ public class Game {
     }
 
     /**
-     * Takes the game to the next turn changing the current player to the next in line
+     * Calculate the objective points for each player and add them to their score
+     */
+    public void calculateObjectivePoints() {
+        for (Player player : this.players) {
+            int objectiveScore = 0;
+            for (ObjectiveCard objective : this.objectives) {
+                objectiveScore += objective.getTotalPoints(player.getField());
+            }
+            objectiveScore += player.getObjCard().getTotalPoints(player.getField());
+            player.setObjectiveScore(objectiveScore);
+        }
+    }
+
+    //todo check again if we will add disconnections
+    /**
+     * Takes the game to the next turn, setting the last turn if necessary
+     * and changing the current player to the next one
      */
     public void advanceTurn() {
+        // set the last turn only if the final pahse has not already started
+        if (this.lastTurn.isEmpty()) {
+            this.lastTurn = getLastTurn();
+        }
         currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % playersCount);
         this.currentTurn += 1;
     }
@@ -186,8 +212,12 @@ public class Game {
         return this.board;
     }
 
-    public int getCurrentTurn(){
+    public int getCurrentTurn() {
         return this.currentTurn;
+    }
+
+    public Optional<Integer> getRemainingTurns() {
+        return this.lastTurn.map(lastTurn -> Math.max(0, lastTurn - this.currentTurn + 1));
     }
 
     public List<ObjectiveCard> getObjectives(){
@@ -217,16 +247,31 @@ public class Game {
         return this.playersCount == this.players.size();
     }
 
-    /**
-     * Draws the two public objectives and reveals them
-     */
-    private void addObjectives(){
-        for(int i=0; i<2; i++){
-            this.objectives.add(this.board.getObjectiveDeck().draw());
-        }
-    }
-
     public GameView getView() {
         return new GameView(this);
+    }
+
+    /**
+     * @return the number of the last turn if the final phase has been reached, otherwise null
+     */
+    private Optional<Integer> getLastTurn() {
+        Integer lastTurn = null;
+        boolean hasReachedScore = false;
+        for (Player player : this.players) {
+            if (player.getScore() >= Config.SCORE_FOR_FINAL_PHASE) {
+                hasReachedScore = true;
+                break;
+            }
+        }
+        // if a player has reached 20 points or if both decks are empty
+        if (hasReachedScore || (board.getGoldDeck().isEmpty()) && board.getResourceDeck().isEmpty()) {
+            // set a last round for everyone
+            lastTurn = this.currentTurn + this.playersCount;
+            // adjust it so that everyone is going to make the same amoutn of moves
+            if (lastTurn % this.playersCount != 0) {
+                lastTurn += this.playersCount - (lastTurn % this.playersCount);
+            }
+        }
+        return Optional.ofNullable(lastTurn);
     }
 }

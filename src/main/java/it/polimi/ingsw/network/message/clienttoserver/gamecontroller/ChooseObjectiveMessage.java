@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.GamePhase;
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.network.message.servertoclient.ChooseObjectiveAckMessage;
 import it.polimi.ingsw.network.message.servertoclient.ChooseObjectiveErrorMessage;
+import it.polimi.ingsw.network.message.servertoclient.SetupEndedMessage;
 import it.polimi.ingsw.network.message.servertoclient.ViewUpdateMessage;
 
 public class ChooseObjectiveMessage extends GameControllerMessage {
@@ -26,7 +27,8 @@ public class ChooseObjectiveMessage extends GameControllerMessage {
             controller.chooseObjective(this.getUsername(), this.objective);
             controller.notifyListener(this.getUsername(), new ChooseObjectiveAckMessage());
             if (controller.getPhase() == GamePhase.MAIN) {
-                controller.notifyAllListeners(new ViewUpdateMessage(controller.getModelView(), "The game has started"));
+                controller.notifyAllListeners(new SetupEndedMessage());
+                controller.notifyAllListeners(new ViewUpdateMessage(controller.getModelView(), "The setup phase has finished."));
             }
         } catch (CardNotInHandException e) {
             controller.notifyListener(this.getUsername(), new ChooseObjectiveErrorMessage());

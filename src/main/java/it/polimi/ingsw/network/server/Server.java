@@ -6,16 +6,15 @@ import it.polimi.ingsw.exceptions.UsernameNotPlayingException;
 import it.polimi.ingsw.model.GamePhase;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.client.ClientInterface;
-import it.polimi.ingsw.network.message.GameEndedMessage;
 import it.polimi.ingsw.network.message.clienttoserver.ClientToServerMessage;
 import it.polimi.ingsw.network.message.clienttoserver.PingResponse;
 import it.polimi.ingsw.network.message.clienttoserver.gamecontroller.GameControllerMessage;
 import it.polimi.ingsw.network.message.clienttoserver.maincontroller.ConnectMessage;
 import it.polimi.ingsw.network.message.clienttoserver.UsernameMessage;
 import it.polimi.ingsw.network.message.clienttoserver.maincontroller.MainControllerMessage;
-import it.polimi.ingsw.network.message.servertoclient.DisconnectMessage;
 import it.polimi.ingsw.network.message.servertoclient.LobbyMessage;
 import it.polimi.ingsw.network.message.servertoclient.PingRequest;
+import it.polimi.ingsw.network.message.servertoclient.ViewUpdateMessage;
 import it.polimi.ingsw.utilities.Config;
 
 import java.rmi.RemoteException;
@@ -126,13 +125,14 @@ public class Server implements ServerInterface {
                     try {
                         usernameToTimer.remove(username);
                         GameController game = controller.leaveGame(username);
-                        game.notifyAllListeners(new DisconnectMessage(username));
                         if (game.getPhase() == GamePhase.WAITING) {
                             game.notifyAllListeners(new LobbyMessage(
-                                    game.getPlayers().stream().map(Player::getUsername).toList())
-                            );
-                        } else if (game.getPhase() == GamePhase.ENDED) {
-                            game.notifyAllListeners(new GameEndedMessage("The game is ended"));
+                                    game.getPlayers().stream().map(Player::getUsername).toList(), username + " has left."
+                            ));
+                        } else {
+                            game.notifyAllListeners(new ViewUpdateMessage(
+                                    game.getModelView(), username + " has left. The game has ended."
+                            ));
                         }
                     }
                     catch (UsernameNotPlayingException e) {

@@ -31,6 +31,10 @@ public class Player {
      */
     private int score;
     /**
+     * The score obtained from objectives cards
+     */
+    private int objectiveScore;
+    /**
      * The private objective of the player
      */
     private ObjectiveCard objCard;
@@ -77,15 +81,28 @@ public class Player {
     /**
      * Change the player score. It should only increase
      *
-     * @param newPoints the points to add (>=0)
-     * @throws IllegalArgumentException the points can only increase
+     * @param newPoints the points to add
+     * @throws IllegalArgumentException when newPoints is <= 0
      */
     public void increaseScore(int newPoints) {
-        // Check if >= 0
         if (newPoints < 0) throw new IllegalArgumentException("NewPoints must be a positive value");
         this.score += newPoints;
     }
 
+    public int getObjectiveScore() {
+        return this.objectiveScore;
+    }
+
+    /**
+     * Set the score obtained from objectives cards
+     *
+     * @param newPoints the points to add
+     * @throws IllegalArgumentException when newPoints is <= 0
+     */
+    public void setObjectiveScore(int newPoints) {
+        if (newPoints < 0) throw new IllegalArgumentException("NewPoints must be a positive value");
+        this.objectiveScore = newPoints;
+    }
 
     /**
      * Take a new card. Maximum three cards

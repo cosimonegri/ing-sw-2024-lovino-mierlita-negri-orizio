@@ -16,6 +16,7 @@ import it.polimi.ingsw.network.message.servertoclient.ServerToClientMessage;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class GameController {
     private final int gameId;
@@ -150,6 +151,10 @@ public class GameController {
         }
         model.advanceTurn();
         model.setTurnPhase(TurnPhase.PLAY);
+        if (model.getRemainingTurns().isPresent() && model.getRemainingTurns().get() == 0) {
+            model.setGamePhase(GamePhase.ENDED);
+            model.calculateObjectivePoints();
+        }
     }
 
     synchronized public List<Player> getPlayers() {
@@ -158,6 +163,10 @@ public class GameController {
 
     synchronized public Player getCurrentPlayer() {
         return model.getCurrentPlayer();
+    }
+
+    synchronized public Optional<Integer> getRemainingTurns() {
+        return model.getRemainingTurns();
     }
 
     synchronized public GamePhase getPhase() {
