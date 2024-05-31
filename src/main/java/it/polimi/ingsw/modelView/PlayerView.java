@@ -44,8 +44,8 @@ public class PlayerView implements Serializable, Comparable<PlayerView> {
         return marker;
     }
 
-    public int getScore() {
-        return score;
+    public int getTotalScore() {
+        return score + objectiveScore;
     }
 
     public int getObjectiveScore() {
@@ -78,6 +78,9 @@ public class PlayerView implements Serializable, Comparable<PlayerView> {
 
     @Override
     public int compareTo(PlayerView other) {
-        return Integer.compare(other.score, this.score);
+        if (other.getTotalScore() != this.getTotalScore()) {
+            return Integer.compare(other.getTotalScore(), this.getTotalScore());
+        };
+        return Integer.compare(other.objectiveScore, this.objectiveScore);
     }
 }

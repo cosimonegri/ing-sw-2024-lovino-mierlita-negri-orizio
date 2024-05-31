@@ -15,6 +15,7 @@ import it.polimi.ingsw.network.message.clienttoserver.gamecontroller.PlayStarter
 import it.polimi.ingsw.network.message.clienttoserver.maincontroller.JoinGameMessage;
 import it.polimi.ingsw.network.message.clienttoserver.maincontroller.CreateGameMessage;
 import it.polimi.ingsw.network.message.servertoclient.*;
+import it.polimi.ingsw.utilities.Config;
 import it.polimi.ingsw.utilities.Printer;
 import it.polimi.ingsw.view.View;
 import javafx.stage.Stage;
@@ -363,7 +364,10 @@ public class TUI extends View {
     private void printLeaderboard() {
         System.out.println();
         for (PlayerView player : this.gameView.getSortedPlayers()) {
-            System.out.println(player.getUsername() + ": " + player.getScore() + " points");
+            System.out.println(player.getUsername() + ": " +
+                    Config.pluralize("point", player.getTotalScore()) + " (" +
+                    player.getObjectiveScore() + " from objectives)"
+            );
         }
     }
 
