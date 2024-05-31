@@ -43,7 +43,15 @@ public class FieldView implements Serializable {
         return Collections.unmodifiableList(this.allValidCoords);
     }
 
-    public PlacedCard getPlacedCard(Coordinates coords){
+    /**
+     * @param coords coordinates
+     * @return whether the coordinates are out of bound
+     */
+    public boolean areCoordsOutOfBound(Coordinates coords) {
+        return coords.x() < 0 || coords.x() >= size() || coords.y() < 0 || coords.y() >= size();
+    }
+
+    public PlacedCard getPlacedCard(Coordinates coords) {
         return this.placedCards[coords.x()][coords.y()];
     }
 

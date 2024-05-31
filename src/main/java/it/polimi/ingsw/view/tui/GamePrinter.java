@@ -76,11 +76,12 @@ public class GamePrinter {
                         List<Integer> neighborPlacementIndexes = new ArrayList<>();
                         for(int dy = 1; dy >= -2; dy-=2) {
                             for(int dx = -1; dx < 2; dx+=2) {
-                                if(field.getPlacedCard(new Coordinates(cell.x() + dx, cell.y() + dy)) != null) {
-                                    neighborPlacementIndexes.add(
-                                            field.getPlacedCard(
-                                                    new Coordinates(cell.x() + dx, cell.y() + dy)).placementIndex());
-                                } else { neighborPlacementIndexes.add(0); }
+                                Coordinates neighborCoords = new Coordinates(cell.x() + dx, cell.y() + dy);
+                                if (field.areCoordsOutOfBound(neighborCoords) || field.getPlacedCard(neighborCoords) == null) {
+                                    neighborPlacementIndexes.add(0);
+                                } else {
+                                    neighborPlacementIndexes.add(field.getPlacedCard(neighborCoords).placementIndex());
+                                }
                             }
                         }
 
