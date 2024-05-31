@@ -16,7 +16,7 @@ public class AppClient {
 
     }
     public static void main(String[] args) {
-        String connection = "SOCKET";
+        ConnectionType connection = ConnectionType.SOCKET;
         View view = new GUI();
         String ip = "127.0.0.1";
 
@@ -25,9 +25,9 @@ public class AppClient {
                 // connection type, default socket
                 case "-n" -> {
                     if(args[i + 1].equalsIgnoreCase("RMI")) {
-                        connection = "RMI";
+                        connection = ConnectionType.RMI;
                     } else if(args[i + 1].equalsIgnoreCase("SOCKET")) {
-                        connection = "SOCKET";
+                        connection = ConnectionType.SOCKET;
                     } else {
                         System.err.println("Invalid connection parameter.");
                         System.exit(1);
@@ -56,7 +56,7 @@ public class AppClient {
             }
         }
 
-        Client client = new Client(view, ConnectionType.valueOf(connection), ip);
+        Client client = new Client(view, connection, ip);
         client.run();
     }
 }
