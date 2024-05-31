@@ -114,10 +114,12 @@ public class GameController {
         }
         model.getCurrentPlayer().getField().addCard(card, flipped, coords);
         model.getCurrentPlayer().removeFromHand(card);
-        model.getCurrentPlayer().increaseScore(card instanceof GoldCard c
-                ? c.getTotalPoints(model.getCurrentPlayer().getField())
-                : card.getPoints()
-        );
+        if (!flipped) {
+            model.getCurrentPlayer().increaseScore(card instanceof GoldCard c
+                    ? c.getTotalPoints(model.getCurrentPlayer().getField())
+                    : card.getPoints()
+            );
+        }
         model.setTurnPhase(TurnPhase.DRAW);
     }
 
