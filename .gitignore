@@ -10,7 +10,7 @@
 target/*
 
 # Ignore game assets
-images/*
+src/main/resources/images/*
 
 # User-specific stuff
 .idea/**/workspace.xml
