@@ -302,7 +302,7 @@ public class TUI extends View {
 
     private void chooseAction() {
         List<String> options = new ArrayList<>(Arrays.asList(
-                "Play turn", "Print board", "Print leaderboard", "Print my field", "Print my hand"
+                "Play turn", "Print my field and hand", "Print board"
         ));
         Map<Integer, String> choiceToUsername = new HashMap<>();
         int playerChoiceIndex  = options.size() + 1;
@@ -324,6 +324,9 @@ public class TUI extends View {
                     break;
                 }
                 System.out.println();
+                System.out.println("LEADERBOARD:");
+                printLeaderboard();
+                System.out.println();
                 System.out.println("BOARD:");
                 printBoard(false);
                 System.out.println();
@@ -335,13 +338,15 @@ public class TUI extends View {
                 printHand(true);
                 playTurn();
             }
-            case 2 -> printBoard(false);
-            case 3 -> printLeaderboard();
-            case 4 -> {
+            case 2 -> {
                 System.out.println();
                 GamePrinter.printField(this.gameView.getPlayer(this.username).getField());
+                printHand(false);
             }
-            case 5 -> printHand(false);
+            case 3 -> {
+                printLeaderboard();
+                printBoard(false);
+            }
             default -> printOpponent(this.gameView.getPlayer(choiceToUsername.get(choice)));
         }
     }
