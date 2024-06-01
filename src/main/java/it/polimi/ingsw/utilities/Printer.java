@@ -10,6 +10,7 @@ public class Printer {
     public static final String GREEN = "\u001b[38;2;14;125;0m";
     public static final String BLUE = "\u001b[38;2;0;76;120m";
     public static final String PURPLE = "\u001b[38;2;108;0;130m";
+    public static final String YELLOW = "\033[33m";
     public static final String BLACK = "\u001B[30m";
     public static final String BEIGE = "\u001b[38;2;168;144;128m";
 

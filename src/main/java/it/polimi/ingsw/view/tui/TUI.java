@@ -373,8 +373,8 @@ public class TUI extends View {
     private void printLeaderboard() {
         System.out.println();
         for (PlayerView player : this.gameView.getSortedPlayers()) {
-            System.out.println(player.getUsername() + ": " +
-                    Config.pluralize("point", player.getTotalScore()) + " (" +
+            System.out.println(player.getMarker().getConsoleColor() + player.getUsername() + Printer.RESET
+                    + ": " + Config.pluralize("point", player.getTotalScore()) + " (" +
                     player.getObjectiveScore() + " from objectives)"
             );
         }
