@@ -27,7 +27,9 @@ public class JoinGameMessage extends MainControllerMessage {
         try {
             GameController game = controller.joinGame(this.getUsername(), this.gameId);
             game.notifyAllListeners(new LobbyMessage(
-                    game.getPlayers().stream().map(Player::getUsername).toList(), this.getUsername() + " has joined."
+                    game.getPlayersCount(),
+                    game.getPlayers().stream().map(Player::getUsername).toList(),
+                    this.getUsername() + " has joined."
             ));
             if (game.getPhase() == GamePhase.SETUP) {
                 game.notifyAllListeners(new ViewUpdateMessage(game.getModelView(), "Lobby full. The game has started."));

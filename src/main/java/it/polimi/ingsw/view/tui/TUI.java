@@ -67,7 +67,7 @@ public class TUI extends View {
                     }
                     case LobbyMessage m -> {
                         Printer.printInfo(m.getMessage());
-                        printLobbyUsernames(m.getUsernames());
+                        printLobbyUsernames(m.getSize(), m.getUsernames());
                     }
                     case null, default -> addMessage(message);
                 }
@@ -130,7 +130,7 @@ public class TUI extends View {
             }
             else if (response instanceof LobbyMessage r) {
                 Printer.printInfo(r.getMessage());
-                printLobbyUsernames(r.getUsernames());
+                printLobbyUsernames(r.getSize(), r.getUsernames());
             }
             else if (response instanceof LobbyNotValidMessage r) {
                 Printer.printError(r.getMessage());
@@ -164,8 +164,8 @@ public class TUI extends View {
         }
     }
 
-    private void printLobbyUsernames(List<String> usernames) {
-        System.out.print("Players connected: ");
+    private void printLobbyUsernames(int size, List<String> usernames) {
+        System.out.print("Players connected [" + usernames.size() + "/" + size + "]: ");
         for (int i = 0; i < usernames.size(); i++) {
             System.out.print(usernames.get(i));
             if (usernames.get(i).equals(this.username)) {

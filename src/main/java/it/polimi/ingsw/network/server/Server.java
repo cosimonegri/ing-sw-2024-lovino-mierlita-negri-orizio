@@ -127,7 +127,9 @@ public class Server implements ServerInterface {
                         GameController game = controller.leaveGame(username);
                         if (game.getPhase() == GamePhase.WAITING) {
                             game.notifyAllListeners(new LobbyMessage(
-                                    game.getPlayers().stream().map(Player::getUsername).toList(), username + " has left."
+                                    game.getPlayersCount(),
+                                    game.getPlayers().stream().map(Player::getUsername).toList(),
+                                    username + " has left."
                             ));
                         } else {
                             game.notifyAllListeners(new ViewUpdateMessage(

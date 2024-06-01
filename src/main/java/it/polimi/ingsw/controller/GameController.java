@@ -159,6 +159,10 @@ public class GameController {
         }
     }
 
+    synchronized public int getPlayersCount() {
+        return model.getPlayersCount();
+    }
+
     synchronized public List<Player> getPlayers() {
         return model.getPlayers();
     }
