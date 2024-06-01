@@ -29,6 +29,9 @@ public class GamePrinter {
     private static final String INKWELL_CORNER = Printer.BLACK+"I";
     private static final String QUILL_CORNER = Printer.BLACK+"Q";
     private static final String MANUSCRIPT_CORNER = Printer.BLACK+"M";
+    private static final String INKWELL_CORNER_LIGHT = Printer.RESET+"I";
+    private static final String QUILL_CORNER_LIGHT = Printer.RESET+"Q";
+    private static final String MANUSCRIPT_CORNER_LIGHT = Printer.RESET+"M";
 
     private static final String NeutralCorner = Printer.BEIGE +"█";
     private static final String CoveredCorner = "  ";
@@ -129,20 +132,15 @@ public class GamePrinter {
         }
     }
 
-    public static String getObjectiveDescription(ObjectiveCard objective) {
+    public static void printObjectiveDescription(ObjectiveCard objective, String prompt) {
         switch (objective) {
-            case SymbolsObjectiveCard symbolsObjectiveCard -> {
-                return getSymbolsObjectiveDescr(symbolsObjectiveCard);
-            }
-            case DiagonalPatternObjectiveCard diagonalPatternObjectiveCard -> {
-                return getDiagonalObjectiveDescr(diagonalPatternObjectiveCard);
-            }
-            case VerticalPatternObjectiveCard verticalPatternObjectiveCard -> {
-                return getVerticalObjectiveDescr(verticalPatternObjectiveCard);
-            }
-            default -> {
-                return "";
-            }
+            case SymbolsObjectiveCard symbolsObjectiveCard ->
+                    printSymbolsObjectiveDescr(symbolsObjectiveCard, prompt);
+            case DiagonalPatternObjectiveCard diagonalPatternObjectiveCard ->
+                    printDiagonalObjectiveDescr(diagonalPatternObjectiveCard, prompt);
+            case VerticalPatternObjectiveCard verticalPatternObjectiveCard ->
+                    printVerticalObjectiveDescr(verticalPatternObjectiveCard, prompt);
+            default -> {}
         }
     }
 
@@ -193,6 +191,10 @@ public class GamePrinter {
     }
 
     private static String getCornerRect(Symbol symbol) {
+        return getCornerRect(symbol, true);
+    }
+
+    private static String getCornerRect(Symbol symbol, boolean isDark) {
         if (symbol == null) {
             return NeutralCorner;
         }
@@ -210,13 +212,13 @@ public class GamePrinter {
                 return INSECT_CORNER;
             }
             case Item.INKWELL -> {
-                return INKWELL_CORNER;
+                return isDark ? INKWELL_CORNER : INKWELL_CORNER_LIGHT;
             }
             case Item.QUILL -> {
-                return QUILL_CORNER;
+                return isDark ? QUILL_CORNER : QUILL_CORNER_LIGHT;
             }
             case Item.MANUSCRIPT -> {
-                return MANUSCRIPT_CORNER;
+                return isDark ? MANUSCRIPT_CORNER : MANUSCRIPT_CORNER_LIGHT;
             }
             default -> {
                 return NeutralCorner;
@@ -415,30 +417,61 @@ public class GamePrinter {
         return RESET + Printer.YELLOW_BACKGROUND + Printer.BLACK + "$" + placeHolder + costList + Printer.YELLOW_BACKGROUND + Printer.BLACK + "$";
     }
 
-    private static String getSymbolsObjectiveDescr(SymbolsObjectiveCard card) {
+    private static void printSymbolsObjectiveDescr(SymbolsObjectiveCard card, String prompt) {
         StringBuilder stb = new StringBuilder();
-        stb.append(card.getPoints()).append(" points for each set of ");
+        stb.append(card.getPoints()).append(" POINTS for each set of: ");
         int last = card.getSymbols().size() - 1;
         int i = 0;
         for (Symbol symbol : card.getSymbols().keySet()) {
-            stb.append(card.getSymbols().get(symbol)).append(" ").append(symbol.toString());
+            stb.append(card.getSymbols().get(symbol)).append(" ").append(getCornerRect(symbol, false)).append(Printer.RESET);
             if (i != last) {
                 stb.append(", ");
             }
             i++;
         }
-        return stb.toString();
+        System.out.println(prompt + stb);
     }
 
-    private static String getDiagonalObjectiveDescr(DiagonalPatternObjectiveCard card) {
-        return card.getPoints() + " points for each pattern of 3 " + card.getColor().toString() + " cards " +
-                (card.getMainDiagonal() ? "from bottom-left to top-right" : "from top-left to bottom-right");
+    private static void printDiagonalObjectiveDescr(DiagonalPatternObjectiveCard card, String prompt) {
+        StringBuilder line1 = new StringBuilder();
+        StringBuilder line2 = new StringBuilder();
+        StringBuilder line3 = new StringBuilder();
+        line2.append(prompt).append(card.getPoints()).append(" POINTS for each pattern of:   ");
+        int lengthModifier = card.getMainDiagonal() ? 2 : -2;
+        for (int i = 0; i < line2.toString().length() + lengthModifier; i++) {
+            line1.append(" ");
+        }
+        for (int i = 0; i < line2.toString().length() - lengthModifier; i++) {
+            line3.append(" ");
+        }
+        String cardRepresentation = getCornerRect(card.getColor()) + getCornerRect(card.getColor());
+        System.out.println(line1 + cardRepresentation + Printer.RESET);
+        System.out.println(line2 + cardRepresentation + Printer.RESET);
+        System.out.println(line3 + cardRepresentation + Printer.RESET);
     }
 
-    private static String getVerticalObjectiveDescr(VerticalPatternObjectiveCard card) {
-        return card.getPoints() + " points for each pattern of 2 vertical "
-                + card.getMainColor().toString() + " cards and 1 "
-                + card.getThirdCardColor().toString() + " card on the "
-                + card.getThirdCardPos().toString() + " corner of the column";
+    private static void printVerticalObjectiveDescr(VerticalPatternObjectiveCard card, String prompt) {
+        StringBuilder line1 = new StringBuilder();
+        StringBuilder line2 = new StringBuilder();
+        StringBuilder line3 = new StringBuilder();
+        line2.append(prompt).append(card.getPoints()).append(" POINTS for each pattern of: ");
+        if (card.getThirdCardPos().isLeft()) {
+            line2.append("  ");
+        }
+        int lengthModifier1 = card.getThirdCardPos() == Position.TOPLEFT ? -2
+                : card.getThirdCardPos() == Position.TOPRIGHT ? 2 : 0;
+        for (int i = 0; i < line2.toString().length() + lengthModifier1; i++) {
+            line1.append(" ");
+        }
+        int lengthModifier3 = card.getThirdCardPos() == Position.BOTTOMLEFT ? -2
+                : card.getThirdCardPos() == Position.BOTTOMRIGHT ? 2 : 0;
+        for (int i = 0; i < line2.toString().length() + lengthModifier3; i++) {
+            line3.append(" ");
+        }
+        String mainCardRepr = getCornerRect(card.getMainColor()) + getCornerRect(card.getMainColor());
+        String thirdCardRepr = getCornerRect(card.getThirdCardColor()) + getCornerRect(card.getThirdCardColor());
+        System.out.println(line1 + (card.getThirdCardPos().isTop() ? thirdCardRepr : mainCardRepr) + Printer.RESET);
+        System.out.println(line2 + mainCardRepr + Printer.RESET);
+        System.out.println(line3 + (card.getThirdCardPos().isBottom() ? thirdCardRepr : mainCardRepr) + Printer.RESET);
     }
 }

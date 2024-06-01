@@ -239,7 +239,11 @@ public class TUI extends View {
         System.out.println();
         System.out.println("Choose one of the following personal personal objectives:");
         List<ObjectiveCard> objectives = this.gameView.getPlayer(this.username).getObjectiveOptions();
-        int choice = chooseOption(true, objectives.stream().map(GamePrinter::getObjectiveDescription).toList());
+        for (int i = 0; i < objectives.size(); i++) {
+            GamePrinter.printObjectiveDescription(objectives.get(i), (i + 1) + ") ");
+        }
+        System.out.print("> ");
+        int choice = readInt(1, objectives.size(), true);
         notifyAllListeners(new ChooseObjectiveMessage(this.username, objectives.get(choice - 1)));
     }
 
@@ -362,7 +366,7 @@ public class TUI extends View {
         }
         System.out.println();
         for (ObjectiveCard obj : this.gameView.getObjectives()) {
-            System.out.println("Common objective: " + GamePrinter.getObjectiveDescription(obj));
+            GamePrinter.printObjectiveDescription(obj, "Common objective: ");
         }
     }
 
@@ -383,7 +387,7 @@ public class TUI extends View {
         }
         GamePrinter.printHand(this.gameView.getPlayer(this.username).getHand(), false);
         System.out.println();
-        System.out.println("Private objective: " + GamePrinter.getObjectiveDescription(this.gameView.getPlayer(this.username).getObjective()));
+        GamePrinter.printObjectiveDescription(this.gameView.getPlayer(this.username).getObjective(), "Private objective: ");
     }
 
     private void printOpponent(PlayerView player) {
