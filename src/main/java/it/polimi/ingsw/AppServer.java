@@ -21,35 +21,38 @@ import java.util.concurrent.Executors;
 public class AppServer {
     public static void main(String[] args) {
         try {
-            System.out.println("Starting server on " + InetAddress.getLocalHost().getHostAddress());
+            String serverIp = InetAddress.getLocalHost().getHostAddress();
+            System.out.println("Starting server on " + serverIp);
             System.out.println();
+
+            Thread rmiThread = new Thread(() -> {
+                try {
+                    initRmiServer(serverIp);
+                } catch (RemoteException e) {
+                    System.err.println("Cannot start the RMI server");
+                    System.exit(1);
+                }
+            });
+            rmiThread.start();
+
+            Thread socketThread = new Thread(() -> {
+                try {
+                    initSocketServer();
+                } catch (IOException e) {
+                    System.err.println("Cannot start Socket server");
+                    System.exit(1);
+                }
+            });
+            socketThread.start();
+
         } catch (UnknownHostException e) {
             System.err.println("Cannot resolve IP address of this machine");
             System.exit(1);
         }
-
-        Thread rmiThread = new Thread(() -> {
-            try {
-                initRmiServer();
-            } catch (RemoteException e) {
-                System.err.println("Cannot start the RMI server");
-                System.exit(1);
-            }
-        });
-        rmiThread.start();
-
-        Thread socketThread = new Thread(() -> {
-            try {
-                initSocketServer();
-            } catch (IOException e) {
-                System.err.println("Cannot start Socket server");
-                System.exit(1);
-            }
-        });
-        socketThread.start();
     }
 
-    private static void initRmiServer() throws RemoteException {
+    private static void initRmiServer(String serverIp) throws RemoteException {
+        System.setProperty("java.rmi.server.hostname", serverIp);
         ServerInterface stub = (ServerInterface) UnicastRemoteObject.exportObject(
                 Server.getInstance(), Config.RMI_PORT
         );
