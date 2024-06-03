@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane fx:id="gridPane" minHeight="750.0" minWidth="1100.0" prefHeight="750.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.gui.GuiController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="ALWAYS" minWidth="700.0" prefWidth="700.0" />
+    <ColumnConstraints hgrow="NEVER" maxWidth="400.0" minWidth="400.0" prefWidth="400.0" />
+  </columnConstraints>
+  <rowConstraints>
+      <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="NEVER" />
+    <RowConstraints minHeight="470.0" prefHeight="470.0" vgrow="ALWAYS" />
+    <RowConstraints maxHeight="170.0" minHeight="170.0" prefHeight="170.0" vgrow="ALWAYS" />
+  </rowConstraints>
+   <children>
+      <ScrollPane fx:id="boardScrollpane" pannable="true" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.rowSpan="2147483647">
+        <content>
+          <AnchorPane fx:id="board" prefHeight="1000.0" prefWidth="385.0">
+               <children>
+                  <ImageView fx:id="publicObjective11" fitHeight="110.0" fitWidth="159.0" layoutX="11.0" layoutY="580.0" pickOnBounds="true" preserveRatio="true">
+                     <viewport>
+                        <Rectangle2D height="605.0" minX="75.0" minY="75.0" width="875.0" />
+                     </viewport>
+                     <image>
+                        <Image url="@images/card_backs/99.jpg" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="scoreBoard" fitHeight="431.0" fitWidth="265.0" layoutX="84.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@images/PLATEAU-SCORE-IMP/plateau.jpg" />
+                     </image>
+                     <viewport>
+                        <Rectangle2D height="945.0" minX="40.0" minY="40.0" width="480.0" />
+                     </viewport>
+                  </ImageView>
+                  <ImageView fx:id="publicObjective1" fitHeight="110.0" fitWidth="159.0" layoutX="14.0" layoutY="457.0" onMouseEntered="#lightUp" onMouseExited="#lightOff" pickOnBounds="true" preserveRatio="true">
+                     <viewport>
+                        <Rectangle2D height="605.0" minX="75.0" minY="75.0" width="875.0" />
+                     </viewport>
+                  </ImageView>
+                  <ImageView fx:id="publicObjective21" fitHeight="110.0" fitWidth="159.0" layoutX="210.0" layoutY="580.0" pickOnBounds="true" preserveRatio="true">
+                     <viewport>
+                        <Rectangle2D height="605.0" minX="75.0" minY="75.0" width="875.0" />
+                     </viewport>
+                     <image>
+                        <Image url="@images/card_backs/99.jpg" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="publicObjective2" fitHeight="110.0" fitWidth="159.0" layoutX="213.0" layoutY="457.0" onMouseEntered="#lightUp" onMouseExited="#lightOff" pickOnBounds="true" preserveRatio="true">
+                     <viewport>
+                        <Rectangle2D height="605.0" minX="75.0" minY="75.0" width="875.0" />
+                     </viewport>
+                  </ImageView>
+                  <ImageView fx:id="goldDeck" fitHeight="110.0" fitWidth="159.0" layoutX="14.0" layoutY="576.0" onMouseEntered="#lightUp" onMouseExited="#lightOff" pickOnBounds="true" preserveRatio="true">
+                     <viewport>
+                        <Rectangle2D height="605.0" minX="75.0" minY="75.0" width="875.0" />
+                     </viewport>
+                  </ImageView>
+                  <ImageView fx:id="resourceDeck" fitHeight="110.0" fitWidth="159.0" layoutX="213.0" layoutY="576.0" onMouseEntered="#lightUp" onMouseExited="#lightOff" pickOnBounds="true" preserveRatio="true">
+                     <viewport>
+                        <Rectangle2D height="605.0" minX="75.0" minY="75.0" width="875.0" />
+                     </viewport>
+                  </ImageView>
+                  <ImageView fx:id="visibleGold1" fitHeight="110.0" fitWidth="159.0" layoutX="14.0" layoutY="700.0" onMouseEntered="#lightUp" onMouseExited="#lightOff" pickOnBounds="true" preserveRatio="true">
+                     <viewport>
+                        <Rectangle2D height="605.0" minX="75.0" minY="75.0" width="875.0" />
+                     </viewport>
+                  </ImageView>
+                  <ImageView fx:id="visibleResource1" fitHeight="110.0" fitWidth="159.0" layoutX="213.0" layoutY="700.0" onMouseEntered="#lightUp" onMouseExited="#lightOff" pickOnBounds="true" preserveRatio="true">
+                     <viewport>
+                        <Rectangle2D height="605.0" minX="75.0" minY="75.0" width="875.0" />
+                     </viewport>
+                  </ImageView>
+                  <ImageView fx:id="visibleGold2" fitHeight="110.0" fitWidth="159.0" layoutX="14.0" layoutY="820.0" onMouseEntered="#lightUp" onMouseExited="#lightOff" pickOnBounds="true" preserveRatio="true">
+                     <viewport>
+                        <Rectangle2D height="605.0" minX="75.0" minY="75.0" width="875.0" />
+                     </viewport>
+                  </ImageView>
+                  <ImageView fx:id="visibleResource2" fitHeight="110.0" fitWidth="159.0" layoutX="213.0" layoutY="820.0" onMouseEntered="#lightUp" onMouseExited="#lightOff" pickOnBounds="true" preserveRatio="true">
+                     <viewport>
+                        <Rectangle2D height="605.0" minX="75.0" minY="75.0" width="875.0" />
+                     </viewport>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
+      <TabPane fx:id="tabFieldsPane" tabClosingPolicy="UNAVAILABLE" GridPane.rowIndex="1" GridPane.rowSpan="2147483647">
+        <tabs>
+          <Tab fx:id="myField" text="My field">
+               <content>
+                  <GridPane fx:id="gridPanePlayer">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="170.0" minHeight="170.0" prefHeight="170.0" vgrow="NEVER" />
+                     </rowConstraints>
+                     <children>
+                        <ScrollPane id="playerFieldScrollpane" fx:id="playerFieldScrollpane" hvalue="0.505" pannable="true" prefHeight="470.0" prefWidth="700.0" vvalue="0.505">
+                           <content>
+                              <Pane fx:id="fieldPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="9000.0" prefWidth="13000.0">
+                                 <children>
+                                    <ImageView fx:id="starterCard" fitHeight="110.0" fitWidth="159.0" layoutX="6500.0" layoutY="4500.0" onMouseClicked="#changeImage" onMouseEntered="#lightUp" onMouseExited="#lightOff" pickOnBounds="true" preserveRatio="true">
+                                       <viewport>
+                                          <Rectangle2D height="605.0" minX="75.0" minY="75.0" width="875.0" />
+                                       </viewport>
+                                    </ImageView>
+                                 </children>
+                              </Pane>
+                           </content>
+                        </ScrollPane>
+                        <Pane fx:id="handPane" maxHeight="170.0" maxWidth="700.0" minHeight="170.0" minWidth="700.0" prefHeight="170.0" prefWidth="700.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
+                           <children>
+                              <ImageView fx:id="cardInHand1" fitHeight="110.0" fitWidth="166.0" layoutX="14.0" layoutY="45.0" onMouseClicked="#selectCard" onMouseEntered="#lightUp" onMouseExited="#lightOff" pickOnBounds="true" preserveRatio="true">
+                                 <viewport>
+                                    <Rectangle2D height="605.0" minX="75.0" minY="75.0" width="875.0" />
+                                 </viewport>
+                              </ImageView>
+                              <ImageView fx:id="cardInHand2" fitHeight="110.0" fitWidth="159.0" layoutX="182.0" layoutY="45.0" onMouseClicked="#selectCard" onMouseEntered="#lightUp" onMouseExited="#lightOff" pickOnBounds="true" preserveRatio="true">
+                                 <viewport>
+                                    <Rectangle2D height="605.0" minX="75.0" minY="75.0" width="875.0" />
+                                 </viewport>
+                              </ImageView>
+                              <ImageView fx:id="cardInHand3" fitHeight="110.0" fitWidth="159.0" layoutX="350.0" layoutY="45.0" onMouseClicked="#selectCard" onMouseEntered="#lightUp" onMouseExited="#lightOff" pickOnBounds="true" preserveRatio="true">
+                                 <viewport>
+                                    <Rectangle2D height="605.0" minX="75.0" minY="75.0" width="875.0" />
+                                 </viewport>
+                              </ImageView>
+                              <ImageView fx:id="privateObjective" fitHeight="110.0" fitWidth="159.0" layoutX="534.0" layoutY="45.0" pickOnBounds="true" preserveRatio="true">
+                                 <viewport>
+                                    <Rectangle2D height="605.0" minX="75.0" minY="75.0" width="875.0" />
+                                 </viewport>
+                              </ImageView>
+                              <Label fx:id="playerMessages" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="700.0" text="messaggi per il player" />
+                           </children>
+                        </Pane>
+                     </children>
+                  </GridPane>
+               </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+      <Pane fx:id="topLeftText">
+         <children>
+            <Label id="text" layoutX="107.0" layoutY="7.0" text="Turn:" />
+            <Label id="text" fx:id="turnNum" layoutX="134.0" layoutY="7.0" prefHeight="17.0" prefWidth="27.0" text="nr" />
+            <Label id="text" layoutX="4.0" layoutY="7.0" prefHeight="17.0" prefWidth="53.0" text="Lobby ID:" />
+            <Label id="text" fx:id="lobbyID" layoutX="56.0" layoutY="7.0" prefHeight="17.0" prefWidth="47.0" text="nr" />
+         </children>
+      </Pane>
+      <Pane fx:id="topRightText" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="400.0" GridPane.columnIndex="1">
+         <children>
+            <Label fx:id="playersTurn" layoutY="1.0" prefHeight="30.0" prefWidth="400.0" text="Label" />
+         </children></Pane>
+   </children>
+</GridPane>

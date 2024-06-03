@@ -14,27 +14,38 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.*;
 import javafx.scene.control.*;
+import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class GUI extends View {
 
     private StackPane root;
+    private Stage window;
     private int gameId;
+
 
 
     public GUI () {
@@ -43,17 +54,21 @@ public class GUI extends View {
     public void run() {
         Platform.startup(() -> {
             try {
+//                startGame();
                 start(new Stage());
             } catch (Exception e) {
                 System.err.println("Could not load GUI.");
+//                e.printStackTrace();
             }
+
         });
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage window) throws Exception {
+        this.window = window;
         // Set background
-        Pane backgroundPane = getBackgroundPane();
+        Background backgroundPane = getBackgroundPane();
 
         VBox vbox = new VBox();
         vbox.getStyleClass().addAll("welcome-box");
@@ -63,7 +78,7 @@ public class GUI extends View {
         Text welcomeText = new Text("Welcome to Codex Naturalis");
         welcomeText.getStyleClass().addAll("welcome-text");
 
-        // contains the username form
+        // contains the use form
         VBox connectForm = new VBox();
         connectForm.getStyleClass().addAll("vbox");
         connectForm.setOpacity(0);
@@ -100,8 +115,9 @@ public class GUI extends View {
         // create a new stack pane to show the boxes
         StackPane root = new StackPane();
 
-        root.getChildren().addAll(backgroundPane, vbox);
-        //root.getChildren().addAll(vbox);
+        root.setBackground(backgroundPane);
+        root.getChildren().addAll(vbox);
+        //root.getChildren().addAll(backgroundPane, vbox);
 
         // add transition
         PauseTransition stageShow = new PauseTransition(Duration.seconds(2));
@@ -165,17 +181,19 @@ public class GUI extends View {
         // create a new scene
         Scene scene = new Scene(root);
         scene.getStylesheets().add("file:src/main/resources/css/style.css");
-        primaryStage.setScene(scene);
-        primaryStage.setFullScreen(true);
-        primaryStage.setFullScreenExitHint("");
-        primaryStage.setTitle("Code Naturalis");
+        window.setScene(scene);
+        window.setFullScreen(true);
+        window.setFullScreenExitHint("");
+        window.setTitle("Code Naturalis");
+        window.setMinWidth(1100);
+        window.setMinHeight(750);
 
-        primaryStage.setOnCloseRequest(e -> {
+        window.setOnCloseRequest(e -> {
                 Platform.exit();
                 System.exit(0);
         });
 
-        primaryStage.setOnShown(e -> {
+        window.setOnShown(e -> {
             vboxFadeIn.play();
         });
         // disable auto focus
@@ -199,7 +217,7 @@ public class GUI extends View {
         vbox.addEventHandler(MouseEvent.MOUSE_PRESSED, skipTransitionEvent);
         vbox.addEventHandler(KeyEvent.KEY_PRESSED, skipTransitionEvent);
 
-        primaryStage.show();
+        window.show();
     }
 
     private void showErrorMessage(String message, Label errorLabel) {
@@ -228,9 +246,8 @@ public class GUI extends View {
         fadeNodeIn.setToValue(1);
         return fadeNodeIn;
     }
-    private Pane getBackgroundPane() {
-        String backgroundPath = "file:src/main/resources/images/background.jpg";
-        backgroundPath = "file:/home/dolby/Downloads/codex-background.jpg";
+    private Background getBackgroundPane() {
+        String backgroundPath = "file:src/main/resources/images/codex-background.jpg";
         Image backgroundImage = new Image(backgroundPath);
         BackgroundImage background = new BackgroundImage(backgroundImage,
                 BackgroundRepeat.NO_REPEAT,
@@ -239,9 +256,9 @@ public class GUI extends View {
                 new BackgroundSize(1.0,
                         BackgroundSize.AUTO, true, true, false, false));
         // set background image
-        Pane backgroundPane = new Pane();
-        backgroundPane.setBackground(new Background(background));
-        return backgroundPane;
+        //Pane backgroundPane = new Pane();
+        //backgroundPane.setBackground(new Background(background));
+        return new Background(background);
     }
 
     private void setUsername(String username) {
@@ -519,13 +536,50 @@ public class GUI extends View {
                 });
 
             }
-            else if (response instanceof ViewUpdateMessage) {
+            else if (response instanceof ViewUpdateMessage r) {
                 System.out.println("Game started");
-                System.exit(0);
+                try {
+                    gameView = r.getGameView();
+                    startGame();
+                } catch (IOException e) {
+                    System.err.println("Cannot start game interface");
+                }
             }
         }
     }
 
+    private void startGame() throws IOException {
+        // load scene builder fxml
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/playingGui.fxml"));
+        GridPane root = loader.load();
+
+        GuiController controller = loader.getController();
+
+        //set text
+        controller.gridPane.setBackground(getBackgroundPane());
+        controller.board.setBackground(Background.EMPTY);
+        controller.lobbyID.setText(String.valueOf(gameId));
+        controller.turnNum.setText(String.valueOf(gameView.getCurrentTurn()));
+        if (gameView.isCurrentPlayer(this.username)) {
+            controller.playersTurn.setText("It's your turn!");
+        } else {
+            controller.playersTurn.setText("It's " + gameView.getCurrentPlayer().getUsername() + "'s turn...");
+        }
+        controller.myField.setText(this.username);
+
+        //set cards
+        controller.setHand( gameView.getPlayer(this.username).getHand().get(0).getId(),
+                            gameView.getPlayer(this.username).getHand().get(1).getId(),
+                            gameView.getPlayer(this.username).getHand().get(2).getId(),
+                            gameView.getPlayer(this.username).getObjectiveOptions().getFirst().getId());
+
+        Scene scene = new Scene(root);
+        Platform.runLater(() -> {
+            window.setScene(scene);
+            window.setMinHeight(750);
+            window.setMinWidth(1100);});
+    }
     private int getGameId() {
         return this.gameId;
     }

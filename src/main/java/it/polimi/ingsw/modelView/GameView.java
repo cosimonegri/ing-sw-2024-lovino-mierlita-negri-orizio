@@ -15,9 +15,11 @@ public class GameView implements Serializable {
     private final BoardView board;
     private final List<ObjectiveCard> objectives = new ArrayList<>();
     private final boolean isEnded;
+    private final int currentTurn;
 
     public GameView(Game game) {
         this.playersCount = game.getPlayersCount();
+        this.currentTurn = game.getCurrentTurn();
         this.currentPlayer = game.getCurrentPlayer().getView();
         for(Player p : game.getPlayers()){
             this.players.add(p.getView());
@@ -56,6 +58,8 @@ public class GameView implements Serializable {
     public PlayerView getCurrentPlayer() {
         return currentPlayer;
     }
+
+    public int getCurrentTurn() { return currentTurn; }
 
     public boolean isCurrentPlayer(String username) {
         return this.getCurrentPlayer().getUsername().equals(username);
