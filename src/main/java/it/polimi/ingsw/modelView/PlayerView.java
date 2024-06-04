@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class PlayerView implements Serializable, Comparable<PlayerView> {
     private final String username;
@@ -40,8 +41,8 @@ public class PlayerView implements Serializable, Comparable<PlayerView> {
         return username;
     }
 
-    public Marker getMarker() {
-        return marker;
+    public Optional<Marker> getMarker() {
+        return Optional.ofNullable(marker);
     }
 
     public int getTotalScore() {
@@ -56,8 +57,8 @@ public class PlayerView implements Serializable, Comparable<PlayerView> {
         return starterCard;
     }
 
-    public ObjectiveCard getObjective() {
-        return objective;
+    public Optional<ObjectiveCard> getObjective() {
+        return Optional.ofNullable(objective);
     }
 
     public List<PlayableCard> getHand() {

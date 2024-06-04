@@ -373,9 +373,11 @@ public class TUI extends View {
     private void printLeaderboard() {
         System.out.println();
         for (PlayerView player : this.gameView.getSortedPlayers()) {
-            System.out.println(player.getMarker().getConsoleColor() + player.getUsername() + Printer.RESET
-                    + ": " + Config.pluralize("point", player.getTotalScore()) + " (" +
-                    player.getObjectiveScore() + " from objectives)"
+            String coloredUsername = player.getMarker().isPresent()
+                    ? player.getMarker().get().getConsoleColor() + player.getUsername() + Printer.RESET
+                    : player.getUsername();
+            System.out.println(coloredUsername + ": " + Config.pluralize("point", player.getTotalScore())
+                    + " (" + player.getObjectiveScore() + " from objectives)"
             );
         }
     }
@@ -387,7 +389,12 @@ public class TUI extends View {
         }
         GamePrinter.printHand(this.gameView.getPlayer(this.username).getHand(), false);
         System.out.println();
-        GamePrinter.printObjectiveDescription(this.gameView.getPlayer(this.username).getObjective(), "Private objective: ");
+        if (this.gameView.getPlayer(this.username).getObjective().isPresent()) {
+            GamePrinter.printObjectiveDescription(
+                    this.gameView.getPlayer(this.username).getObjective().get(),
+                    "Private objective: "
+            );
+        }
     }
 
     private void printOpponent(PlayerView player) {
