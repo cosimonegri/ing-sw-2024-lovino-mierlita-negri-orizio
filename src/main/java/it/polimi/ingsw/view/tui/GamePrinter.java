@@ -10,6 +10,7 @@ import it.polimi.ingsw.model.player.Coordinates;
 import it.polimi.ingsw.model.player.PlacedCard;
 import it.polimi.ingsw.modelView.BoardView;
 import it.polimi.ingsw.modelView.FieldView;
+import it.polimi.ingsw.utilities.Pair;
 import it.polimi.ingsw.utilities.Printer;
 
 import java.util.*;
@@ -132,15 +133,40 @@ public class GamePrinter {
         }
     }
 
-    public static void printObjectiveDescription(ObjectiveCard objective, String prompt) {
-        switch (objective) {
-            case SymbolsObjectiveCard symbolsObjectiveCard ->
-                    printSymbolsObjectiveDescr(symbolsObjectiveCard, prompt);
-            case DiagonalPatternObjectiveCard diagonalPatternObjectiveCard ->
-                    printDiagonalObjectiveDescr(diagonalPatternObjectiveCard, prompt);
-            case VerticalPatternObjectiveCard verticalPatternObjectiveCard ->
-                    printVerticalObjectiveDescr(verticalPatternObjectiveCard, prompt);
-            default -> {}
+    public static void printObjective(ObjectiveCard objective, String prompt) {
+        List<Pair<ObjectiveCard, String>> objectives = new ArrayList<>();
+        objectives.add(new Pair<>(objective, prompt));
+        printObjectives(objectives);
+    }
+
+    public static void printObjectives(List<Pair<ObjectiveCard, String>> objectivesWithPrompt) {
+        StringBuilder line1 = new StringBuilder();
+        StringBuilder line2 = new StringBuilder();
+        StringBuilder line3 = new StringBuilder();
+        for (Pair<ObjectiveCard, String> objWithPrompt : objectivesWithPrompt) {
+            ObjectiveCard objective = objWithPrompt.getFirst();
+            String prompt = objWithPrompt.getSecond();
+            StringBuilder[] lines = switch (objective) {
+                case SymbolsObjectiveCard symbolsObjectiveCard ->
+                        getSymbolsObjectiveDescr(symbolsObjectiveCard, prompt);
+                case DiagonalPatternObjectiveCard diagonalPatternObjectiveCard ->
+                        getDiagonalObjectiveDescr(diagonalPatternObjectiveCard, prompt);
+                case VerticalPatternObjectiveCard verticalPatternObjectiveCard ->
+                        getVerticalObjectiveDescr(verticalPatternObjectiveCard, prompt);
+                default -> null;
+            };
+            if (lines != null && lines.length == 3) {
+                line1.append(lines[0]).append("       ");
+                line2.append(lines[1]).append("       ");
+                line3.append(lines[2]).append("       ");
+            }
+        }
+        if (objectivesWithPrompt.stream().allMatch(pair -> pair.getFirst() instanceof SymbolsObjectiveCard)) {
+            System.out.println(line2);
+        } else {
+            System.out.println(line1);
+            System.out.println(line2);
+            System.out.println(line3);
         }
     }
 
@@ -417,26 +443,37 @@ public class GamePrinter {
         return RESET + Printer.YELLOW_BACKGROUND + Printer.BLACK + "$" + placeHolder + costList + Printer.YELLOW_BACKGROUND + Printer.BLACK + "$";
     }
 
-    private static void printSymbolsObjectiveDescr(SymbolsObjectiveCard card, String prompt) {
-        StringBuilder stb = new StringBuilder();
-        stb.append(card.getPoints()).append(" POINTS for each set of: ");
-        int last = card.getSymbols().size() - 1;
-        int i = 0;
+    private static StringBuilder[] getSymbolsObjectiveDescr(SymbolsObjectiveCard card, String prompt) {
+        StringBuilder line1 = new StringBuilder();
+        StringBuilder line2 = new StringBuilder();
+        StringBuilder line3 = new StringBuilder();
+        line2.append(prompt).append(card.getPoints()).append(" POINTS for each set of: ");
+
+        int line2Length = line2.length();
+        int lastIndex = card.getSymbols().size() - 1;
+        int index = 0;
         for (Symbol symbol : card.getSymbols().keySet()) {
-            stb.append(card.getSymbols().get(symbol)).append(" ").append(getCornerRect(symbol, false)).append(Printer.RESET);
-            if (i != last) {
-                stb.append(", ");
+            line2.append(card.getSymbols().get(symbol)).append(" ").append(getCornerRect(symbol, false)).append(Printer.RESET);
+            line2Length += card.getSymbols().get(symbol).toString().length() + 2;
+            if (index != lastIndex) {
+                line2.append(", ");
+                line2Length += 2;
             }
-            i++;
+            index++;
         }
-        System.out.println(prompt + stb);
+        for (int i = 0; i < line2Length; i++) {
+            line1.append(" ");
+            line3.append(" ");
+        }
+        return new StringBuilder[] {line1, line2, line3};
     }
 
-    private static void printDiagonalObjectiveDescr(DiagonalPatternObjectiveCard card, String prompt) {
+    private static StringBuilder[] getDiagonalObjectiveDescr(DiagonalPatternObjectiveCard card, String prompt) {
         StringBuilder line1 = new StringBuilder();
         StringBuilder line2 = new StringBuilder();
         StringBuilder line3 = new StringBuilder();
         line2.append(prompt).append(card.getPoints()).append(" POINTS for each pattern of:   ");
+
         int lengthModifier = card.getMainDiagonal() ? 2 : -2;
         for (int i = 0; i < line2.toString().length() + lengthModifier; i++) {
             line1.append(" ");
@@ -444,17 +481,21 @@ public class GamePrinter {
         for (int i = 0; i < line2.toString().length() - lengthModifier; i++) {
             line3.append(" ");
         }
+
         String cardRepresentation = getCornerRect(card.getColor()) + getCornerRect(card.getColor());
-        System.out.println(line1 + cardRepresentation + Printer.RESET);
-        System.out.println(line2 + cardRepresentation + Printer.RESET);
-        System.out.println(line3 + cardRepresentation + Printer.RESET);
+        line1.append(cardRepresentation).append(Printer.RESET).append(card.getMainDiagonal() ? "" : "    ");
+        line2.append(cardRepresentation).append(Printer.RESET).append("  ");
+        line3.append(cardRepresentation).append(Printer.RESET).append(card.getMainDiagonal() ? "    " : "");
+
+        return new StringBuilder[] {line1, line2, line3};
     }
 
-    private static void printVerticalObjectiveDescr(VerticalPatternObjectiveCard card, String prompt) {
+    private static StringBuilder[] getVerticalObjectiveDescr(VerticalPatternObjectiveCard card, String prompt) {
         StringBuilder line1 = new StringBuilder();
         StringBuilder line2 = new StringBuilder();
         StringBuilder line3 = new StringBuilder();
         line2.append(prompt).append(card.getPoints()).append(" POINTS for each pattern of: ");
+
         if (card.getThirdCardPos().isLeft()) {
             line2.append("  ");
         }
@@ -468,10 +509,24 @@ public class GamePrinter {
         for (int i = 0; i < line2.toString().length() + lengthModifier3; i++) {
             line3.append(" ");
         }
+
         String mainCardRepr = getCornerRect(card.getMainColor()) + getCornerRect(card.getMainColor());
         String thirdCardRepr = getCornerRect(card.getThirdCardColor()) + getCornerRect(card.getThirdCardColor());
-        System.out.println(line1 + (card.getThirdCardPos().isTop() ? thirdCardRepr : mainCardRepr) + Printer.RESET);
-        System.out.println(line2 + mainCardRepr + Printer.RESET);
-        System.out.println(line3 + (card.getThirdCardPos().isBottom() ? thirdCardRepr : mainCardRepr) + Printer.RESET);
+        line1.append((card.getThirdCardPos().isTop() ? thirdCardRepr : mainCardRepr)).append(Printer.RESET);
+        line2.append(mainCardRepr).append(Printer.RESET);
+        line3.append((card.getThirdCardPos().isBottom() ? thirdCardRepr : mainCardRepr)).append(Printer.RESET);
+
+        int rightModifier = card.getThirdCardPos().isRight() ? 2 : 0;
+        for (int i = 0; i < rightModifier - lengthModifier1; i++) {
+            line1.append(" ");
+        }
+        for (int i = 0; i < rightModifier; i++) {
+            line2.append(" ");
+        }
+        for (int i = 0; i < rightModifier - lengthModifier3; i++) {
+            line3.append(" ");
+        }
+
+        return new StringBuilder[] {line1, line2, line3};
     }
 }

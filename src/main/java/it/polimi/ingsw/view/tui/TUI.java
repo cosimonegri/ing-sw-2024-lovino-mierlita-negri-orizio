@@ -16,6 +16,7 @@ import it.polimi.ingsw.network.message.clienttoserver.maincontroller.JoinGameMes
 import it.polimi.ingsw.network.message.clienttoserver.maincontroller.CreateGameMessage;
 import it.polimi.ingsw.network.message.servertoclient.*;
 import it.polimi.ingsw.utilities.Config;
+import it.polimi.ingsw.utilities.Pair;
 import it.polimi.ingsw.utilities.Printer;
 import it.polimi.ingsw.view.View;
 import javafx.stage.Stage;
@@ -237,11 +238,17 @@ public class TUI extends View {
 
     private void chooseObjective() {
         System.out.println();
-        System.out.println("Choose one of the following personal personal objectives:");
+        System.out.println("Choose one of the following private objectives:");
         List<ObjectiveCard> objectives = this.gameView.getPlayer(this.username).getObjectiveOptions();
+        List<Pair<ObjectiveCard, String>> objectivesWithPrompt = new ArrayList<>();
         for (int i = 0; i < objectives.size(); i++) {
-            GamePrinter.printObjectiveDescription(objectives.get(i), (i + 1) + ") ");
+            objectivesWithPrompt.add(new Pair<>(objectives.get(i), (i + 1) + ") "));
         }
+        if (!objectivesWithPrompt.isEmpty()) {
+            System.out.println();
+            GamePrinter.printObjectives(objectivesWithPrompt);
+        }
+        System.out.println();
         System.out.print("> ");
         int choice = readInt(1, objectives.size(), true);
         notifyAllListeners(new ChooseObjectiveMessage(this.username, objectives.get(choice - 1)));
@@ -364,9 +371,13 @@ public class TUI extends View {
         if (hasOptions) {
             System.out.println(" 4              5              6");
         }
-        System.out.println();
+        List<Pair<ObjectiveCard, String>> objectivesWithPrompt = new ArrayList<>();
         for (ObjectiveCard obj : this.gameView.getObjectives()) {
-            GamePrinter.printObjectiveDescription(obj, "Common objective: ");
+            objectivesWithPrompt.add(new Pair<>(obj, "Common objective: "));
+        }
+        if (!objectivesWithPrompt.isEmpty()) {
+            System.out.println();
+            GamePrinter.printObjectives(objectivesWithPrompt);
         }
     }
 
@@ -388,9 +399,9 @@ public class TUI extends View {
             System.out.println(" 1              2              3");
         }
         GamePrinter.printHand(this.gameView.getPlayer(this.username).getHand(), false);
-        System.out.println();
         if (this.gameView.getPlayer(this.username).getObjective().isPresent()) {
-            GamePrinter.printObjectiveDescription(
+            System.out.println();
+            GamePrinter.printObjective(
                     this.gameView.getPlayer(this.username).getObjective().get(),
                     "Private objective: "
             );
