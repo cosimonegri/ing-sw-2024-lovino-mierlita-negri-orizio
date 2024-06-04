@@ -20,7 +20,7 @@ public class GameView implements Serializable {
     public GameView(Game game) {
         this.playersCount = game.getPlayersCount();
         this.currentTurn = game.getCurrentTurn();
-        this.currentPlayer = game.getCurrentPlayer().getView();
+        this.currentPlayer = game.getCurrentPlayer() != null ? game.getCurrentPlayer().getView() : null;
         for(Player p : game.getPlayers()){
             this.players.add(p.getView());
         }
@@ -52,17 +52,21 @@ public class GameView implements Serializable {
                 return p;
             }
         }
+        //todo maybe raise exception
         return null;
     }
 
-    public PlayerView getCurrentPlayer() {
-        return currentPlayer;
+    public Optional<PlayerView> getCurrentPlayer() {
+        return Optional.ofNullable(currentPlayer);
     }
 
     public int getCurrentTurn() { return currentTurn; }
 
     public boolean isCurrentPlayer(String username) {
-        return this.getCurrentPlayer().getUsername().equals(username);
+        if (this.currentPlayer == null) {
+            return false;
+        }
+        return this.currentPlayer.getUsername().equals(username);
     }
 
     public BoardView getBoard() {

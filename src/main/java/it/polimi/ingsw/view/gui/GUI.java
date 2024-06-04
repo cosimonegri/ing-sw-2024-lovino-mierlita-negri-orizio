@@ -563,8 +563,8 @@ public class GUI extends View {
         controller.turnNum.setText(String.valueOf(gameView.getCurrentTurn()));
         if (gameView.isCurrentPlayer(this.username)) {
             controller.playersTurn.setText("It's your turn!");
-        } else {
-            controller.playersTurn.setText("It's " + gameView.getCurrentPlayer().getUsername() + "'s turn...");
+        } else if (gameView.getCurrentPlayer().isPresent()) {
+            controller.playersTurn.setText("It's " + gameView.getCurrentPlayer().get().getUsername() + "'s turn...");
         }
         controller.myField.setText(this.username);
 
