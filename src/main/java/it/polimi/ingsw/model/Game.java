@@ -19,7 +19,7 @@ public class Game {
      */
     private final int playersCount;
     /**
-     * List of players that joined the lobby, the order is that of entry
+     * List of players that joined the lobby
      */
     private final List<Player> players;
     /**
@@ -145,29 +145,42 @@ public class Game {
     }
 
     /**
-     * Initializes the board, which initializes all the cards and decks
-     * gives to all players their starting hands and assigns the first turn and player.
+     * Give a starter card to each player
      */
-    public void start() {
-        this.objectives.add(this.board.getObjectiveDeck().draw());
-        this.objectives.add(this.board.getObjectiveDeck().draw());
+    public void giveStarterCards() {
+        for (Player p : this.players) {
+            p.setStarterCard(this.board.getStarterDeck().draw());
+        }
+    }
 
-        this.currentTurn = 1;
-        this.currentPlayer = this.players.getFirst();
-
-        for(Player p : this.players){
+    /**
+     * Give 2 resource cards, 1 gold card and 2 objective card options to each player
+     */
+    public void fillPlayerHands() {
+        for (Player p : this.players) {
             p.addToHand(this.board.getResourceDeck().draw());
             p.addToHand(this.board.getResourceDeck().draw());
             p.addToHand(this.board.getGoldDeck().draw());
-
-            p.setStarterCard(this.board.getStarterDeck().draw());
-
-            List<ObjectiveCard> objectiveCardList = new ArrayList<>(2);
-            objectiveCardList.add(this.board.getObjectiveDeck().draw());
-            objectiveCardList.add(this.board.getObjectiveDeck().draw());
-
-            p.setObjOptions(objectiveCardList);
+            p.addObjOption(this.board.getObjectiveDeck().draw());
+            p.addObjOption(this.board.getObjectiveDeck().draw());
         }
+    }
+
+    /**
+     * Set the 2 common objective cards
+     */
+    public void drawCommonObjectives() {
+        this.objectives.add(this.board.getObjectiveDeck().draw());
+        this.objectives.add(this.board.getObjectiveDeck().draw());
+    }
+
+    /**
+     * Assign the first turn and player
+     */
+    public void start() {
+        Collections.shuffle(this.players);
+        this.currentPlayer = this.players.getFirst();
+        this.currentTurn = 1;
     }
 
     /**

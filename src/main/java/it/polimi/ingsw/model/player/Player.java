@@ -66,9 +66,12 @@ public class Player {
      */
     public Player(String username) {
         this.username = username;
-        this.score = 0;
         this.marker = null;
+        this.score = 0;
+        this.objectiveScore = 0;
         this.objCard = null;
+        this.objOptions = new ArrayList<>();
+        this.starterCard = null;
         this.hand = new ArrayList<>();
         this.field = new Field();
         this.isWinner = false;
@@ -170,12 +173,12 @@ public class Player {
         return this.objCard;
     }
 
-    public void setObjOptions(List<ObjectiveCard> objOptions) {
-        this.objOptions = new ArrayList<>(objOptions);
+    public void addObjOption(ObjectiveCard objective) {
+        this.objOptions.add(objective);
     }
 
     public List<ObjectiveCard> getObjOptions() {
-        return Collections.unmodifiableList(this. objOptions);
+        return Collections.unmodifiableList(this.objOptions);
     }
 
     public String getUsername() {

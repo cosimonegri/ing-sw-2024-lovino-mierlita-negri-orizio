@@ -43,7 +43,8 @@ public class TUI extends View {
         createOrJoinGame();
 
         Thread mainThread = new Thread(() -> {
-            setupGame();
+            runStarterPhase();
+            runObjectivePhase();
             while (true) {
                 chooseAction();
             }
@@ -59,7 +60,7 @@ public class TUI extends View {
                         this.gameView = m.getGameView();
                         Printer.printInfo(m.getMessage());
                         if (this.gameView.isEnded()) {
-                            printLeaderboard();
+                            printLeaderboard(true);
                             System.exit(0);
                         }
                         if (this.gameView.isCurrentPlayer(this.username)) {
@@ -179,30 +180,23 @@ public class TUI extends View {
         System.out.println();
     }
 
-    private void setupGame() {
+    private void runStarterPhase() {
         chooseMarker();
 
         while (true) {
             ServerToClientMessage response = waitForMessage();
 
             if (response instanceof ChooseMarkerAckMessage) {
+                printBoard(true, false);
                 chooseStarter();
-                chooseObjective();
+                System.out.println();
+                System.out.println("Waiting for the other players to choose their starter card...");
             }
             else if (response instanceof ChooseMarkerErrorMessage) {
                 Printer.printError("This marker has already been taken");
                 chooseMarker();
             }
-            else if (response instanceof ChooseObjectiveAckMessage r) {
-                System.out.println();
-                System.out.println("Waiting for the other players to finish their setup...");
-            }
-            else if (response instanceof ChooseObjectiveErrorMessage r) {
-                //todo this error should never happen
-                Printer.printError("You cannot choose this objective");
-                chooseObjective();
-            }
-            else if (response instanceof SetupEndedMessage) {
+            else if (response instanceof StarterPhaseEndedMessage) {
                 break;
             }
             else {
@@ -236,6 +230,33 @@ public class TUI extends View {
         notifyAllListeners(new PlayStarterMessage(this.username, choice == 2));
     }
 
+    private void runObjectivePhase() {
+        printBoard(true, false);
+        printField(true);
+        printHand(true, false);
+        chooseObjective();
+
+        while (true) {
+            ServerToClientMessage response = waitForMessage();
+
+            if (response instanceof ChooseObjectiveAckMessage) {
+                System.out.println();
+                System.out.println("Waiting for the other players to choose their private objective...");
+            }
+            else if (response instanceof ChooseObjectiveErrorMessage) {
+                //todo this error should never happen
+                Printer.printError("You cannot choose this objective");
+                chooseObjective();
+            }
+            else if (response instanceof ObjectivePhaseEndedMessage) {
+                break;
+            }
+            else {
+                addMessage(response);
+            }
+        }
+    }
+
     private void chooseObjective() {
         System.out.println();
         System.out.println("Choose one of the following private objectives:");
@@ -261,7 +282,7 @@ public class TUI extends View {
             ServerToClientMessage response = waitForMessage();
 
             if (response instanceof PlayCardAckMessage) {
-                printBoard(true);
+                printBoard(true, true);
                 drawCard();
             }
             else if (response instanceof PlayCardErrorMessage r) {
@@ -283,7 +304,7 @@ public class TUI extends View {
     }
 
     private void playCard() {
-        List<PlayableCard> hand = this.gameView.getCurrentPlayer().getHand();
+        List<PlayableCard> hand = this.gameView.getPlayer(this.username).getHand();
         System.out.println();
         int cardChoice = chooseInRange("Which card do you want to play", 1, hand.size());
         int flippedChoice = chooseOption(true, "Front visible", "Back visible");
@@ -334,36 +355,29 @@ public class TUI extends View {
                     Printer.printError("Wait for your turn");
                     break;
                 }
-                System.out.println();
-                System.out.println("LEADERBOARD:");
-                printLeaderboard();
-                System.out.println();
-                System.out.println("BOARD:");
-                printBoard(false);
-                System.out.println();
-                System.out.println("YOUR FIELD:");
-                System.out.println();
-                this.numToCoordinates = GamePrinter.printField(this.gameView.getPlayer(this.username).getField());
-                System.out.println();
-                System.out.println("YOUR HAND:");
-                printHand(true);
+                printLeaderboard(true);
+                printBoard(true, false);
+                printField(true);
+                printHand(true, true);
                 playTurn();
             }
             case 2 -> {
-                System.out.println();
-                GamePrinter.printField(this.gameView.getPlayer(this.username).getField());
-                printHand(false);
+                printField(false);
+                printHand(false, false);
             }
             case 3 -> {
-                printLeaderboard();
-                printBoard(false);
+                printLeaderboard(false);
+                printBoard(false, false);
             }
             default -> printOpponent(this.gameView.getPlayer(choiceToUsername.get(choice)));
         }
     }
 
-    private void printBoard(boolean hasOptions) {
+    private void printBoard(boolean hasTitle, boolean hasOptions) {
         System.out.println();
+        if (hasTitle) {
+            System.out.println("BOARD:");
+        }
         if (hasOptions) {
             System.out.println(" 1              2              3");
         }
@@ -381,8 +395,11 @@ public class TUI extends View {
         }
     }
 
-    private void printLeaderboard() {
+    private void printLeaderboard(boolean hasTitle) {
         System.out.println();
+        if (hasTitle) {
+            System.out.println("LEADERBOARD:");
+        }
         for (PlayerView player : this.gameView.getSortedPlayers()) {
             String coloredUsername = player.getMarker().isPresent()
                     ? player.getMarker().get().getConsoleColor() + player.getUsername() + Printer.RESET
@@ -393,8 +410,19 @@ public class TUI extends View {
         }
     }
 
-    private void printHand(boolean hasOptions) {
+    private void printField(boolean hasTitle) {
         System.out.println();
+        if (hasTitle) {
+            System.out.println("YOUR FIELD:");
+        }
+        this.numToCoordinates = GamePrinter.printField(this.gameView.getPlayer(this.username).getField());
+    }
+
+    private void printHand(boolean hasTitle, boolean hasOptions) {
+        System.out.println();
+        if (hasTitle) {
+            System.out.println("YOUR HAND:");
+        }
         if (hasOptions) {
             System.out.println(" 1              2              3");
         }

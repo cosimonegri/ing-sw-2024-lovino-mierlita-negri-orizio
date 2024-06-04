@@ -49,8 +49,8 @@ public class GameController {
         }
         model.addPlayer(username, listener);
         if (model.isLobbyFull()) {
-            model.setGamePhase(GamePhase.SETUP);
-            model.start();
+            model.setGamePhase(GamePhase.STARTER);
+            model.giveStarterCards();
         }
     }
 
@@ -64,7 +64,7 @@ public class GameController {
 
     synchronized public void chooseMarker(String username, Marker marker) throws MarkerNotValidException, ActionNotValidException {
         Player player = model.getPlayer(username);
-        if (model.getGamePhase() != GamePhase.SETUP || player == null || hasChosenMarker(player)) {
+        if (model.getGamePhase() != GamePhase.STARTER || player == null || hasChosenMarker(player)) {
             throw new ActionNotValidException();
         }
         for (Player p : model.getPlayers()) {
@@ -73,30 +73,41 @@ public class GameController {
             }
         }
         player.setMarker(marker);
+        if (isStarterPhaseFinished()) {
+            model.setGamePhase(GamePhase.OBJECTIVE);
+            model.fillPlayerHands();
+            model.drawCommonObjectives();
+        }
     }
 
     synchronized public void playStarter(String username, boolean flipped) throws ActionNotValidException {
         Player player = model.getPlayer(username);
-        if (model.getGamePhase() != GamePhase.SETUP || player == null || hasPlayedStarter(player)) {
+        if (model.getGamePhase() != GamePhase.STARTER || player == null || hasPlayedStarter(player)) {
             throw new ActionNotValidException();
         }
         try {
             player.getField().addCentralCard(player.getStarterCard(), flipped);
         } catch (CoordinatesNotValidException | NotEnoughResourcesException ignored) { }
+        if (isStarterPhaseFinished()) {
+            model.setGamePhase(GamePhase.OBJECTIVE);
+            model.fillPlayerHands();
+            model.drawCommonObjectives();
+        }
     }
 
     synchronized public void chooseObjective(String username, ObjectiveCard objective) throws CardNotInHandException, ActionNotValidException {
         Player player = model.getPlayer(username);
-        if (model.getGamePhase() != GamePhase.SETUP || player == null || hasChosenObjective(player) || !player.getObjOptions().contains(objective)) {
+        if (model.getGamePhase() != GamePhase.OBJECTIVE || player == null || hasChosenObjective(player) || !player.getObjOptions().contains(objective)) {
             throw new ActionNotValidException();
         }
         if (!player.getObjOptions().contains(objective)) {
             throw new CardNotInHandException();
         }
         player.setObjCard(objective);
-        if (isGameSetupFinished()) {
+        if (isObjectivePhaseFinished()) {
             model.setGamePhase(GamePhase.MAIN);
             model.setTurnPhase(TurnPhase.PLAY);
+            model.start();
         }
     }
 
@@ -179,9 +190,18 @@ public class GameController {
         return model.getCurrentPlayer().getUsername().equals(username);
     }
 
-    private boolean isGameSetupFinished() {
+    private boolean isStarterPhaseFinished() {
         for (Player player : model.getPlayers()) {
-            if (!(hasChosenMarker(player) && hasPlayedStarter(player) && hasChosenObjective(player))) {
+            if (!(hasChosenMarker(player) && hasPlayedStarter(player))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isObjectivePhaseFinished() {
+        for (Player player : model.getPlayers()) {
+            if (!hasChosenObjective(player)) {
                 return false;
             }
         }
