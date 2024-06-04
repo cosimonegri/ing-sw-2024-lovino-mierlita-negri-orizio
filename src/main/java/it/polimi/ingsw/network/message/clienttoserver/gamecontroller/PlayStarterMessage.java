@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.message.clienttoserver.gamecontroller;
 
 import it.polimi.ingsw.controller.GameController;
+import it.polimi.ingsw.exceptions.ActionNotValidException;
 
 public class PlayStarterMessage extends GameControllerMessage {
     private final boolean flipped;
@@ -16,6 +17,8 @@ public class PlayStarterMessage extends GameControllerMessage {
 
     @Override
     public void execute(GameController controller) {
-        controller.playStarter(this.getUsername(), this.flipped);
+        try {
+            controller.playStarter(this.getUsername(), this.flipped);
+        } catch (ActionNotValidException ignored) {}
     }
 }

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.message.clienttoserver.gamecontroller;
 
 import it.polimi.ingsw.controller.GameController;
+import it.polimi.ingsw.exceptions.ActionNotValidException;
 import it.polimi.ingsw.exceptions.CardNotInHandException;
 import it.polimi.ingsw.exceptions.CoordinatesNotValidException;
 import it.polimi.ingsw.exceptions.NotEnoughResourcesException;
@@ -42,6 +43,6 @@ public class PlayCardMessage extends GameControllerMessage {
             controller.notifyListener(this.getUsername(), new PlayCardAckMessage());
         } catch (CardNotInHandException | CoordinatesNotValidException | NotEnoughResourcesException e) {
             controller.notifyListener(this.getUsername(), new PlayCardErrorMessage(e.getMessage()));
-        }
+        } catch (ActionNotValidException ignored) {}
     }
 }

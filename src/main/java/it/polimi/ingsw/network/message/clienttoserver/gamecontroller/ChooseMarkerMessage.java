@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.message.clienttoserver.gamecontroller;
 
 import it.polimi.ingsw.controller.GameController;
+import it.polimi.ingsw.exceptions.ActionNotValidException;
 import it.polimi.ingsw.exceptions.MarkerNotValidException;
 import it.polimi.ingsw.model.player.Marker;
 import it.polimi.ingsw.network.message.servertoclient.ChooseMarkerAckMessage;
@@ -21,6 +22,6 @@ public class ChooseMarkerMessage extends GameControllerMessage {
             controller.notifyListener(this.getUsername(), new ChooseMarkerAckMessage());
         } catch (MarkerNotValidException e) {
             controller.notifyListener(this.getUsername(), new ChooseMarkerErrorMessage());
-        }
+        } catch (ActionNotValidException ignored) {}
     }
 }

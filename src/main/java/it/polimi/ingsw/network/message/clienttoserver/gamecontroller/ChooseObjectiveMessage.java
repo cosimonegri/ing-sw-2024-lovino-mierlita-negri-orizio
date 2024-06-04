@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.message.clienttoserver.gamecontroller;
 
 import it.polimi.ingsw.controller.GameController;
+import it.polimi.ingsw.exceptions.ActionNotValidException;
 import it.polimi.ingsw.exceptions.CardNotInHandException;
 import it.polimi.ingsw.model.GamePhase;
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
@@ -32,6 +33,6 @@ public class ChooseObjectiveMessage extends GameControllerMessage {
             }
         } catch (CardNotInHandException e) {
             controller.notifyListener(this.getUsername(), new ChooseObjectiveErrorMessage());
-        }
+        } catch (ActionNotValidException ignored) {}
     }
 }

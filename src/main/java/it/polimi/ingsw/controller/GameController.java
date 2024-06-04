@@ -62,11 +62,10 @@ public class GameController {
         }
     }
 
-    synchronized public void chooseMarker(String username, Marker marker) throws MarkerNotValidException {
+    synchronized public void chooseMarker(String username, Marker marker) throws MarkerNotValidException, ActionNotValidException {
         Player player = model.getPlayer(username);
         if (model.getGamePhase() != GamePhase.SETUP || player == null || hasChosenMarker(player)) {
-            //todo
-            return;
+            throw new ActionNotValidException();
         }
         for (Player p : model.getPlayers()) {
             if (p.getMarker() == marker) {
@@ -76,22 +75,20 @@ public class GameController {
         player.setMarker(marker);
     }
 
-    synchronized public void playStarter(String username, boolean flipped) {
+    synchronized public void playStarter(String username, boolean flipped) throws ActionNotValidException {
         Player player = model.getPlayer(username);
         if (model.getGamePhase() != GamePhase.SETUP || player == null || hasPlayedStarter(player)) {
-            //todo
-            return;
+            throw new ActionNotValidException();
         }
         try {
             player.getField().addCentralCard(player.getStarterCard(), flipped);
         } catch (CoordinatesNotValidException | NotEnoughResourcesException ignored) { }
     }
 
-    synchronized public void chooseObjective(String username, ObjectiveCard objective) throws CardNotInHandException {
+    synchronized public void chooseObjective(String username, ObjectiveCard objective) throws CardNotInHandException, ActionNotValidException {
         Player player = model.getPlayer(username);
         if (model.getGamePhase() != GamePhase.SETUP || player == null || hasChosenObjective(player) || !player.getObjOptions().contains(objective)) {
-            //todo
-            return;
+            throw new ActionNotValidException();
         }
         if (!player.getObjOptions().contains(objective)) {
             throw new CardNotInHandException();
@@ -104,11 +101,10 @@ public class GameController {
     }
 
     synchronized public void playCard(String username, PlayableCard card, boolean flipped, Coordinates coords)
-            throws CardNotInHandException, CoordinatesNotValidException, NotEnoughResourcesException
+            throws CardNotInHandException, CoordinatesNotValidException, NotEnoughResourcesException, ActionNotValidException
     {
         if (model.getGamePhase() != GamePhase.MAIN || model.getTurnPhase() != TurnPhase.PLAY || !isCurrentPlayer(username)) {
-            //todo
-            return;
+            throw new ActionNotValidException();
         }
         if (!model.getCurrentPlayer().getHand().contains(card)) {
             throw new CardNotInHandException();
@@ -125,11 +121,10 @@ public class GameController {
     }
 
     synchronized public void drawCard(String username, DrawType type, PlayableCard card)
-            throws EmptyDeckException, CardNotOnBoardException
+            throws EmptyDeckException, CardNotOnBoardException, ActionNotValidException
     {
         if (model.getGamePhase() != GamePhase.MAIN || model.getTurnPhase() != TurnPhase.DRAW || !isCurrentPlayer(username)) {
-            //todo
-            return;
+            throw new ActionNotValidException();
         }
         switch (type) {
             case RESOURCE:
