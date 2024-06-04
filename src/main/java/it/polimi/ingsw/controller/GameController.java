@@ -55,8 +55,9 @@ public class GameController {
     }
 
     synchronized public void removePlayer(String username) {
-        model.removePlayer(username);
-        if (model.getGamePhase() != GamePhase.WAITING) {
+        if (model.getGamePhase() == GamePhase.WAITING) {
+            model.removePlayer(username);
+        } else {
             model.setGamePhase(GamePhase.ENDED);
         }
     }

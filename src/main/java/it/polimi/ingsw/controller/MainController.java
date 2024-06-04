@@ -3,6 +3,7 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.GameListener;
 import it.polimi.ingsw.model.GamePhase;
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.message.servertoclient.CreateGameAckMessage;
 import it.polimi.ingsw.network.message.servertoclient.PingRequest;
 import it.polimi.ingsw.network.message.servertoclient.ServerToClientMessage;
@@ -85,6 +86,10 @@ public class MainController {
         GameController game = getGameOfPlayer(username);
         game.removePlayer(username);
         return game;
+    }
+
+    synchronized public void deleteGame(GameController game) {
+        this.games.remove(game.getId());
     }
 
     synchronized public GameController getGameOfPlayer(String username) throws UsernameNotPlayingException {

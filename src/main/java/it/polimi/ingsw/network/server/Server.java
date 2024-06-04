@@ -136,6 +136,8 @@ public class Server implements ServerInterface {
                                     game.getModelView(), username + " has left. The game has ended."
                             ));
                         }
+                        //todo maybe delete also when game ends
+                        controller.deleteGame(game);
                     }
                     catch (UsernameNotPlayingException e) {
                         System.err.println(e.getMessage());
