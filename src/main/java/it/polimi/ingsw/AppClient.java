@@ -18,7 +18,7 @@ public class AppClient {
     public static void main(String[] args) {
         ConnectionType connection = ConnectionType.SOCKET;
         View view = new GUI();
-        String ip = "127.0.0.1";
+        String serverIp = "127.0.0.1";
 
         for (int i = 0; i < args.length - 1; i++) {
             switch (args[i]) {
@@ -47,7 +47,7 @@ public class AppClient {
                 // ip, default localhost
                 case "-h" -> {
                     if (args[i + 1].matches(IPV4_PATTERN)) {
-                        ip = args[i + 1];
+                        serverIp = args[i + 1];
                     } else {
                         System.err.println("Invalid ip parameter.");
                         System.exit(1);
@@ -56,7 +56,7 @@ public class AppClient {
             }
         }
 
-        Client client = new Client(view, connection, ip);
+        Client client = new Client(view, connection, serverIp);
         client.run();
     }
 }

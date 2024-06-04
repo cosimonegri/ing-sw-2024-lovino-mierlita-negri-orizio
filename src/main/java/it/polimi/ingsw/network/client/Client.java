@@ -10,6 +10,8 @@ import it.polimi.ingsw.network.server.SocketServerStub;
 import it.polimi.ingsw.utilities.Config;
 import it.polimi.ingsw.view.View;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Timer;
 import java.io.IOException;
 import java.rmi.NotBoundException;
@@ -22,15 +24,15 @@ import java.util.TimerTask;
 public class Client implements ClientInterface {
     private final View view;
     private final ConnectionType connection;
-    private final String ip;
+    private final String serverIp;
     private ClientInterface skeleton = null;
     private ServerInterface server = null;
     private Timer timer;
 
-    public Client(View view, ConnectionType connection, String ip) {
+    public Client(View view, ConnectionType connection, String serverIp) {
         this.view = view;
         this.connection = connection;
-        this.ip = ip;
+        this.serverIp = serverIp;
         try {
             if (connection == ConnectionType.RMI) {
                 this.skeleton = (ClientInterface) UnicastRemoteObject.exportObject(this, 0);
@@ -77,8 +79,14 @@ public class Client implements ClientInterface {
     }
 
     private ServerInterface setupRmiConnection() throws RemoteException, NotBoundException {
+        try {
+            System.setProperty("java.rmi.server.hostname", InetAddress.getLocalHost().getHostAddress());
+        } catch (UnknownHostException e) {
+            System.err.println("Cannot resolve IP address of this machine");
+            System.exit(1);
+        }
         System.out.println("Connecting to the RMI server...");
-        Registry registry = LocateRegistry.getRegistry(this.ip, Config.RMI_PORT);
+        Registry registry = LocateRegistry.getRegistry(this.serverIp, Config.RMI_PORT);
         ServerInterface stub = (ServerInterface) registry.lookup(Config.RMI_NAME);
         System.out.println("Connection established successfully");
         return stub;
@@ -86,7 +94,7 @@ public class Client implements ClientInterface {
 
     private ServerInterface setupSocketConnection() throws IOException {
         System.out.println("Connecting to the socket server...");
-        SocketServerStub stub = new SocketServerStub(this.ip);
+        SocketServerStub stub = new SocketServerStub(this.serverIp);
         System.out.println("Connection established successfully");
         new Thread(() -> {
             try {
