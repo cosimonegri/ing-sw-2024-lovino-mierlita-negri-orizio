@@ -283,6 +283,7 @@ public class TUI extends View {
             if (response instanceof PlayCardAckMessage) {
                 printBoard(true, true);
                 if (gameView.isLastRound()) {
+                    gameView.resetCurrentPlayer();
                     break;
                 }
                 drawCard();
@@ -292,6 +293,7 @@ public class TUI extends View {
                 playCard();
             }
             else if (response instanceof DrawCardAckMessage) {
+                gameView.resetCurrentPlayer();
                 break;
             }
             else if (response instanceof DrawCardErrorMessage r) {

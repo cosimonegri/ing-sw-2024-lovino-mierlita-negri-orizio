@@ -11,7 +11,7 @@ import java.util.*;
 public class GameView implements Serializable {
     private final int playersCount;
     private final List<PlayerView> players = new ArrayList<>();
-    private final PlayerView currentPlayer;
+    private PlayerView currentPlayer;
     private final BoardView board;
     private final List<ObjectiveCard> objectives = new ArrayList<>();
     private final boolean isLastRound;
@@ -58,11 +58,19 @@ public class GameView implements Serializable {
         return null;
     }
 
+    public int getCurrentTurn() { return currentTurn; }
+
     public Optional<PlayerView> getCurrentPlayer() {
-        return Optional.ofNullable(currentPlayer);
+        return Optional.ofNullable(this.currentPlayer);
     }
 
-    public int getCurrentTurn() { return currentTurn; }
+    /**
+     * Change the current player to null so that the user cannot take another action
+     * until a new {@link GameView} arrives from the server
+     */
+    public void resetCurrentPlayer() {
+        this.currentPlayer = null;
+    }
 
     public boolean isCurrentPlayer(String username) {
         if (this.currentPlayer == null) {
