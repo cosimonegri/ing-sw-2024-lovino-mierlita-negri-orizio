@@ -64,9 +64,12 @@ public class Board {
      * @param card is the card the player wants to draw from visibleCards
      */
     public void replaceVisibleCard(PlayableCard card) {
+        if (card == null) {
+            return;
+        }
         for (int i = 0; i < this.visibleCards.length; i++) {
-            // skip to the next index if the card doesn't match with the given one
-            if (!this.visibleCards[i].equals(card)) {
+            // skip to the next index if the visible card doesn't match with the given one
+            if (!card.equals(this.visibleCards[i])) {
                 continue;
             }
             // just remove the card if both decks are empty

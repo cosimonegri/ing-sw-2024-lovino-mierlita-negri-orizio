@@ -5,7 +5,6 @@ import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.exceptions.ActionNotValidException;
 import it.polimi.ingsw.exceptions.CardNotOnBoardException;
 import it.polimi.ingsw.exceptions.EmptyDeckException;
-import it.polimi.ingsw.model.GamePhase;
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
 import it.polimi.ingsw.network.message.servertoclient.DrawCardAckMessage;
 import it.polimi.ingsw.network.message.servertoclient.DrawCardErrorMessage;
@@ -35,9 +34,7 @@ public class DrawCardMessage extends GameControllerMessage {
             controller.drawCard(this.getUsername(), this.type, this.card);
             controller.notifyListener(this.getUsername(), new DrawCardAckMessage());
             String turnMessage = this.getUsername() + " has finished his turn.";
-            String message = controller.getPhase() == GamePhase.ENDED
-                    ? turnMessage + " The game has ended."
-                    : controller.getRemainingTurns().isPresent()
+            String message = controller.getRemainingTurns().isPresent()
                     ? turnMessage + " " + Config.pluralize(controller.getRemainingTurns().get(), "turn") + " before the game ends."
                     : turnMessage;
             controller.notifyAllListeners(new ViewUpdateMessage(controller.getModelView(), message));

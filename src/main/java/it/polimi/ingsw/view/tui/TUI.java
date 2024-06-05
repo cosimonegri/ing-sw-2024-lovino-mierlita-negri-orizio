@@ -269,7 +269,6 @@ public class TUI extends View {
             System.out.println();
             GamePrinter.printObjectives(objectivesWithPrompt);
         }
-        System.out.println();
         System.out.print("> ");
         int choice = readInt(1, objectives.size(), true);
         notifyAllListeners(new ChooseObjectiveMessage(this.username, objectives.get(choice - 1)));
@@ -283,6 +282,9 @@ public class TUI extends View {
 
             if (response instanceof PlayCardAckMessage) {
                 printBoard(true, true);
+                if (gameView.isLastRound()) {
+                    break;
+                }
                 drawCard();
             }
             else if (response instanceof PlayCardErrorMessage r) {

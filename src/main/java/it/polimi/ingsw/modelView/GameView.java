@@ -14,6 +14,7 @@ public class GameView implements Serializable {
     private final PlayerView currentPlayer;
     private final BoardView board;
     private final List<ObjectiveCard> objectives = new ArrayList<>();
+    private final boolean isLastRound;
     private final boolean isEnded;
     private final int currentTurn;
 
@@ -26,6 +27,7 @@ public class GameView implements Serializable {
         }
         this.board = game.getBoard().getView();
         this.objectives.addAll(game.getObjectives());
+        this.isLastRound = game.isLastRound();
         this.isEnded = game.getGamePhase() == GamePhase.ENDED;
     }
 
@@ -75,6 +77,10 @@ public class GameView implements Serializable {
 
     public List<ObjectiveCard> getObjectives() {
         return Collections.unmodifiableList(this.objectives);
+    }
+
+    public boolean isLastRound() {
+        return this.isLastRound;
     }
 
     public boolean isEnded() {

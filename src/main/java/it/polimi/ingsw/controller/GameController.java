@@ -128,7 +128,15 @@ public class GameController {
                     : card.getPoints()
             );
         }
-        model.setTurnPhase(TurnPhase.DRAW);
+        if (model.isLastRound()) {
+            model.advanceTurn();
+            if (model.getRemainingTurns().isPresent() && model.getRemainingTurns().get() == 0) {
+                model.setGamePhase(GamePhase.ENDED);
+                model.calculateObjectivePoints();
+            }
+        } else {
+            model.setTurnPhase(TurnPhase.DRAW);
+        }
     }
 
     synchronized public void drawCard(String username, DrawType type, PlayableCard card)
@@ -160,10 +168,6 @@ public class GameController {
         }
         model.advanceTurn();
         model.setTurnPhase(TurnPhase.PLAY);
-        if (model.getRemainingTurns().isPresent() && model.getRemainingTurns().get() == 0) {
-            model.setGamePhase(GamePhase.ENDED);
-            model.calculateObjectivePoints();
-        }
     }
 
     synchronized public int getPlayersCount() {
@@ -182,7 +186,7 @@ public class GameController {
         return this.model.getGamePhase();
     }
 
-    private boolean isCurrentPlayer(String username) {
+    synchronized public boolean isCurrentPlayer(String username) {
         if (model.getCurrentPlayer() == null) {
             return false;
         }

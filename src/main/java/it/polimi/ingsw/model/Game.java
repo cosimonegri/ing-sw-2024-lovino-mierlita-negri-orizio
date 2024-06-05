@@ -234,6 +234,13 @@ public class Game {
         return this.lastTurn.map(lastTurn -> Math.max(0, lastTurn - this.currentTurn + 1));
     }
 
+    /**
+     * @return true if the current turn is in the last round, otherwise false
+     */
+    public boolean isLastRound() {
+        return this.lastTurn.filter(lastTurn -> lastTurn - this.currentTurn < this.playersCount).isPresent();
+    }
+
     public List<ObjectiveCard> getObjectives(){
         return Collections.unmodifiableList(this.objectives);
     }
