@@ -18,10 +18,10 @@ public class Config {
         return !username.isEmpty() && !username.isBlank() && username.matches("[a-zA-Z_0-9]*");
     }
 
-    public static String pluralize(String string, int count) {
+    public static String pluralize(int count, String word) {
         if (count == 1) {
-            return count + " " + string;
+            return count + " " + word;
         }
-        return count + " " + string + "s";
+        return count + " " + word + "s";
     }
 }

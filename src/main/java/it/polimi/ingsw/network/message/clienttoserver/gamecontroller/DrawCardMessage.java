@@ -38,7 +38,7 @@ public class DrawCardMessage extends GameControllerMessage {
             String message = controller.getPhase() == GamePhase.ENDED
                     ? turnMessage + " The game has ended."
                     : controller.getRemainingTurns().isPresent()
-                    ? turnMessage + " " + Config.pluralize("turn", controller.getRemainingTurns().get()) + " before the game ends."
+                    ? turnMessage + " " + Config.pluralize(controller.getRemainingTurns().get(), "turn") + " before the game ends."
                     : turnMessage;
             controller.notifyAllListeners(new ViewUpdateMessage(controller.getModelView(), message));
         } catch (EmptyDeckException | CardNotOnBoardException e) {

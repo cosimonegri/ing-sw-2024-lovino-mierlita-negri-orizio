@@ -352,7 +352,11 @@ public class TUI extends View {
         switch (choice) {
             case 1 -> {
                 if (!this.gameView.isCurrentPlayer(this.username)) {
-                    Printer.printError("Wait for your turn");
+                    if (gameView.getCurrentPlayer().isPresent()) {
+                        Printer.printError("Wait for " + gameView.getCurrentPlayer().get().getUsername() + "'s turn");
+                    } else {
+                        Printer.printError("Wait for your turn");
+                    }
                     break;
                 }
                 printLeaderboard(true);
@@ -401,10 +405,11 @@ public class TUI extends View {
             System.out.println("LEADERBOARD:");
         }
         for (PlayerView player : this.gameView.getSortedPlayers()) {
+            String isYou = player.getUsername().equals(this.username) ? " (you)" : "";
             String coloredUsername = player.getMarker().isPresent()
-                    ? player.getMarker().get().getConsoleColor() + player.getUsername() + Printer.RESET
-                    : player.getUsername();
-            System.out.println(coloredUsername + ": " + Config.pluralize("point", player.getTotalScore())
+                    ? player.getMarker().get().getConsoleColor() + player.getUsername() + isYou + Printer.RESET
+                    : player.getUsername() + isYou;
+            System.out.println(coloredUsername + ": " + Config.pluralize(player.getTotalScore(), "point")
                     + " (" + player.getObjectiveScore() + " from objectives)"
             );
         }
