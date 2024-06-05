@@ -171,16 +171,16 @@ public class GamePrinter {
     }
 
     public static void printBoard(BoardView board) {
-        PlayableCard card;
-
         for(int rowPrinterIndex = 0; rowPrinterIndex < 7; rowPrinterIndex++) {
-            int min = -1, max = -1;
-            if(rowPrinterIndex < 3) {
-                min = 0;
-                max = 2;
-            } else if(rowPrinterIndex > 3){
-                min = 2;
-                max = 4;
+            int firstVisibleIndex = -1;
+            int lastVisibleIndex = -1;
+
+            if (rowPrinterIndex < 3) {
+                firstVisibleIndex = 0;
+                lastVisibleIndex = 1;
+            } else if (rowPrinterIndex > 3) {
+                firstVisibleIndex = 2;
+                lastVisibleIndex = 3;
             }
 
             int cornerIndex = 0;
@@ -192,15 +192,11 @@ public class GamePrinter {
                     if(rowPrinterIndex < 3) { cornerIndex = rowPrinterIndex; }
                     else { cornerIndex = boardRowPrinterIndex; }
                 }
-                if (rowPrinterIndex < 3) {
-                    card = board.getGoldTopCard();
-                } else {
-                    card = board.getResourceTopCard();
-                }
-                printRow(card, cornerIndex + 4, boardRowPrinterIndex + 4, true, false, 0, null);
+                PlayableCard coveredCard = rowPrinterIndex < 3 ? board.getGoldTopCard() : board.getResourceTopCard();
+                printRow(coveredCard, cornerIndex + 4, boardRowPrinterIndex + 4, true, false, 0, null);
                 System.out.print("   ");
 
-                for (PlayableCard visibleCard : Arrays.asList(board.getVisibleCards()).subList(min, max)) {
+                for (PlayableCard visibleCard : Arrays.asList(board.getVisibleCards()).subList(firstVisibleIndex, lastVisibleIndex + 1)) {
                     printRow(visibleCard, cornerIndex, boardRowPrinterIndex, false, false, 0, null);
                     System.out.print("   ");
                 }
@@ -282,6 +278,15 @@ public class GamePrinter {
     }
 
     private static void printRow(PlayableCard card, int cornerIndex, int rowPrinterIndex, boolean flipped, boolean onField, int placementIndex, List<Integer> neighborPlacementIndexes) {
+        if (card == null) {
+            if (onField) {
+                System.out.print("       ");
+            } else {
+                System.out.print("            ");
+            }
+            return;
+        }
+
         String leftCorner = null, rightCorner = null, cardColor;
         List<Corner> corners;
 

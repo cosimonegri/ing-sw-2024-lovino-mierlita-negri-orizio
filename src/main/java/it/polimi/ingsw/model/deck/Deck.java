@@ -32,9 +32,14 @@ public class Deck<T extends Card> {
         return cards.removeLast();
     }
 
-    //todo maybe replace this with a getTop
-    public List<T> getCards() {
-        return Collections.unmodifiableList(cards);
+    /**
+     * @return the card at the top of the deck if the deck is not empty, otherwise null
+     */
+    public T getTop() {
+        if (this.cards.isEmpty()) {
+            return null;
+        }
+        return cards.getLast();
     }
 
     /**
