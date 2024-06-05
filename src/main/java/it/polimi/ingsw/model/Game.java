@@ -71,6 +71,7 @@ public class Game {
         this.currentTurn = 0;
         this.lastTurn = Optional.empty();
         this.gamePhase = GamePhase.WAITING;
+        this.turnPhase = null;
 
         this.objectives = new ArrayList<>(2);
 

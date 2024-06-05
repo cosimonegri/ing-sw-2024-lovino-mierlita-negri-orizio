@@ -174,10 +174,6 @@ public class GameController {
         return model.getPlayers();
     }
 
-    synchronized public Player getCurrentPlayer() {
-        return model.getCurrentPlayer();
-    }
-
     synchronized public Optional<Integer> getRemainingTurns() {
         return model.getRemainingTurns();
     }
@@ -187,6 +183,9 @@ public class GameController {
     }
 
     private boolean isCurrentPlayer(String username) {
+        if (model.getCurrentPlayer() == null) {
+            return false;
+        }
         return model.getCurrentPlayer().getUsername().equals(username);
     }
 

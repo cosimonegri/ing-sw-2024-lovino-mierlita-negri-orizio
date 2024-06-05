@@ -122,18 +122,15 @@ public class Player {
     }
 
     /**
-     * Remove a card from the hand
+     * Remove a card from the hand if present, otherwise do nothing
      *
      * @param card the card that is to be removed
-     * @throws NoSuchElementException the card is not in the player's hand
      */
-    public void removeFromHand(PlayableCard card) throws NoSuchElementException {
-        if (card == null) return;
-        if (hand.contains(card)) {
-            this.hand.remove(card);
-        } else {
-            throw new NoSuchElementException("Card not found");
+    public void removeFromHand(PlayableCard card) {
+        if (card == null || !hand.contains(card)) {
+            return;
         }
+        this.hand.remove(card);
     }
 
     public Field getField() {
