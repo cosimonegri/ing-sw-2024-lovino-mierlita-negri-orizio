@@ -41,6 +41,9 @@ public class Deck<T extends Card> {
         }
         return cards.getLast();
     }
+    public List<T> getCards(){
+        return this.cards;
+    }
 
     /**
      * @return true if the deck is empty, false otherwise

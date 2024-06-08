@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Corner;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.CornerType;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Resource;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -18,11 +19,16 @@ import static it.polimi.ingsw.model.deck.card.playablecard.corner.Resource.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CardsConfigTest {
+    private static CardsConfig cardsConfig;
+
+    @BeforeAll
+    public static void setupCardsConfig() throws IOException {
+        cardsConfig = CardsConfig.getInstance();
+    }
 
 
     @Test
-    public void CardsConfigTestSize() throws IOException {
-        CardsConfig cardsConfig = CardsConfig.getInstance();
+    public void CardsConfigTestSize() {
         assertEquals(40, cardsConfig.getGoldCards().size());
         assertEquals(40, cardsConfig.getResourceCards().size());
         assertEquals(16, cardsConfig.getObjectiveCards().size());
@@ -31,8 +37,7 @@ public class CardsConfigTest {
     }
 
     @Test
-    public void correctParsingOfGoldCards() throws IOException {
-        CardsConfig cardsConfig = CardsConfig.getInstance();
+    public void correctParsingOfGoldCards() {
 
         //manually creating GoldCard Id = 66
 
@@ -67,8 +72,7 @@ public class CardsConfigTest {
     }
 
     @Test
-    public void correctParsingOfPlayableCard() throws IOException {
-        CardsConfig cardsConfig = CardsConfig.getInstance();
+    public void correctParsingOfPlayableCard() {
 
         //manually creating PlayableCard id = 9
         List<Corner> cornersTestCard = new ArrayList<>();
@@ -92,8 +96,7 @@ public class CardsConfigTest {
     }
 
     @Test
-    public void correctParsingOfStarterCards() throws IOException {
-        CardsConfig cardsConfig = CardsConfig.getInstance();
+    public void correctParsingOfStarterCards() {
 
         //manually creating Starter card with id = 84;
         List<Corner> cornersTestCard = new ArrayList<>();
@@ -118,8 +121,7 @@ public class CardsConfigTest {
         assertEquals(card.getColor(),testCard.getColor());
     }
     @Test
-    public void correctParsingOfObjectiveCards() throws IOException {
-        CardsConfig cardsConfig = CardsConfig.getInstance();
+    public void correctParsingOfObjectiveCards() {
 
         //manually creating Objective card id = 90
 

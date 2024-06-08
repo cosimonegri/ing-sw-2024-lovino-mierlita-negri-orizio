@@ -1,21 +1,34 @@
 package it.polimi.ingsw.model.player;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import it.polimi.ingsw.exceptions.CoordinatesNotValidException;
+import it.polimi.ingsw.exceptions.NotEnoughResourcesException;
+import it.polimi.ingsw.model.deck.card.playablecard.GoldCard;
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Item;
+import it.polimi.ingsw.model.deck.card.playablecard.corner.Position;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Resource;
-import it.polimi.ingsw.exceptions.CoordinatesNotValidException;
 import it.polimi.ingsw.utilities.CardsConfig;
+import it.polimi.ingsw.utilities.Move;
+import it.polimi.ingsw.view.tui.GamePrinter;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class FieldTest {
@@ -104,9 +117,7 @@ public class FieldTest {
         coordsList.add(new Coordinates(81, 80));
         PlayableCard card = Mockito.mock(PlayableCard.class);
         for (Coordinates coords : coordsList) {
-            assertThrows(CoordinatesNotValidException.class, () -> {
-                field.addCard(card, true, coords);
-            });
+            assertThrows(CoordinatesNotValidException.class, () -> field.addCard(card, true, coords));
         }
     }
 
@@ -153,6 +164,20 @@ public class FieldTest {
         assertEquals(3281, field.getCardsCount());
         assertEquals(0, field.getAllValidCoords().size());
     }
+    @Test
+    @DisplayName("Test vertical pattern on a specific instance of field")
+    public void testVerticalPattern() throws IOException, CoordinatesNotValidException, NotEnoughResourcesException {
+       addMovesToField("src/test/resources/VerticalPatternTestMoves.json", field);
+       GamePrinter.printField(field.getView());
+       System.out.println(field.getAllValidCoords());
+
+       assertEquals(field.numOfVerticalPatterns(Resource.ANIMAL,Resource.FUNGI, Position.TOPRIGHT),20);
+       assertEquals(field.numOfVerticalPatterns(Resource.FUNGI,Resource.PLANT, Position.BOTTOMRIGHT),20);
+       assertEquals(field.numOfVerticalPatterns(Resource.PLANT,Resource.INSECT, Position.BOTTOMLEFT),20);
+
+
+
+    }
 
     private void assertSymbolsCount(
             int animal,
@@ -170,5 +195,62 @@ public class FieldTest {
         assertEquals(inkwell, field.getSymbolCount(Item.INKWELL));
         assertEquals(manuscript, field.getSymbolCount(Item.MANUSCRIPT));
         assertEquals(quill, field.getSymbolCount(Item.QUILL));
+    }
+
+    @Test
+    @DisplayName("Test of a complex instance of field in an advanced state ot the game")
+    public void randomFieldTest() throws IOException, ParseException, CoordinatesNotValidException, NotEnoughResourcesException {
+        addMovesToField("src/test/resources/FieldTest.json", this.field);
+        //checking the total symbolCount in this instance of field
+        assertSymbolsCount(6, 6, 4, 4, 0, 0, 1);
+        GamePrinter.printField(this.field.getView());
+
+        //checking diagonalPatterns of different resources
+        assertEquals(field.numOfDiagonalPatterns(Resource.INSECT, false), 1);
+        assertEquals(field.numOfDiagonalPatterns(Resource.FUNGI, true), 1);
+        assertEquals(field.numOfDiagonalPatterns(Resource.ANIMAL, true), 1);
+        assertEquals(field.numOfDiagonalPatterns(Resource.PLANT, false), 1);
+
+        //checking verticalPatterns of differentResources
+        assertEquals(field.numOfVerticalPatterns(Resource.INSECT, Resource.ANIMAL, Position.TOPLEFT), 1);
+        assertEquals(field.numOfVerticalPatterns(Resource.ANIMAL, Resource.FUNGI, Position.TOPRIGHT), 1);
+        assertEquals(field.numOfVerticalPatterns(Resource.PLANT, Resource.INSECT, Position.BOTTOMLEFT), 1);
+        assertEquals(field.numOfVerticalPatterns(Resource.FUNGI, Resource.PLANT, Position.BOTTOMRIGHT), 1);
+
+
+        //creating with JsonParser a list containing all the valid coordinates expected from this instance of field
+        List<Coordinates> allValidCoordsCheck = new ArrayList<>();
+
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) jsonParser.parse(new FileReader("src/test/resources/AllValidCoords.json"));
+        JSONArray coordsArray = (JSONArray) jsonObject.get("coords");
+        for (Object o : coordsArray) {
+            JSONObject coord = (JSONObject) o;
+            int x = ((Long) coord.get("x")).intValue();
+            int y = ((Long) coord.get("y")).intValue();
+            allValidCoordsCheck.add(new Coordinates(x, y));
+        }
+        //checking if list of coordinates expected and the one provided by the method match
+        assertTrue(allValidCoordsCheck.containsAll(field.getAllValidCoords()));
+    }
+
+    /**
+     *
+     * @param pathname the path containing all the moves(in chronological order) of the game
+     * @param field field where moves are applied
+     * @throws IOException if the file fails to open
+     */
+    public void addMovesToField(String pathname, Field field) throws IOException, CoordinatesNotValidException, NotEnoughResourcesException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Move> moves = objectMapper.readValue(new File(pathname), new TypeReference<>() {});
+        for(Move move : moves){
+            Coordinates coords = new Coordinates(move.getX(), move.getY());
+            if(move.getId() >= 41 && move.getId() <= 80){
+                field.addCard((GoldCard) CardsConfig.getInstance().getCard(move.getId()),move.isFlipped(), coords);
+            }
+            else{
+                field.addCard((PlayableCard) CardsConfig.getInstance().getCard(move.getId()), move.isFlipped(), coords);
+            }
+        }
     }
 }
