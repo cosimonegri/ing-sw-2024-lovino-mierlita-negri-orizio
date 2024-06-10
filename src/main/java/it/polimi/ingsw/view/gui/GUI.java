@@ -1,7 +1,12 @@
 package it.polimi.ingsw.view.gui;
 
-import com.sun.scenario.DelayedRunnable;
+import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
+import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
+import it.polimi.ingsw.model.player.Marker;
 import it.polimi.ingsw.network.message.clienttoserver.UsernameMessage;
+import it.polimi.ingsw.network.message.clienttoserver.gamecontroller.ChooseMarkerMessage;
+import it.polimi.ingsw.network.message.clienttoserver.gamecontroller.ChooseObjectiveMessage;
+import it.polimi.ingsw.network.message.clienttoserver.gamecontroller.PlayStarterMessage;
 import it.polimi.ingsw.network.message.clienttoserver.maincontroller.CreateGameMessage;
 import it.polimi.ingsw.network.message.clienttoserver.maincontroller.JoinGameMessage;
 import it.polimi.ingsw.network.message.servertoclient.*;
@@ -9,42 +14,37 @@ import it.polimi.ingsw.utilities.Printer;
 import it.polimi.ingsw.view.View;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
-import javafx.animation.Transition;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.*;
 import javafx.scene.control.*;
-import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 public class GUI extends View {
 
     private StackPane root;
     private Stage window;
     private int gameId;
+
+    private int starterId;
+    private boolean starterFlipped;
+
+    private GuiController controller;
 
 
 
@@ -384,8 +384,10 @@ public class GUI extends View {
                             });
                         }
                     } catch (NumberFormatException e) {
-                        errorLabel.setText("Invalid number");
-                        errorLabel.setOpacity(1);
+                        Platform.runLater(() -> {
+                            errorLabel.setText("Invalid number");
+                            errorLabel.setOpacity(1);
+                        });
                     }
                     Platform.runLater(() -> {
                         joinGameButton.setDisable(false);
@@ -540,6 +542,20 @@ public class GUI extends View {
                 System.out.println("Game started");
                 try {
                     gameView = r.getGameView();
+                    // update view when new message arrives
+                    Thread updateThread = new Thread(() -> {
+                        while (true) {
+                            ServerToClientMessage newMessage = waitForMessage();
+                            if (newMessage instanceof ViewUpdateMessage m) {
+                                this.gameView = m.getGameView();
+                            } else {
+                                addMessage(newMessage);
+                            }
+                        }
+
+
+                    });
+                    updateThread.start();
                     startGame();
                 } catch (IOException e) {
                     System.err.println("Cannot start game interface");
@@ -549,12 +565,197 @@ public class GUI extends View {
     }
 
     private void startGame() throws IOException {
+        // starter phase
+        starterPhase();
+        // objective phase
+        objectivePhase();
+        // game
+        // choose action
+
+    }
+
+    private void objectivePhase() {
+        VBox vbox = new VBox();
+        vbox.getStyleClass().addAll("welcome-box");
+
+        Text chooseObjText = new Text("Choose your PERSONAL objective");
+
+        VBox choice1 = new VBox(), choice2 = new VBox();
+        choice1.getStyleClass().addAll("vbox");
+        choice2.getStyleClass().addAll("vbox");
+        HBox hbox = new HBox();
+        hbox.getStyleClass().addAll("hbox");
+
+        ImageView view1 = new ImageView(), view2 = new ImageView();
+        String path = "file:src/main/resources/images/card_fronts/";
+        List<ObjectiveCard> oc = gameView.getPlayer(this.username).getObjectiveOptions();
+        System.out.println("ObjChoces " + oc.get(0) + " " + oc.get(1));
+        Image image1 = new Image(path + oc.get(0).getId()),
+                image2 = new Image(path + oc.get(1).getId());
+
+        view1.setImage(image1);
+        view1.setFitWidth(50);
+        view1.setPreserveRatio(true);
+
+        view2.setImage(image2);
+        view2.setFitWidth(50);
+        view2.setPreserveRatio(true);
+
+        RadioButton button1 = new RadioButton("FIRST"),
+            button2 = new RadioButton("SECOND");
+        button1.getStyleClass().addAll("label");
+        button2.getStyleClass().addAll("label");
+
+        ToggleGroup objectiveToggle = new ToggleGroup();
+        objectiveToggle.getToggles().addAll(button1, button2);
+
+        choice1.getChildren().addAll(view1, button1);
+        choice2.getChildren().addAll(view2, button2);
+
+        Label errorLabel = new Label();
+        errorLabel.getStyleClass().addAll("error-label");
+        errorLabel.setOpacity(0);
+
+        Button chooseObjButton = new Button("Select");
+        chooseObjButton.getStyleClass().addAll("button");
+
+        hbox.getChildren().addAll(choice1, choice2);
+        vbox.getChildren().addAll(chooseObjText, hbox, errorLabel, chooseObjButton);
+
+        chooseObjButton.setOnAction(event -> {
+            chooseObjButton.setDisable(true);
+            Task<Void> chooseMarkerTask = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    RadioButton selectedRadioButton = (RadioButton) objectiveToggle.getSelectedToggle();
+                    System.out.println("Chosen obj " + selectedRadioButton.getText());
+                    List<ObjectiveCard> ocOptions = gameView.getPlayer(getUsername()).getObjectiveOptions();
+                    ObjectiveCard oc = null;
+
+                    if (selectedRadioButton.getText().equals("FIRST")) oc = ocOptions.get(0);
+                    else if (selectedRadioButton.getText().equals("SECOND")) oc = ocOptions.get(1);
+                    else {
+                        System.out.println("Invalid objective");
+                        Platform.runLater(() -> {
+                            errorLabel.setText("Invalid choice");
+                            errorLabel.setOpacity(1);
+                        });
+                        return null;
+                    }
+                    notifyAllListeners(new ChooseObjectiveMessage(getUsername(), oc));
+
+                    Platform.runLater(() -> {
+//                        controller.setPersonalObjective(oc.getId()); // todo
+                        controller.getBoard().getChildren().remove(vbox);
+                    });
+                    return null;
+                }
+            };
+            new Thread(chooseMarkerTask).start();
+
+            Platform.runLater(() -> {
+                chooseObjButton.setDisable(false);
+            });
+
+        });
+
+        vbox.setOnKeyPressed( event -> {
+            if( event.getCode() == KeyCode.ENTER) {
+                chooseObjButton.fire();
+            }
+        } );
+
+        Platform.runLater(() -> {
+            controller.getBoard().getChildren().addAll(vbox);
+        });
+    }
+
+    private void starterPhase() {
+        Text actionText = new Text("Choose your marker");
+        actionText.getStyleClass().addAll("lobby-text");
+
+        Label errorLabel = new Label();
+        errorLabel.setOpacity(0);
+        errorLabel.getStyleClass().addAll("error-label");
+
+        ToggleGroup radioGroup = new ToggleGroup();
+
+        VBox vbox = new VBox();
+        vbox.getStyleClass().addAll("welcome-box");
+        vbox.getChildren().addAll(actionText, errorLabel);
+
+        for (Marker m : Marker.values()) {
+            RadioButton radioButton = new RadioButton(m.toString());
+            radioButton.getStyleClass().addAll("label");
+            radioButton.setToggleGroup(radioGroup);
+            vbox.getChildren().addAll(radioButton);
+        }
+
+        Button chooseMarkerButton = new Button("Select");
+        chooseMarkerButton.getStyleClass().add("button");
+        vbox.getChildren().addAll(chooseMarkerButton);
+
+        chooseMarkerButton.setOnAction(event -> {
+            chooseMarkerButton.setDisable(true);
+            Task<Void> chooseMarkerTask = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    RadioButton selectedRadioButton = (RadioButton) radioGroup.getSelectedToggle();
+                    System.out.println("Chosen marker " + selectedRadioButton.getText());
+                    notifyAllListeners(new ChooseMarkerMessage(getUsername(), Marker.valueOf(selectedRadioButton.getText())));
+                    return null;
+                }
+            };
+            new Thread(chooseMarkerTask).start();
+
+            Platform.runLater(() -> {
+                chooseMarkerButton.setDisable(false);
+            });
+        });
+
+        vbox.setOnKeyPressed( event -> {
+            if( event.getCode() == KeyCode.ENTER) {
+                chooseMarkerButton.fire();
+            }
+        } );
+
+        Platform.runLater(() -> {
+            root.getChildren().removeLast();
+            root.getChildren().addAll(vbox);
+        });
+
+        while (true) {
+            ServerToClientMessage response = waitForMessage();
+            if (response instanceof ChooseMarkerAckMessage) {
+                System.out.println("Marker taken");
+//                        printBoard(true, false);
+                chooseStarter();
+            } else if (response instanceof ChooseMarkerErrorMessage) {
+                System.out.println("This marker has already been taken");
+                Platform.runLater(() -> {
+                    errorLabel.setText("Marker already taken");
+                    errorLabel.setOpacity(1);
+                });
+            } else if (response instanceof StarterPhaseEndedMessage) {
+                System.out.println("Starter phase ended, loading board");
+                break;
+            } else {
+                addMessage(response);
+            }
+        }
+
+        try {
+            loadBoard();
+        } catch (IOException ignored) {}
+    }
+
+    private void loadBoard() throws IOException {
         // load scene builder fxml
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/playingGui.fxml"));
         GridPane root = loader.load();
 
-        GuiController controller = loader.getController();
+        controller = loader.getController();
 
         //set text
         controller.gridPane.setBackground(getBackgroundPane());
@@ -568,11 +769,16 @@ public class GUI extends View {
         }
         controller.myField.setText(this.username);
 
+        // set board;
+        controller.setBoard(gameView.getBoard());
+        controller.setPublicObjective(gameView.getObjectives());
+
         //set cards
         controller.setHand( gameView.getPlayer(this.username).getHand().get(0).getId(),
                             gameView.getPlayer(this.username).getHand().get(1).getId(),
                             gameView.getPlayer(this.username).getHand().get(2).getId(),
-                            gameView.getPlayer(this.username).getObjectiveOptions().getFirst().getId());
+                            999);
+        controller.setStarter(this.starterId, this.starterFlipped);
 
         Scene scene = new Scene(root);
         Platform.runLater(() -> {
@@ -580,6 +786,125 @@ public class GUI extends View {
             window.setMinHeight(750);
             window.setMinWidth(1100);});
     }
+
+    private void chooseStarter() {
+        System.out.println("Choose starter");
+        Text starterText = new Text("Choose how to play your starter card");
+        starterText.getStyleClass().addAll("lobby-text");
+
+        VBox vbox = new VBox();
+        vbox.getStyleClass().addAll("welcome-box");
+
+        HBox hbox = new HBox();
+        hbox.getStyleClass().addAll("hbox");
+
+        PlayableCard pc = gameView.getPlayer(getUsername()).getStarterCard();
+        setStarterId(pc.getId());
+
+        ImageView frontView = new ImageView(), backView = new ImageView();
+        Image frontImage = new Image("file:src/main/resources/images/card_fronts/" + pc.getId() + ".jpg"),
+        backImage = new Image("file:src/main/resources/images/card_backs/" + pc.getId() + ".jpg");
+
+        frontView.setImage(frontImage);
+        backView.setImage(backImage);
+
+        frontView.setFitWidth(300);
+        frontView.setPreserveRatio(true);
+
+        backView.setFitWidth(300);
+        backView.setPreserveRatio(true);
+
+        VBox frontChoice = new VBox();
+        VBox backChoice = new VBox();
+        frontChoice.getStyleClass().addAll("vbox");
+        backChoice.getStyleClass().addAll("vbox");
+
+        RadioButton frontButton = new RadioButton("FRONT");
+        RadioButton backButton = new RadioButton("BACK");
+        frontButton.getStyleClass().addAll("label");
+        backButton.getStyleClass().addAll("label");
+
+        frontChoice.getChildren().addAll(frontView, frontButton);
+        backChoice.getChildren().addAll(backView, backButton);
+
+        ToggleGroup starterGroup = new ToggleGroup();
+        starterGroup.getToggles().addAll(frontButton, backButton);
+
+        hbox.getChildren().addAll(frontChoice, backChoice);
+
+        Label errorLabel = new Label();
+        errorLabel.getStyleClass().addAll("error-label");
+        errorLabel.setOpacity(0);
+
+        Button flippedButton = new Button("Select");
+        flippedButton.getStyleClass().addAll("button");
+
+        vbox.getChildren().addAll(starterText, hbox, errorLabel, flippedButton);
+
+        flippedButton.setOnAction(event -> {
+            flippedButton.setDisable(true);
+            Task<Void> chooseStarterTask = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    RadioButton selectedRadioButton = (RadioButton) starterGroup.getSelectedToggle();
+                    boolean flipped;
+                    if (selectedRadioButton.getText().equals("FRONT")) flipped = false;
+                    else if (selectedRadioButton.getText().equals("BACK")) flipped = true;
+                    else {
+                        System.out.println("Invalid starter choice");
+                        errorLabel.setText("Invalid choice");
+                        errorLabel.setOpacity(1);
+                        return null;
+                    }
+                    System.out.println("Chosen flipped " + flipped);
+                    setStarterFlipped(flipped);
+                    notifyAllListeners(new PlayStarterMessage(getUsername(), flipped));
+
+                    System.out.println("Waiting for the other players to choose their starter card...");
+
+                    Platform.runLater(() -> {
+                        root.getChildren().removeLast();
+                        VBox vbox = new VBox();
+                        vbox.getStyleClass().addAll("welcome-box");
+
+                        Text text = new Text("Waiting for other players");
+                        text.getStyleClass().addAll("lobby-text");
+
+                        vbox.getChildren().addAll(text);
+                        root.getChildren().addAll(vbox);
+                    });
+                    return null;
+                }
+            };
+            new Thread(chooseStarterTask).start();
+
+            Platform.runLater(() -> {
+                flippedButton.setDisable(false);
+            });
+        });
+
+        vbox.setOnKeyPressed( event -> {
+            if( event.getCode() == KeyCode.ENTER) {
+                flippedButton.fire();
+            }
+        } );
+
+        Platform.runLater(() -> {
+            root.getChildren().removeLast();
+            root.getChildren().addAll(vbox);
+        });
+
+        System.out.println("Starter id " + pc.getId());
+    }
+
+    private void setStarterFlipped(boolean flipped) {
+        this.starterFlipped = flipped;
+    }
+
+    private void setStarterId(int id) {
+        this.starterId = id;
+    }
+
     private int getGameId() {
         return this.gameId;
     }

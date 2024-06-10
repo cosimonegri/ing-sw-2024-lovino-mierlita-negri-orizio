@@ -1,5 +1,7 @@
 package it.polimi.ingsw.view.gui;
 
+import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
+import it.polimi.ingsw.modelView.BoardView;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Rectangle2D;
@@ -19,7 +21,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.awt.*;
+import java.util.List;
 import java.util.Objects;
 
 public class GuiController{
@@ -27,6 +29,7 @@ public class GuiController{
     public Label playersTurn;
     @FXML
     public Label playerMessages;
+
     @FXML
     public AnchorPane board;
     @FXML
@@ -80,6 +83,10 @@ public class GuiController{
     private Image selectedCard;
     private String selectedCardPath;
 
+    public AnchorPane getBoard() {
+        return board;
+    }
+
     @FXML
     public void initialize(){
         //todo messages text: for player messages gray background and blue text
@@ -89,19 +96,19 @@ public class GuiController{
         topRightText.setBackground(new Background(new BackgroundFill(Color.valueOf("#00ff00"), null, null)));
         playerMessages.setBackground(new Background(new BackgroundFill(Color.valueOf("#7FFFD4"), null, null)));
 
-        setCardImage(starterCard, "file:src/main/resources/images/card_backs/85.jpg");
-        selectedCard = null;
-        newPlayablePositions(starterCard);
-        cardInHand1.setEffect(new DropShadow());
-        cardInHand2.setEffect(new DropShadow());
-        cardInHand3.setEffect(new DropShadow());
-        goldDeck.setEffect(new DropShadow());
-        resourceDeck.setEffect(new DropShadow());
-        visibleGold1.setEffect(new DropShadow());
-        visibleGold2.setEffect(new DropShadow());
-        visibleResource1.setEffect(new DropShadow());
-        visibleResource2.setEffect(new DropShadow());
-        privateObjective.setEffect(new DropShadow());
+//        setCardImage(starterCard, "file:src/main/resources/images/card_backs/starterBack.jpg");
+//        selectedCard = null;
+//        newPlayablePositions(starterCard);
+//        cardInHand1.setEffect(new DropShadow());
+//        cardInHand2.setEffect(new DropShadow());
+//        cardInHand3.setEffect(new DropShadow());
+//        goldDeck.setEffect(new DropShadow());
+//        resourceDeck.setEffect(new DropShadow());
+//        visibleGold1.setEffect(new DropShadow());
+//        visibleGold2.setEffect(new DropShadow());
+//        visibleResource1.setEffect(new DropShadow());
+//        visibleResource2.setEffect(new DropShadow());
+//        privateObjective.setEffect(new DropShadow());
     }
 
     private String translateToPath(int id, boolean flipped){
@@ -151,18 +158,18 @@ public class GuiController{
         }
     }
 
-    public void setBoard(int goldDeckPath, int resourceDeckPath,
-                         int visibleGold1Path, int visibleGold2Path,
-                         int visibleResource1Path, int visibleResource2Path,
-                         int objective1, int objective2) {
-        setCardImage(goldDeck, translateToPath(goldDeckPath, true));
-        setCardImage(resourceDeck, translateToPath(resourceDeckPath, true));
-        setCardImage(visibleGold1, translateToPath(visibleGold1Path, false));
-        setCardImage(visibleGold2, translateToPath(visibleGold2Path, false));
-        setCardImage(visibleResource1, translateToPath(visibleResource1Path, false));
-        setCardImage(visibleResource2, translateToPath(visibleResource2Path, false));
-        setCardImage(publicObjective1, translateToPath(objective1, false));
-        setCardImage(publicObjective2, translateToPath(objective2, false));
+    public void setBoard(BoardView bv) {
+        setCardImage(goldDeck, translateToPath(bv.getGoldTopCard().getId(), true));
+        setCardImage(resourceDeck, translateToPath(bv.getResourceTopCard().getId(), true));
+        setCardImage(visibleGold1, translateToPath(bv.getVisibleCards()[0].getId(), false));
+        setCardImage(visibleGold2, translateToPath(bv.getVisibleCards()[1].getId(), false));
+        setCardImage(visibleResource1, translateToPath(bv.getVisibleCards()[2].getId(), false));
+        setCardImage(visibleResource2, translateToPath(bv.getVisibleCards()[3].getId(), false));
+    }
+
+    public void setPublicObjective(List<ObjectiveCard> oc) {
+        setCardImage(publicObjective1, translateToPath(oc.get(0).getId(), false));
+        setCardImage(publicObjective2, translateToPath(oc.get(1).getId(), false));
     }
 
     public void setHand(int card1, int card2, int card3, int objective){
@@ -211,5 +218,10 @@ public class GuiController{
             glow.setInput(dropShadow);
             imageView.setEffect(glow);
         }
+    }
+
+    public void setStarter(int starterId, boolean starterFlipped) {
+        String path = "file:src/main/resources/images/" + ((starterFlipped) ? "card_backs/" : "card_fronts/");
+        setCardImage(starterCard, path + starterId + ".jpg");
     }
 }
