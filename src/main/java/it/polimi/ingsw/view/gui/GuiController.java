@@ -1,10 +1,14 @@
 package it.polimi.ingsw.view.gui;
 
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
+import it.polimi.ingsw.model.deck.card.playablecard.corner.CornerType;
+import it.polimi.ingsw.model.deck.card.playablecard.corner.Position;
+import it.polimi.ingsw.model.player.PlacedCard;
 import it.polimi.ingsw.modelView.BoardView;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -21,6 +25,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,7 +34,6 @@ public class GuiController{
     public Label playersTurn;
     @FXML
     public Label playerMessages;
-
     @FXML
     public AnchorPane board;
     @FXML
@@ -80,6 +84,12 @@ public class GuiController{
     private ImageView publicObjective1;
     @FXML
     private ImageView publicObjective2;
+    @FXML
+    public ImageView publicObjective11;
+    @FXML
+    public ImageView publicObjective21;
+    @FXML
+    public ImageView scoreBoard;
     private Image selectedCard;
     private String selectedCardPath;
 
@@ -95,23 +105,45 @@ public class GuiController{
         topLeftText.setBackground(new Background(new BackgroundFill(Color.valueOf("#00ff00"), null, null)));
         topRightText.setBackground(new Background(new BackgroundFill(Color.valueOf("#00ff00"), null, null)));
         playerMessages.setBackground(new Background(new BackgroundFill(Color.valueOf("#7FFFD4"), null, null)));
+        selectedCard = null;
+        loadScoreBoard();
+        //initialize effects
 
-//        setCardImage(starterCard, "file:src/main/resources/images/card_backs/starterBack.jpg");
-//        selectedCard = null;
-//        newPlayablePositions(starterCard);
-//        cardInHand1.setEffect(new DropShadow());
-//        cardInHand2.setEffect(new DropShadow());
-//        cardInHand3.setEffect(new DropShadow());
-//        goldDeck.setEffect(new DropShadow());
-//        resourceDeck.setEffect(new DropShadow());
-//        visibleGold1.setEffect(new DropShadow());
-//        visibleGold2.setEffect(new DropShadow());
-//        visibleResource1.setEffect(new DropShadow());
-//        visibleResource2.setEffect(new DropShadow());
-//        privateObjective.setEffect(new DropShadow());
+        cardInHand1.setEffect(new DropShadow());
+        cardInHand2.setEffect(new DropShadow());
+        cardInHand3.setEffect(new DropShadow());
+        privateObjective.setEffect(new DropShadow());
+
+        publicObjective1.setEffect(new DropShadow());
+        publicObjective2.setEffect(new DropShadow());
+        goldDeck.setEffect(new DropShadow());
+        resourceDeck.setEffect(new DropShadow());
+        visibleGold1.setEffect(new DropShadow());
+        visibleGold2.setEffect(new DropShadow());
+        visibleResource1.setEffect(new DropShadow());
+        visibleResource2.setEffect(new DropShadow());
     }
 
-    private String translateToPath(int id, boolean flipped){
+    public void loadScoreBoard(){
+        Image i = new Image("file:src/main/resources/images/PLATEAU-SCORE-IMP/plateau.jpg");
+        scoreBoard.setImage(i);
+        scoreBoard.setFitHeight(431);
+        scoreBoard.setFitWidth(265);
+        Rectangle2D cut = new Rectangle2D(40.0, 40.0, 480.0, 945.0);
+        scoreBoard.setViewport(cut);
+        scoreBoard.visibleProperty().setValue(false);
+    }
+
+    private void setMarkersOnPlateau(/*playerView list*/){
+        //coords of top right in circle of points
+        int dx = 50, xOf0 = 133, xOf6 = 108, xOf20 = 183, xOf26 = 229;
+        int dy = 46, yOf0 = 402, yOf20 = 151, yOf25 = 37, yOf26 = 45, yOf29 = 92;
+        //coords modifiers inside of circle
+        int ddx = 20, ddy = 20;
+        //todo foreach with player views to determine marker position via points and markers
+    }
+
+    private static String translateToPath(int id, boolean flipped){
         if(!flipped) {
             return "file:src/main/resources/images/card_fronts/" + id + ".jpg";
         } else {
@@ -119,9 +151,34 @@ public class GuiController{
         }
     }
 
-    private void newPlayablePositions(/*cardView, */ImageView imageView){
+    private int translateToID(String url){
+        return Integer.parseInt(url.replaceAll("[^0-9]",""));
+    }
+
+    private boolean assurePlayable(){
+        boolean playable = false;
+
+        return playable;
+    }
+
+    public void newPlayablePositionsFromCard(PlacedCard card){
+        ImageView imageView = null;
+        for(Node n : fieldPane.getChildren()){
+            if( n instanceof ImageView i) {
+                if(i.getImage().getUrl().equals(translateToPath(card.card().getId(), card.flipped()))){
+                    imageView = i;
+                }
+            }
+        }
+        if(imageView == null) throw new RuntimeException("Card not found in field");//todo manage this better
+
+        boolean flipped = card.flipped();
+        if(card.card().getId() > 80 && card.card().getId() < 87)
+            flipped = !card.flipped();
+
         //TopLeft
-        if(true){
+        if(card.card().getCorner(Position.TOPLEFT, flipped).type().equals(CornerType.VISIBLE)){
+            System.out.println("TL");
             ImageView i = new ImageView();
             setCardImage(i, "file:src/main/resources/images/card_fronts/9.jpg");
             fieldPane.getChildren().add(i);
@@ -130,7 +187,8 @@ public class GuiController{
             i.setLayoutY(imageView.getLayoutY() - 65);
         }
         //TopRight
-        if(true){
+        if(card.card().getCorner(Position.TOPRIGHT, flipped).type().equals(CornerType.VISIBLE)){
+            System.out.println("TR");
             ImageView i = new ImageView();
             setCardImage(i, "file:src/main/resources/images/card_fronts/9.jpg");
             fieldPane.getChildren().add(i);
@@ -139,7 +197,8 @@ public class GuiController{
             i.setLayoutY(imageView.getLayoutY() - 65);
         }
         //BottomLeft
-        if(true){
+        if(card.card().getCorner(Position.BOTTOMLEFT, flipped).type().equals(CornerType.VISIBLE)){
+            System.out.println("BL");
             ImageView i = new ImageView();
             setCardImage(i, "file:src/main/resources/images/card_fronts/9.jpg");
             fieldPane.getChildren().add(i);
@@ -148,7 +207,8 @@ public class GuiController{
             i.setLayoutY(imageView.getLayoutY() + 65);
         }
         //BottomRight
-        if(true){
+        if(card.card().getCorner(Position.BOTTOMRIGHT, flipped).type().equals(CornerType.VISIBLE)){
+            System.out.println("BR");
             ImageView i = new ImageView();
             setCardImage(i, "file:src/main/resources/images/card_fronts/9.jpg");
             fieldPane.getChildren().add(i);
@@ -156,6 +216,11 @@ public class GuiController{
             i.setLayoutX(imageView.getLayoutX() + 122);
             i.setLayoutY(imageView.getLayoutY() + 65);
         }
+
+    }
+
+    public void setPersonalObjective(int id) {
+        setCardImage(privateObjective, translateToPath(id, false));
     }
 
     public void setBoard(BoardView bv) {
@@ -170,6 +235,8 @@ public class GuiController{
     public void setPublicObjective(List<ObjectiveCard> oc) {
         setCardImage(publicObjective1, translateToPath(oc.get(0).getId(), false));
         setCardImage(publicObjective2, translateToPath(oc.get(1).getId(), false));
+        setCardImage(publicObjective11, "file:src/main/resources/images/card_backs/100.jpg");
+        setCardImage(publicObjective21, "file:src/main/resources/images/card_backs/100.jpg");
     }
 
     public void setHand(int card1, int card2, int card3, int objective){
@@ -179,7 +246,7 @@ public class GuiController{
         setCardImage(privateObjective, translateToPath(objective, false));
     }
 
-    private void setCardImage(ImageView imageView, String s) {
+    public static void setCardImage(ImageView imageView, String s) {
         Image image = new Image(s);
         imageView.setImage(image);
         imageView.setFitHeight(110);

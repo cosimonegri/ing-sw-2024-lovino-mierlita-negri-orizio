@@ -3,6 +3,8 @@ package it.polimi.ingsw.view.gui;
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
 import it.polimi.ingsw.model.player.Marker;
+import it.polimi.ingsw.modelView.FieldView;
+import it.polimi.ingsw.modelView.PlayerView;
 import it.polimi.ingsw.network.message.clienttoserver.UsernameMessage;
 import it.polimi.ingsw.network.message.clienttoserver.gamecontroller.ChooseMarkerMessage;
 import it.polimi.ingsw.network.message.clienttoserver.gamecontroller.ChooseObjectiveMessage;
@@ -36,17 +38,12 @@ import java.io.IOException;
 import java.util.List;
 
 public class GUI extends View {
-
     private StackPane root;
     private Stage window;
     private int gameId;
-
     private int starterId;
     private boolean starterFlipped;
-
     private GuiController controller;
-
-
 
     public GUI () {
         super();
@@ -589,17 +586,12 @@ public class GUI extends View {
         ImageView view1 = new ImageView(), view2 = new ImageView();
         String path = "file:src/main/resources/images/card_fronts/";
         List<ObjectiveCard> oc = gameView.getPlayer(this.username).getObjectiveOptions();
-        System.out.println("ObjChoces " + oc.get(0) + " " + oc.get(1));
-        Image image1 = new Image(path + oc.get(0).getId()),
-                image2 = new Image(path + oc.get(1).getId());
+        System.out.println("ObjChoce " + oc.get(0) + " " + oc.get(1));
+        Image image1 = new Image(path + oc.get(0).getId() + ".jpg"),
+                image2 = new Image(path + oc.get(1).getId() + ".jpg");
 
-        view1.setImage(image1);
-        view1.setFitWidth(50);
-        view1.setPreserveRatio(true);
-
-        view2.setImage(image2);
-        view2.setFitWidth(50);
-        view2.setPreserveRatio(true);
+        GuiController.setCardImage(view1, image1.getUrl());
+        GuiController.setCardImage(view2, image2.getUrl());
 
         RadioButton button1 = new RadioButton("FIRST"),
             button2 = new RadioButton("SECOND");
@@ -630,7 +622,8 @@ public class GUI extends View {
                     RadioButton selectedRadioButton = (RadioButton) objectiveToggle.getSelectedToggle();
                     System.out.println("Chosen obj " + selectedRadioButton.getText());
                     List<ObjectiveCard> ocOptions = gameView.getPlayer(getUsername()).getObjectiveOptions();
-                    ObjectiveCard oc = null;
+                    ObjectiveCard oc;
+
 
                     if (selectedRadioButton.getText().equals("FIRST")) oc = ocOptions.get(0);
                     else if (selectedRadioButton.getText().equals("SECOND")) oc = ocOptions.get(1);
@@ -645,8 +638,9 @@ public class GUI extends View {
                     notifyAllListeners(new ChooseObjectiveMessage(getUsername(), oc));
 
                     Platform.runLater(() -> {
-//                        controller.setPersonalObjective(oc.getId()); // todo
+                        controller.setPersonalObjective(oc.getId());
                         controller.getBoard().getChildren().remove(vbox);
+                        controller.scoreBoard.visibleProperty().setValue(true);
                     });
                     return null;
                 }
@@ -724,23 +718,29 @@ public class GUI extends View {
             root.getChildren().addAll(vbox);
         });
 
+        label:
         while (true) {
             ServerToClientMessage response = waitForMessage();
-            if (response instanceof ChooseMarkerAckMessage) {
-                System.out.println("Marker taken");
+            switch (response) {
+                case ChooseMarkerAckMessage chooseMarkerAckMessage:
+                    System.out.println("Marker taken");
 //                        printBoard(true, false);
-                chooseStarter();
-            } else if (response instanceof ChooseMarkerErrorMessage) {
-                System.out.println("This marker has already been taken");
-                Platform.runLater(() -> {
-                    errorLabel.setText("Marker already taken");
-                    errorLabel.setOpacity(1);
-                });
-            } else if (response instanceof StarterPhaseEndedMessage) {
-                System.out.println("Starter phase ended, loading board");
-                break;
-            } else {
-                addMessage(response);
+                    chooseStarter();
+                    break;
+                case ChooseMarkerErrorMessage chooseMarkerErrorMessage:
+                    System.out.println("This marker has already been taken");
+                    Platform.runLater(() -> {
+                        errorLabel.setText("Marker already taken");
+                        errorLabel.setOpacity(1);
+                    });
+                    break;
+                case StarterPhaseEndedMessage starterPhaseEndedMessage:
+                    System.out.println("Starter phase ended, loading board");
+                    break label;
+                case null:
+                default:
+                    addMessage(response);
+                    break;
             }
         }
 
@@ -780,6 +780,11 @@ public class GUI extends View {
                             999);
         controller.setStarter(this.starterId, this.starterFlipped);
 
+        FieldView myFieldView = this.gameView.getPlayer(this.username).getField();
+        PlayerView thisPlayer = this.gameView.getPlayer(this.username);
+        controller.newPlayablePositionsFromCard(myFieldView.getPlacedCard(myFieldView.findCard(thisPlayer.getStarterCard())));
+        System.out.println(this.username);
+
         Scene scene = new Scene(root);
         Platform.runLater(() -> {
             window.setScene(scene);
@@ -805,14 +810,13 @@ public class GUI extends View {
         Image frontImage = new Image("file:src/main/resources/images/card_fronts/" + pc.getId() + ".jpg"),
         backImage = new Image("file:src/main/resources/images/card_backs/" + pc.getId() + ".jpg");
 
-        frontView.setImage(frontImage);
-        backView.setImage(backImage);
+        GuiController.setCardImage(frontView, frontImage.getUrl());
+        GuiController.setCardImage(backView, backImage.getUrl());
 
-        frontView.setFitWidth(300);
-        frontView.setPreserveRatio(true);
-
-        backView.setFitWidth(300);
-        backView.setPreserveRatio(true);
+//        frontView.setFitWidth(300);
+//        frontView.setPreserveRatio(true);
+//        backView.setFitWidth(300);
+//        backView.setPreserveRatio(true);
 
         VBox frontChoice = new VBox();
         VBox backChoice = new VBox();

@@ -33,18 +33,19 @@
                         <Rectangle2D height="605.0" minX="75.0" minY="75.0" width="875.0" />
                      </viewport>
                      <image>
-                        <Image url="@images/card_backs/99.jpg" />
+                        <Image url="@images/card_backs/100.jpg" />
                      </image>
                   </ImageView>
                   <ImageView fx:id="scoreBoard" fitHeight="431.0" fitWidth="265.0" layoutX="84.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/PLATEAU-SCORE-IMP/plateau.jpg" />
-                     </image>
                      <viewport>
                         <Rectangle2D height="945.0" minX="40.0" minY="40.0" width="480.0" />
                      </viewport>
+                     <image>
+                        <Image url="@images/PLATEAU-SCORE-IMP/plateau.jpg" />
+                     </image>
+                     
                   </ImageView>
-                  <ImageView fx:id="publicObjective1" fitHeight="110.0" fitWidth="159.0" layoutX="14.0" layoutY="457.0" onMouseEntered="#lightUp" onMouseExited="#lightOff" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="publicObjective1" fitHeight="110.0" fitWidth="159.0" layoutX="14.0" layoutY="457.0" pickOnBounds="true" preserveRatio="true">
                      <viewport>
                         <Rectangle2D height="605.0" minX="75.0" minY="75.0" width="875.0" />
                      </viewport>
@@ -54,10 +55,10 @@
                         <Rectangle2D height="605.0" minX="75.0" minY="75.0" width="875.0" />
                      </viewport>
                      <image>
-                        <Image url="@images/card_backs/99.jpg" />
+                        <Image url="@images/card_backs/100.jpg" />
                      </image>
                   </ImageView>
-                  <ImageView fx:id="publicObjective2" fitHeight="110.0" fitWidth="159.0" layoutX="213.0" layoutY="457.0" onMouseEntered="#lightUp" onMouseExited="#lightOff" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="publicObjective2" fitHeight="110.0" fitWidth="159.0" layoutX="213.0" layoutY="457.0" pickOnBounds="true" preserveRatio="true">
                      <viewport>
                         <Rectangle2D height="605.0" minX="75.0" minY="75.0" width="875.0" />
                      </viewport>
@@ -113,7 +114,7 @@
                            <content>
                               <Pane fx:id="fieldPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="9000.0" prefWidth="13000.0">
                                  <children>
-                                    <ImageView fx:id="starterCard" fitHeight="110.0" fitWidth="159.0" layoutX="6500.0" layoutY="4500.0" onMouseClicked="#changeImage" onMouseEntered="#lightUp" onMouseExited="#lightOff" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="starterCard" fitHeight="110.0" fitWidth="159.0" layoutX="6500.0" layoutY="4500.0" onMouseClicked="#changeImage" pickOnBounds="true" preserveRatio="true">
                                        <viewport>
                                           <Rectangle2D height="605.0" minX="75.0" minY="75.0" width="875.0" />
                                        </viewport>
@@ -159,11 +160,14 @@
             <Label id="text" fx:id="turnNum" layoutX="134.0" layoutY="7.0" prefHeight="17.0" prefWidth="27.0" text="nr" />
             <Label id="text" layoutX="4.0" layoutY="7.0" prefHeight="17.0" prefWidth="53.0" text="Lobby ID:" />
             <Label id="text" fx:id="lobbyID" layoutX="56.0" layoutY="7.0" prefHeight="17.0" prefWidth="47.0" text="nr" />
+            <Label layoutX="183.0" layoutY="7.0" prefHeight="17.0" prefWidth="82.0" text="MyUserName:" />
+            <Label fx:id="myUserName" layoutX="266.0" layoutY="7.0" prefHeight="17.0" prefWidth="106.0" />
+            <Label layoutX="400.0" prefHeight="30.0" prefWidth="300.0" text="Messaggi per il player" />
          </children>
       </Pane>
       <Pane fx:id="topRightText" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="400.0" GridPane.columnIndex="1">
          <children>
-            <Label fx:id="playersTurn" layoutY="1.0" prefHeight="30.0" prefWidth="400.0" text="Label" />
+            <Label fx:id="playersTurn" layoutY="1.0" prefHeight="30.0" prefWidth="400.0" text="Messaggi per il player" />
          </children></Pane>
    </children>
 </GridPane>

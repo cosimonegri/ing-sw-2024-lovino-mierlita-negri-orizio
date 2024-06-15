@@ -1,5 +1,6 @@
 package it.polimi.ingsw.modelView;
 
+import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Item;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Resource;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Symbol;
@@ -53,6 +54,17 @@ public class FieldView implements Serializable {
 
     public PlacedCard getPlacedCard(Coordinates coords) {
         return this.placedCards[coords.x()][coords.y()];
+    }
+
+    public Coordinates findCard(PlayableCard card) {
+        for (int x = 0; x < size(); x++) {
+            for (int y = 0; y < size(); y++) {
+                if (this.placedCards[x][y] != null && this.placedCards[x][y].card().equals(card)) {
+                    return new Coordinates(x, y);
+                }
+            }
+        }
+        return null;
     }
 
     public int getSymbolCount(Symbol symbol){

@@ -1,18 +1,23 @@
 package it.polimi.ingsw.model;
+import static org.junit.jupiter.api.Assertions.*;
 
 import it.polimi.ingsw.exceptions.CannotCreateGameException;
+import it.polimi.ingsw.exceptions.LobbyFullException;
+import it.polimi.ingsw.exceptions.UsernameAlreadyTakenException;
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.model.deck.card.playablecard.GoldCard;
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
+import it.polimi.ingsw.exceptions.*;
+import it.polimi.ingsw.model.player.Marker;
 import it.polimi.ingsw.model.player.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Set;
 
 
 public class GameTest {
