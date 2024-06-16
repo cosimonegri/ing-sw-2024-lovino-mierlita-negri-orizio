@@ -759,7 +759,6 @@ public class GUI extends View {
 
         //set text
         controller.gridPane.setBackground(getBackgroundPane());
-        controller.board.setBackground(Background.EMPTY);
         controller.lobbyID.setText(String.valueOf(gameId));
         controller.turnNum.setText(String.valueOf(gameView.getCurrentTurn()));
         if (gameView.isCurrentPlayer(this.username)) {
@@ -768,6 +767,7 @@ public class GUI extends View {
             controller.playersTurn.setText("It's " + gameView.getCurrentPlayer().get().getUsername() + "'s turn...");
         }
         controller.myField.setText(this.username);
+        controller.myUserName.setText(this.username);
 
         // set board;
         controller.setBoard(gameView.getBoard());
@@ -781,8 +781,7 @@ public class GUI extends View {
         controller.setStarter(this.starterId, this.starterFlipped);
 
         FieldView myFieldView = this.gameView.getPlayer(this.username).getField();
-        PlayerView thisPlayer = this.gameView.getPlayer(this.username);
-        controller.newPlayablePositionsFromCard(myFieldView.getPlacedCard(myFieldView.findCard(thisPlayer.getStarterCard())));
+        controller.newPlayablePositionsFromCard(myFieldView);
         System.out.println(this.username);
 
         Scene scene = new Scene(root);
@@ -812,11 +811,6 @@ public class GUI extends View {
 
         GuiController.setCardImage(frontView, frontImage.getUrl());
         GuiController.setCardImage(backView, backImage.getUrl());
-
-//        frontView.setFitWidth(300);
-//        frontView.setPreserveRatio(true);
-//        backView.setFitWidth(300);
-//        backView.setPreserveRatio(true);
 
         VBox frontChoice = new VBox();
         VBox backChoice = new VBox();
@@ -852,8 +846,8 @@ public class GUI extends View {
                 protected Void call() throws Exception {
                     RadioButton selectedRadioButton = (RadioButton) starterGroup.getSelectedToggle();
                     boolean flipped;
-                    if (selectedRadioButton.getText().equals("FRONT")) flipped = false;
-                    else if (selectedRadioButton.getText().equals("BACK")) flipped = true;
+                    if (selectedRadioButton.getText().equals("FRONT")) flipped = true;
+                    else if (selectedRadioButton.getText().equals("BACK")) flipped = false;
                     else {
                         System.out.println("Invalid starter choice");
                         errorLabel.setText("Invalid choice");

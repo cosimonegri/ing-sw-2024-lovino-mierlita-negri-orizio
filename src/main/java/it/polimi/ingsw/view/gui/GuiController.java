@@ -1,33 +1,26 @@
 package it.polimi.ingsw.view.gui;
 
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
-import it.polimi.ingsw.model.deck.card.playablecard.corner.CornerType;
-import it.polimi.ingsw.model.deck.card.playablecard.corner.Position;
-import it.polimi.ingsw.model.player.PlacedCard;
+import it.polimi.ingsw.model.player.Coordinates;
 import it.polimi.ingsw.modelView.BoardView;
+import it.polimi.ingsw.modelView.FieldView;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.Effect;
 import javafx.scene.effect.Glow;
-import javafx.scene.effect.Shadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
+import javafx.scene.shape.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class GuiController{
     @FXML
@@ -43,7 +36,7 @@ public class GuiController{
     @FXML
     public GridPane gridPane;
     @FXML
-    public Pane fieldPane;
+    public AnchorPane fieldAnchor;
     @FXML
     public Tab myField;
     @FXML
@@ -58,8 +51,6 @@ public class GuiController{
     public Pane topRightText;
     @FXML
     public Label turnNum;
-    @FXML
-    private ImageView starterCard;
     @FXML
     private ImageView cardInHand1;
     @FXML
@@ -90,8 +81,14 @@ public class GuiController{
     public ImageView publicObjective21;
     @FXML
     public ImageView scoreBoard;
+    @FXML
+    public Label myUserName;
+
     private Image selectedCard;
     private String selectedCardPath;
+    private GridPane gridFieldPane;
+    private final int numColumns = 83;
+    private final int numRows = 83;
 
     public AnchorPane getBoard() {
         return board;
@@ -99,16 +96,36 @@ public class GuiController{
 
     @FXML
     public void initialize(){
-        //todo messages text: for player messages gray background and blue text
-        // red text for errors
-        // background field and board beige
-        topLeftText.setBackground(new Background(new BackgroundFill(Color.valueOf("#00ff00"), null, null)));
-        topRightText.setBackground(new Background(new BackgroundFill(Color.valueOf("#00ff00"), null, null)));
-        playerMessages.setBackground(new Background(new BackgroundFill(Color.valueOf("#7FFFD4"), null, null)));
+        //todo messages text: for player messages red text for errors
+        topLeftText.setBackground(new Background(new BackgroundFill(Color.LIMEGREEN, null, null)));
+        topRightText.setBackground(new Background(new BackgroundFill(Color.LIMEGREEN, null, null)));
+        playerMessages.setBackground(new Background(new BackgroundFill(Color.valueOf("#A0A0A0"), null, null)));
+        playerMessages.setTextFill(Color.BLUE);
+        fieldAnchor.setBackground(new Background(new BackgroundFill(Color.WHEAT, null, null)));
+        board.setBackground(new Background(new BackgroundFill(Color.WHEAT, null, null)));
         selectedCard = null;
         loadScoreBoard();
-        //initialize effects
 
+        gridFieldPane = new GridPane();
+        //added more rows and columns for margins
+
+        for (int i = 0; i < numColumns; i++) {
+            ColumnConstraints colConst = new ColumnConstraints();
+            colConst.setPrefWidth(121);
+            gridFieldPane.getColumnConstraints().add(colConst);
+        }
+        for (int i = 0; i < numRows; i++) {
+            RowConstraints rowConst = new RowConstraints();
+            rowConst.setPrefHeight(64);
+            gridFieldPane.getRowConstraints().add(rowConst);
+        }
+        fieldAnchor.getChildren().add(gridFieldPane);
+        AnchorPane.setTopAnchor(gridFieldPane, 0.0);
+        AnchorPane.setRightAnchor(gridFieldPane, 0.0);
+        AnchorPane.setBottomAnchor(gridFieldPane, 0.0);
+        AnchorPane.setLeftAnchor(gridFieldPane, 0.0);
+
+        //initialize effects
         cardInHand1.setEffect(new DropShadow());
         cardInHand2.setEffect(new DropShadow());
         cardInHand3.setEffect(new DropShadow());
@@ -155,68 +172,46 @@ public class GuiController{
         return Integer.parseInt(url.replaceAll("[^0-9]",""));
     }
 
-    private boolean assurePlayable(){
-        boolean playable = false;
-
-        return playable;
-    }
-
-    public void newPlayablePositionsFromCard(PlacedCard card){
-        ImageView imageView = null;
-        for(Node n : fieldPane.getChildren()){
-            if( n instanceof ImageView i) {
-                if(i.getImage().getUrl().equals(translateToPath(card.card().getId(), card.flipped()))){
-                    imageView = i;
+    public void newPlayablePositionsFromCard(FieldView fieldView){
+        for(int y = fieldView.getBottomRightBound().y(); y <= fieldView.getTopLeftBound().y(); y++) {
+            for(int x = fieldView.getTopLeftBound().x(); x <= fieldView.getBottomRightBound().x(); x++) {
+                Coordinates cell = new Coordinates(x, y);
+                if(fieldView.getPlacedCard(cell) == null) {
+                    if(fieldView.getAllValidCoords().contains(cell)) {
+                        Node node = getNodeFromGridPane(x + 1,numRows - 1 - y - 1);
+                        if(node == null) {
+                            if(x != 0 && x != 80 && y != 0 && y != 80){
+                                if(y % 2 == 1){
+                                    if(x % 2 == 1) {
+                                       gridFieldPane.add(playableCell(), x + 1, numRows - 1 - y - 1);
+                                    }
+                                } else {
+                                    if(x % 2 == 0) {
+                                        gridFieldPane.add(playableCell(), x + 1, numRows - 1 - y - 1);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
-        if(imageView == null) throw new RuntimeException("Card not found in field");//todo manage this better
+    }
 
-        boolean flipped = card.flipped();
-        if(card.card().getId() > 80 && card.card().getId() < 87)
-            flipped = !card.flipped();
+    private Rectangle playableCell() {
+        Rectangle playableCell = new Rectangle(0,0,159,110);
+        playableCell.setFill(Color.AQUA);
+        playableCell.setOpacity(0.2);
+        return playableCell;
+    }
 
-        //TopLeft
-        if(card.card().getCorner(Position.TOPLEFT, flipped).type().equals(CornerType.VISIBLE)){
-            System.out.println("TL");
-            ImageView i = new ImageView();
-            setCardImage(i, "file:src/main/resources/images/card_fronts/9.jpg");
-            fieldPane.getChildren().add(i);
-            i.setOpacity(0.4);
-            i.setLayoutX(imageView.getLayoutX() - 122);
-            i.setLayoutY(imageView.getLayoutY() - 65);
+    private Node getNodeFromGridPane(int col, int row) {
+        for (Node node : gridFieldPane.getChildren()) {
+            if (GridPane.getColumnIndex(node) == col && GridPane.getRowIndex(node) == row) {
+                return node;
+            }
         }
-        //TopRight
-        if(card.card().getCorner(Position.TOPRIGHT, flipped).type().equals(CornerType.VISIBLE)){
-            System.out.println("TR");
-            ImageView i = new ImageView();
-            setCardImage(i, "file:src/main/resources/images/card_fronts/9.jpg");
-            fieldPane.getChildren().add(i);
-            i.setOpacity(0.4);
-            i.setLayoutX(imageView.getLayoutX() + 122);
-            i.setLayoutY(imageView.getLayoutY() - 65);
-        }
-        //BottomLeft
-        if(card.card().getCorner(Position.BOTTOMLEFT, flipped).type().equals(CornerType.VISIBLE)){
-            System.out.println("BL");
-            ImageView i = new ImageView();
-            setCardImage(i, "file:src/main/resources/images/card_fronts/9.jpg");
-            fieldPane.getChildren().add(i);
-            i.setOpacity(0.4);
-            i.setLayoutX(imageView.getLayoutX() - 122);
-            i.setLayoutY(imageView.getLayoutY() + 65);
-        }
-        //BottomRight
-        if(card.card().getCorner(Position.BOTTOMRIGHT, flipped).type().equals(CornerType.VISIBLE)){
-            System.out.println("BR");
-            ImageView i = new ImageView();
-            setCardImage(i, "file:src/main/resources/images/card_fronts/9.jpg");
-            fieldPane.getChildren().add(i);
-            i.setOpacity(0.4);
-            i.setLayoutX(imageView.getLayoutX() + 122);
-            i.setLayoutY(imageView.getLayoutY() + 65);
-        }
-
+        return null;
     }
 
     public void setPersonalObjective(int id) {
@@ -288,7 +283,9 @@ public class GuiController{
     }
 
     public void setStarter(int starterId, boolean starterFlipped) {
-        String path = "file:src/main/resources/images/" + ((starterFlipped) ? "card_backs/" : "card_fronts/");
+        String path = "file:src/main/resources/images/" + ((!starterFlipped) ? "card_backs/" : "card_fronts/");
+        ImageView starterCard = new ImageView();
         setCardImage(starterCard, path + starterId + ".jpg");
+        gridFieldPane.add(starterCard,41,41);
     }
 }
