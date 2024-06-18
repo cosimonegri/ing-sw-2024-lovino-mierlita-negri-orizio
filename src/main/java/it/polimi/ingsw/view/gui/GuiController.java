@@ -4,6 +4,8 @@ import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.model.player.Coordinates;
 import it.polimi.ingsw.modelView.BoardView;
 import it.polimi.ingsw.modelView.FieldView;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
@@ -86,13 +88,10 @@ public class GuiController{
 
     private Image selectedCard;
     private String selectedCardPath;
+    private int selectedCardID;
     private GridPane gridFieldPane;
     private final int numColumns = 83;
     private final int numRows = 83;
-
-    public AnchorPane getBoard() {
-        return board;
-    }
 
     @FXML
     public void initialize(){
@@ -151,25 +150,62 @@ public class GuiController{
         scoreBoard.visibleProperty().setValue(false);
     }
 
-    private void setMarkersOnPlateau(/*playerView list*/){
-        //coords of top right in circle of points
-        int dx = 50, xOf0 = 133, xOf6 = 108, xOf20 = 183, xOf26 = 229;
-        int dy = 46, yOf0 = 402, yOf20 = 151, yOf25 = 37, yOf26 = 45, yOf29 = 92;
-        //coords modifiers inside of circle
-        int ddx = 20, ddy = 20;
-        //todo foreach with player views to determine marker position via points and markers
+    public AnchorPane getBoard() {
+        return board;
     }
 
-    private static String translateToPath(int id, boolean flipped){
-        if(!flipped) {
-            return "file:src/main/resources/images/card_fronts/" + id + ".jpg";
-        } else {
-            return "file:src/main/resources/images/card_backs/" + id + ".jpg";
+    public void setBoard(BoardView bv) {
+        setCardImage(goldDeck, translateToPath(bv.getGoldTopCard().getId(), true));
+        setCardImage(resourceDeck, translateToPath(bv.getResourceTopCard().getId(), true));
+        setCardImage(visibleGold1, translateToPath(bv.getVisibleCards()[0].getId(), false));
+        setCardImage(visibleGold2, translateToPath(bv.getVisibleCards()[1].getId(), false));
+        setCardImage(visibleResource1, translateToPath(bv.getVisibleCards()[2].getId(), false));
+        setCardImage(visibleResource2, translateToPath(bv.getVisibleCards()[3].getId(), false));
+    }
+
+    public void setHand(int card1, int card2, int card3, int objective){
+        setCardImage(cardInHand1, translateToPath(card1, false));
+        setCardImage(cardInHand2, translateToPath(card2, false));
+        setCardImage(cardInHand3, translateToPath(card3, false));
+        setCardImage(privateObjective, translateToPath(objective, false));
+    }
+
+    public void setStarter(int starterId, boolean starterFlipped) {
+        String path = "file:src/main/resources/images/" + ((!starterFlipped) ? "card_backs/" : "card_fronts/");
+        ImageView starterCard = new ImageView();
+        setCardImage(starterCard, path + starterId + ".jpg");
+        gridFieldPane.add(starterCard,41,41);
+    }
+
+    public void setPersonalObjective(int id) {
+        setCardImage(privateObjective, translateToPath(id, false));
+    }
+
+    public void setPublicObjective(List<ObjectiveCard> oc) {
+        setCardImage(publicObjective1, translateToPath(oc.get(0).getId(), false));
+        setCardImage(publicObjective2, translateToPath(oc.get(1).getId(), false));
+        setCardImage(publicObjective11, "file:src/main/resources/images/card_backs/100.jpg");
+        setCardImage(publicObjective21, "file:src/main/resources/images/card_backs/100.jpg");
+    }
+
+    public static void setCardImage(ImageView imageView, String s) {
+        Image image = new Image(s);
+        imageView.setImage(image);
+        imageView.setFitHeight(110);
+        imageView.setFitWidth(159);
+        Rectangle2D cut = new Rectangle2D(75.0, 75.0, 875.0, 605.0);
+        imageView.setViewport(cut);
+    }
+
+    public void changeImage(ImageView imageView) {
+        if( selectedCard != null) {
+            imageView.setImage(selectedCard);
+            imageView.setFitHeight(110);
+            imageView.setFitWidth(159);
+            Rectangle2D cut = new Rectangle2D(75.0, 75.0, 875.0, 605.0);
+            imageView.setViewport(cut);
+            selectedCard = null;
         }
-    }
-
-    private int translateToID(String url){
-        return Integer.parseInt(url.replaceAll("[^0-9]",""));
     }
 
     public void newPlayablePositionsFromCard(FieldView fieldView){
@@ -183,7 +219,7 @@ public class GuiController{
                             if(x != 0 && x != 80 && y != 0 && y != 80){
                                 if(y % 2 == 1){
                                     if(x % 2 == 1) {
-                                       gridFieldPane.add(playableCell(), x + 1, numRows - 1 - y - 1);
+                                        gridFieldPane.add(playableCell(), x + 1, numRows - 1 - y - 1);
                                     }
                                 } else {
                                     if(x % 2 == 0) {
@@ -202,7 +238,33 @@ public class GuiController{
         Rectangle playableCell = new Rectangle(0,0,159,110);
         playableCell.setFill(Color.AQUA);
         playableCell.setOpacity(0.2);
+
+        EventHandler<Event> chooseSettingPosition = e -> {
+            if(selectedCard != null && e instanceof MouseEvent && ((MouseEvent) e).isPrimaryButtonDown()) {
+                if(e.getSource() instanceof Rectangle r) {
+                    int x = GridPane.getColumnIndex(r);
+                    int y = GridPane.getRowIndex(r);
+                    gridFieldPane.getChildren().remove(r);
+                    ImageView imageView = new ImageView();
+                    changeImage(imageView);
+                    gridFieldPane.add(imageView, x, y);
+                }
+            }
+        };
+        playableCell.addEventHandler(MouseEvent.MOUSE_PRESSED, chooseSettingPosition);
         return playableCell;
+    }
+
+    private static String translateToPath(int id, boolean flipped){
+        if(!flipped) {
+            return "file:src/main/resources/images/card_fronts/" + id + ".jpg";
+        } else {
+            return "file:src/main/resources/images/card_backs/" + id + ".jpg";
+        }
+    }
+
+    private int translateToID(String url){
+        return Integer.parseInt(url.replaceAll("[^0-9]",""));
     }
 
     private Node getNodeFromGridPane(int col, int row) {
@@ -214,54 +276,11 @@ public class GuiController{
         return null;
     }
 
-    public void setPersonalObjective(int id) {
-        setCardImage(privateObjective, translateToPath(id, false));
-    }
-
-    public void setBoard(BoardView bv) {
-        setCardImage(goldDeck, translateToPath(bv.getGoldTopCard().getId(), true));
-        setCardImage(resourceDeck, translateToPath(bv.getResourceTopCard().getId(), true));
-        setCardImage(visibleGold1, translateToPath(bv.getVisibleCards()[0].getId(), false));
-        setCardImage(visibleGold2, translateToPath(bv.getVisibleCards()[1].getId(), false));
-        setCardImage(visibleResource1, translateToPath(bv.getVisibleCards()[2].getId(), false));
-        setCardImage(visibleResource2, translateToPath(bv.getVisibleCards()[3].getId(), false));
-    }
-
-    public void setPublicObjective(List<ObjectiveCard> oc) {
-        setCardImage(publicObjective1, translateToPath(oc.get(0).getId(), false));
-        setCardImage(publicObjective2, translateToPath(oc.get(1).getId(), false));
-        setCardImage(publicObjective11, "file:src/main/resources/images/card_backs/100.jpg");
-        setCardImage(publicObjective21, "file:src/main/resources/images/card_backs/100.jpg");
-    }
-
-    public void setHand(int card1, int card2, int card3, int objective){
-        setCardImage(cardInHand1, translateToPath(card1, false));
-        setCardImage(cardInHand2, translateToPath(card2, false));
-        setCardImage(cardInHand3, translateToPath(card3, false));
-        setCardImage(privateObjective, translateToPath(objective, false));
-    }
-
-    public static void setCardImage(ImageView imageView, String s) {
-        Image image = new Image(s);
-        imageView.setImage(image);
-        imageView.setFitHeight(110);
-        imageView.setFitWidth(159);
-        Rectangle2D cut = new Rectangle2D(75.0, 75.0, 875.0, 605.0);
-        imageView.setViewport(cut);
-    }
-
-    public void changeImage(MouseEvent e) {
-        if( selectedCard != null && e.getSource() instanceof ImageView imageView) {
-            imageView.setImage(selectedCard);
-            imageView.setImage(selectedCard);
-            selectedCard = null;
-        }
-    }
-
     public void selectCard(MouseEvent e) {
         if(e.getSource() instanceof ImageView imageView) {
             selectedCard = imageView.getImage();
             selectedCardPath = imageView.getImage().getUrl();
+            selectedCardID = translateToID(selectedCardPath);
         }
     }
 
@@ -273,6 +292,7 @@ public class GuiController{
             imageView.setEffect(glow);
         }
     }
+
     public void lightOff(MouseEvent e) {
         if(e.getSource() instanceof ImageView imageView) {
             Glow glow = new Glow(0);
@@ -280,12 +300,5 @@ public class GuiController{
             glow.setInput(dropShadow);
             imageView.setEffect(glow);
         }
-    }
-
-    public void setStarter(int starterId, boolean starterFlipped) {
-        String path = "file:src/main/resources/images/" + ((!starterFlipped) ? "card_backs/" : "card_fronts/");
-        ImageView starterCard = new ImageView();
-        setCardImage(starterCard, path + starterId + ".jpg");
-        gridFieldPane.add(starterCard,41,41);
     }
 }

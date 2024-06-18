@@ -782,7 +782,6 @@ public class GUI extends View {
 
         FieldView myFieldView = this.gameView.getPlayer(this.username).getField();
         controller.newPlayablePositionsFromCard(myFieldView);
-        System.out.println(this.username);
 
         Scene scene = new Scene(root);
         Platform.runLater(() -> {
@@ -817,8 +816,8 @@ public class GUI extends View {
         frontChoice.getStyleClass().addAll("vbox");
         backChoice.getStyleClass().addAll("vbox");
 
-        RadioButton frontButton = new RadioButton("FRONT");
-        RadioButton backButton = new RadioButton("BACK");
+        RadioButton frontButton = new RadioButton("BACK");
+        RadioButton backButton = new RadioButton("FRONT");
         frontButton.getStyleClass().addAll("label");
         backButton.getStyleClass().addAll("label");
 
