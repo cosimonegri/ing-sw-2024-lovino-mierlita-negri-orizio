@@ -2,6 +2,6 @@ package it.polimi.ingsw.exceptions;
 
 public class CannotCreateGameException extends Exception {
     public CannotCreateGameException() {
-        super();
+        super("Cannot read JSON files of the cards.");
     }
 }

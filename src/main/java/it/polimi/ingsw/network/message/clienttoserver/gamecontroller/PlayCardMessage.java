@@ -44,6 +44,7 @@ public class PlayCardMessage extends GameControllerMessage {
         try {
             controller.playCard(this.getUsername(), this.card, this.flipped, this.coords);
             controller.notifyListener(this.getUsername(), new PlayCardAckMessage());
+            // If you are in the last round, your turn ends after you play a card
             if (!controller.isCurrentPlayer(this.getUsername())) {
                 String turnMessage = this.getUsername() + " has finished his turn.";
                 String message = controller.getPhase() == GamePhase.ENDED
