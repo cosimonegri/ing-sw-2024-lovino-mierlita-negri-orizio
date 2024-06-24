@@ -107,6 +107,7 @@ public class Player {
         this.objectiveScore = newPoints;
     }
 
+    //TODO handle this exception
     /**
      * Take a new card. Maximum three cards
      *

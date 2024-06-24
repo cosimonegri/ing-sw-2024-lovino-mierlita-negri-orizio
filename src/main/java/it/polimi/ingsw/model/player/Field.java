@@ -19,7 +19,7 @@ public class Field {
     /**
      * Maximum number of rows and columns in the field.
      */
-    private static final int SIZE = 81;
+    public static final int SIZE = 81;
     /**
      * The field is a matrix of placed cards. To get the cards attached to a given card,
      * you have to look in the 4 diagonal directions.

@@ -96,15 +96,15 @@ public class Game {
 
     /**
      * @param username username of a player
-     * @return the player with that username if it exists, otherwise null
+     * @return an optional of the player with that username
      */
-    public Player getPlayer(String username) {
+    public Optional<Player> getPlayer(String username) {
         for (Player p : this.players) {
             if (p.getUsername().equals(username)) {
-                return p;
+                return Optional.of(p);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     /**
