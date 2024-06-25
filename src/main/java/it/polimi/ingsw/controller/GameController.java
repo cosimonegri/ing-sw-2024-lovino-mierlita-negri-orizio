@@ -40,9 +40,6 @@ public class GameController {
     }
 
     synchronized public void addPlayer(String username, GameListener listener) throws LobbyFullException {
-        if (model.isLobbyFull()) {
-            throw new LobbyFullException();
-        }
         model.addPlayer(username, listener);
         if (model.isLobbyFull()) {
             model.setGamePhase(GamePhase.STARTER);

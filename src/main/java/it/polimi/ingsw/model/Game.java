@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.CannotCreateGameException;
+import it.polimi.ingsw.exceptions.LobbyFullException;
 import it.polimi.ingsw.exceptions.PlayersCountNotValidException;
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.model.player.Player;
@@ -91,8 +92,12 @@ public class Game {
      *
      * @param username username of the player
      * @param listener game listener of the player
+     * @throws LobbyFullException if the lobby is already full
      */
-    public void addPlayer(String username, GameListener listener) {
+    public void addPlayer(String username, GameListener listener) throws LobbyFullException {
+        if (isLobbyFull()) {
+            throw new LobbyFullException();
+        }
         Player player = new Player(username);
         this.players.add(player);
         this.playerToListener.put(player, listener);
