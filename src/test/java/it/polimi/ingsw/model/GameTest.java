@@ -2,42 +2,41 @@ package it.polimi.ingsw.model;
 import static org.junit.jupiter.api.Assertions.*;
 
 import it.polimi.ingsw.exceptions.CannotCreateGameException;
-import it.polimi.ingsw.exceptions.LobbyFullException;
-import it.polimi.ingsw.exceptions.UsernameAlreadyTakenException;
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.model.deck.card.playablecard.GoldCard;
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
 import it.polimi.ingsw.exceptions.*;
-import it.polimi.ingsw.model.player.Marker;
 import it.polimi.ingsw.model.player.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 
 public class GameTest {
     private Game game;
 
     @BeforeEach
-    public void gameTest() throws CannotCreateGameException { game = new Game(4); }
+    public void gameTest() throws CannotCreateGameException {
+        try {
+            game = new Game(4);
+        } catch (PlayersCountNotValidException ignored) { }
+    }
 
-//    @Test
-//    @DisplayName("Constructor Test")
-//    public void constructorTest() {
-//        int playerCountMax = 5;
-//        for(int playerCount = -1; playerCount <= playerCountMax; playerCount++){
-//           int finalI = playerCount;
-//           if(playerCount < 2 || playerCount > 4){
-//               assertThrows(IllegalArgumentException.class, () -> new Game(finalI));
-//           }
-//           else { assertDoesNotThrow(() -> new Game(finalI)); }
-//        }
-//    }
+    @Test
+    @DisplayName("Constructor Test")
+    public void constructorTest() {
+        for (int playersCount = -1; playersCount <= 5; playersCount++) {
+            int finalCount = playersCount;
+            if (playersCount < 2 || playersCount > 4) {
+                assertThrows(PlayersCountNotValidException.class, () -> new Game(finalCount));
+            } else {
+                assertDoesNotThrow(() -> new Game(finalCount));
+            }
+        }
+    }
 
 
     @Test

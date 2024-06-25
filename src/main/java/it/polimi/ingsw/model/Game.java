@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.CannotCreateGameException;
+import it.polimi.ingsw.exceptions.PlayersCountNotValidException;
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.modelView.GameView;
@@ -61,7 +62,10 @@ public class Game {
      *
      * @param playersCount the number of players wanted for the match
      */
-    public Game(int playersCount) throws CannotCreateGameException {
+    public Game(int playersCount) throws PlayersCountNotValidException, CannotCreateGameException {
+        if (playersCount < 2 || playersCount > 4) {
+            throw new PlayersCountNotValidException();
+        }
         this.playersCount = playersCount;
 
         this.players = new ArrayList<>(playersCount);

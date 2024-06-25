@@ -22,7 +22,7 @@ public class GameController {
     private final int gameId;
     private final Game model;
 
-    public GameController(int gameId, int playersCount) throws CannotCreateGameException {
+    public GameController(int gameId, int playersCount) throws PlayersCountNotValidException, CannotCreateGameException {
         this.gameId = gameId;
         this.model = new Game(playersCount);
     }
@@ -113,6 +113,7 @@ public class GameController {
         if (model.getGamePhase() != GamePhase.MAIN || model.getTurnPhase() != TurnPhase.PLAY || !isCurrentPlayer(username)) {
             throw new ActionNotValidException();
         }
+        // check this even though removeFromHand would raise the same exception, so that the following 2 lines are atomic
         if (!model.getCurrentPlayer().getHand().contains(card)) {
             throw new CardNotInHandException();
         }

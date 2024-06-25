@@ -48,7 +48,9 @@ public class MainController {
         }
     }
 
-    synchronized public GameController createGame(String username, int playersCount) throws CannotCreateGameException {
+    synchronized public GameController createGame(String username, int playersCount)
+            throws PlayersCountNotValidException, CannotCreateGameException
+    {
         if (!this.isUsernameConnected(username)) {
             //todo maybe handle this case
             return null;

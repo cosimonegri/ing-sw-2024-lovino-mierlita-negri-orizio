@@ -75,7 +75,7 @@ public class MainControllerTest {
 
     // game created with username connected
     @Test
-    public void createGameTest() {
+    public void createGameTest() throws PlayersCountNotValidException {
 
 
         // valid username
@@ -101,7 +101,7 @@ public class MainControllerTest {
     }
 
     @Test
-    public void joinGameTest() {
+    public void joinGameTest() throws PlayersCountNotValidException {
         String player2 = "player2";
 
         try {
@@ -123,7 +123,7 @@ public class MainControllerTest {
     }
 
     @Test
-    public void leaveGameTest() {
+    public void leaveGameTest() throws PlayersCountNotValidException {
 
         try {
             assertDoesNotThrow(() -> controller.connect(playerConnected, listenerMock));
@@ -142,7 +142,7 @@ public class MainControllerTest {
     }
 
     @Test
-    public void getGameOfPlayerTest() {
+    public void getGameOfPlayerTest() throws PlayersCountNotValidException {
         assertDoesNotThrow(() -> controller.connect(playerConnected, listenerMock));
 
         try {

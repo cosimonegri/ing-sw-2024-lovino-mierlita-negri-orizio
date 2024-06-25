@@ -44,7 +44,9 @@ public class GameControllerTest {
 
     @BeforeEach
     public void resetController() throws CannotCreateGameException {
-        controller = new GameController(1, 3);
+        try {
+            controller = new GameController(1, 3);
+        } catch (PlayersCountNotValidException ignored) {}
     }
 
     private void mockModel() throws NoSuchFieldException, IllegalAccessException {
