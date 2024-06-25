@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.player;
 
+import it.polimi.ingsw.exceptions.CardNotInHandException;
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
 import it.polimi.ingsw.modelView.PlayerView;
@@ -7,7 +8,6 @@ import it.polimi.ingsw.modelView.PlayerView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 /**
  * This class contains all the player info
@@ -107,14 +107,13 @@ public class Player {
         this.objectiveScore = newPoints;
     }
 
-    //TODO handle this exception
     /**
      * Take a new card. Maximum three cards
      *
      * @param newCard the new card to add to the player's hand
      * @throws IllegalStateException the player already has three card
      */
-    public void addToHand(PlayableCard newCard) throws IllegalStateException {
+    public void addToHand(PlayableCard newCard) {
         if (newCard == null) return;
         if (hand.size() >= Player.MAX_HAND_SIZE) {
             throw new IllegalStateException("Hand already full");
@@ -123,13 +122,14 @@ public class Player {
     }
 
     /**
-     * Remove a card from the hand if present, otherwise do nothing
+     * Remove a card from the hand
      *
      * @param card the card that is to be removed
+     * @throws CardNotInHandException if the card is not in the hand
      */
-    public void removeFromHand(PlayableCard card) {
+    public void removeFromHand(PlayableCard card) throws CardNotInHandException {
         if (card == null || !hand.contains(card)) {
-            return;
+            throw new CardNotInHandException();
         }
         this.hand.remove(card);
     }

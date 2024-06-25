@@ -19,10 +19,10 @@ public class BoardTest {
     }
     @Test
     public void boardSizeCheck(){
-        assertEquals(38, board.getGoldDeck().getCards().size());
-        assertEquals(38, board.getResourceDeck().getCards().size());
-        assertEquals(16, board.getObjectiveDeck().getCards().size());
-        assertEquals(6, board.getStarterDeck().getCards().size());
+        assertEquals(38, board.getGoldDeck().size());
+        assertEquals(38, board.getResourceDeck().size());
+        assertEquals(16, board.getObjectiveDeck().size());
+        assertEquals(6, board.getStarterDeck().size());
     }
 
     @Test
@@ -31,25 +31,25 @@ public class BoardTest {
         board.replaceVisibleCard(board.getVisibleCards()[0]);
         //checking if goldDeck size decreased and Visiblecards is still full
         assertEquals(4, board.getVisibleCards().length);
-        assertEquals(37, board.getGoldDeck().getCards().size());
+        assertEquals(37, board.getGoldDeck().size());
         //case:taking resourceCard, both decks are not empty
         board.replaceVisibleCard(board.getVisibleCards()[2]);
         assertEquals(4, board.getVisibleCards().length);
-        assertEquals(37, board.getResourceDeck().getCards().size());
+        assertEquals(37, board.getResourceDeck().size());
 
         for(int i = 0; i < 37 ; i++)
             board.getGoldDeck().draw();
         //case: taking goldCard but GoldDeck is emtpy
-        assertEquals(0, board.getGoldDeck().getCards().size());
+        assertEquals(0, board.getGoldDeck().size());
         board.replaceVisibleCard(board.getVisibleCards()[0]);
         assertInstanceOf(PlayableCard.class, board.getVisibleCards()[0]);
-        assertEquals(36, board.getResourceDeck().getCards().size());
+        assertEquals(36, board.getResourceDeck().size());
 
         for(int i = 0; i< 36; i++){
             board.getResourceDeck().draw();
         }
         //case: both decks are empty, trying to draw
-        assertEquals(0, board.getResourceDeck().getCards().size());
+        assertEquals(0, board.getResourceDeck().size());
         board.replaceVisibleCard(board.getVisibleCards()[0]);
         assertNull(board.getVisibleCards()[0]);
     }

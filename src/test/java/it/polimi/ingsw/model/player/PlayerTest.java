@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.player;
 
+import it.polimi.ingsw.exceptions.CardNotInHandException;
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,12 +49,11 @@ public class PlayerTest {
      */
     @Test
     public void addToHandTest() {
-        PlayableCard pc;
         for (int i = 0; i < 3; i++) {
-            pc = Mockito.mock(PlayableCard.class);
-            assertFalse(p.getHand().contains(pc));
-            p.addToHand(pc);
-            assertTrue(p.getHand().contains(pc));
+            PlayableCard card = Mockito.mock(PlayableCard.class);
+            assertFalse(p.getHand().contains(card));
+            p.addToHand(card);
+            assertTrue(p.getHand().contains(card));
         }
         assertThrows(IllegalStateException.class, () -> p.addToHand(Mockito.mock(PlayableCard.class)));
     }
@@ -64,15 +64,14 @@ public class PlayerTest {
      */
     @Test
     public void removeFromHandTest() {
-        PlayableCard pc;
         for (int i = 0; i < 3; i++) {
-            pc = Mockito.mock(PlayableCard.class);
-            assertFalse(p.getHand().contains(pc));
-            p.addToHand(pc);
-            assertTrue(p.getHand().contains(pc));
-            p.removeFromHand(pc);
-            assertFalse(p.getHand().contains(pc));
+            PlayableCard card = Mockito.mock(PlayableCard.class);
+            assertFalse(p.getHand().contains(card));
+            p.addToHand(card);
+            assertTrue(p.getHand().contains(card));
+            assertDoesNotThrow(() -> p.removeFromHand(card));
+            assertFalse(p.getHand().contains(card));
         }
-        assertThrows(NoSuchElementException.class, () -> p.removeFromHand(Mockito.mock(PlayableCard.class)));
+        assertThrows(CardNotInHandException.class, () -> p.removeFromHand(Mockito.mock(PlayableCard.class)));
     }
 }

@@ -537,7 +537,7 @@ public class GameControllerTest {
         // MAIN PHASE
         for (Player player : controller.getPlayers()) {
             turn++;
-            player.removeFromHand(player.getHand().getFirst());
+            assertDoesNotThrow(() -> player.removeFromHand(player.getHand().getFirst()));
             player.addToHand(card10points);
             assertDoesNotThrow(() -> controller.playCard(player.getUsername(), card10points, false, coords1));
             assertThrows(ActionNotValidException.class,
@@ -554,7 +554,7 @@ public class GameControllerTest {
         for (Player player : controller.getPlayers()) {
             turn++;
             times++;
-            player.removeFromHand(player.getHand().getFirst());
+            assertDoesNotThrow(() -> player.removeFromHand(player.getHand().getFirst()));
             if (times == 1) {
                 player.addToHand(card5points);
                 assertDoesNotThrow(() -> controller.playCard(player.getUsername(), card5points, false, coords2));
@@ -572,7 +572,7 @@ public class GameControllerTest {
             }
         }
         for (Player player : controller.getPlayers()) {
-            player.removeFromHand(player.getHand().getFirst());
+            assertDoesNotThrow(() -> player.removeFromHand(player.getHand().getFirst()));
             player.addToHand(card10points);
             assertDoesNotThrow(() -> controller.playCard(player.getUsername(), card10points, false, coords3));
             turn++;

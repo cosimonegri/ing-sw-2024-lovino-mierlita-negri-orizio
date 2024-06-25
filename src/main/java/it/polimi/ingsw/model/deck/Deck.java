@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.deck;
 
+import it.polimi.ingsw.exceptions.EmptyDeckException;
 import it.polimi.ingsw.model.deck.card.Card;
 
 import java.util.*;
@@ -26,7 +27,8 @@ public class Deck<T extends Card> {
     /**
      * Remove the card at the top of the deck and return it. The deck must not be empty.
      *
-     * @return the card at the top of the deck
+     * @return the card removed from the deck
+     * @throws NoSuchElementException if the deck is empty
      */
     public T draw() {
         return cards.removeLast();
@@ -41,14 +43,18 @@ public class Deck<T extends Card> {
         }
         return cards.getLast();
     }
-    public List<T> getCards(){
-        return this.cards;
+
+    /**
+     * @return the number of cards in the deck
+     */
+    public int size() {
+        return this.cards.size();
     }
 
     /**
      * @return true if the deck is empty, false otherwise
      */
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return this.cards.isEmpty();
     }
 }
