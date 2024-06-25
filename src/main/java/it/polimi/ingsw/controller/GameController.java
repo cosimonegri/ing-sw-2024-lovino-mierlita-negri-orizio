@@ -35,10 +35,6 @@ public class GameController {
         model.notifyListener(username, message);
     }
 
-    synchronized public void notifyAllListenersExcept(String username, ServerToClientMessage message) {
-        model.notifyAllListenersExcept(username, message);
-    }
-
     synchronized public void notifyAllListeners(ServerToClientMessage message) {
         model.notifyAllListeners(message);
     }

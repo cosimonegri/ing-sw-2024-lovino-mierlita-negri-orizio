@@ -130,15 +130,6 @@ public class Game {
         }
     }
 
-    public void notifyAllListenersExcept(String username, ServerToClientMessage message) {
-        for (Player p : this.players) {
-            if (p.getUsername().equals(username)) {
-                continue;
-            }
-            this.playerToListener.get(p).updateFromModel(message);
-        }
-    }
-
     public void notifyAllListeners(ServerToClientMessage message) {
         for (GameListener listener : this.playerToListener.values()) {
             listener.updateFromModel(message);
