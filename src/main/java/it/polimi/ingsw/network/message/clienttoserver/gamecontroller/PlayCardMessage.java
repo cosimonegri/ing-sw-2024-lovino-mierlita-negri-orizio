@@ -53,6 +53,9 @@ public class PlayCardMessage extends GameControllerMessage {
                         ? turnMessage + " " + Config.pluralize(controller.getRemainingTurns().get(), "turn") + " before the game ends."
                         : turnMessage;
                 controller.notifyAllListeners(new ViewUpdateMessage(controller.getModelView(), message));
+            } else {
+                //todo verify if causes bugs in tui
+                controller.notifyAllListeners(new ViewUpdateMessage(controller.getModelView(), "Card Played"));
             }
         } catch (CardNotInHandException | CoordinatesNotValidException | NotEnoughResourcesException e) {
             controller.notifyListener(this.getUsername(), new PlayCardErrorMessage(e.getMessage()));

@@ -2,6 +2,7 @@ package it.polimi.ingsw.modelView;
 
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.GamePhase;
+import it.polimi.ingsw.model.TurnPhase;
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.model.player.Player;
 
@@ -17,6 +18,7 @@ public class GameView implements Serializable {
     private final boolean isLastRound;
     private final boolean isEnded;
     private final int currentTurn;
+    private final TurnPhase turnPhase;
 
     public GameView(Game game) {
         this.playersCount = game.getPlayersCount();
@@ -29,6 +31,7 @@ public class GameView implements Serializable {
         this.objectives.addAll(game.getObjectives());
         this.isLastRound = game.isLastRound();
         this.isEnded = game.getGamePhase() == GamePhase.ENDED;
+        this.turnPhase = game.getTurnPhase();
     }
 
     public int getPlayersCount() {
@@ -82,6 +85,8 @@ public class GameView implements Serializable {
     public BoardView getBoard() {
         return board;
     }
+
+    public TurnPhase getTurnPhase() { return this.turnPhase; }
 
     public List<ObjectiveCard> getObjectives() {
         return Collections.unmodifiableList(this.objectives);

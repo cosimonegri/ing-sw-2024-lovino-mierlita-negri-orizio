@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane fx:id="otherGridPanePlayer" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.gui.OtherPlayerGuiController">
+   <columnConstraints>
+      <ColumnConstraints hgrow="SOMETIMES" />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="170.0" minHeight="170.0" prefHeight="170.0" vgrow="NEVER" />
+   </rowConstraints>
+   <children>
+      <ScrollPane fx:id="otherScrollPane" hvalue="0.493" pannable="true" prefHeight="470.0" prefWidth="700.0" vvalue="0.494">
+         <content>
+            <AnchorPane fx:id="otherFieldAnchor" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="5440.0" prefWidth="10300.0" />
+         </content>
+      </ScrollPane>
+      <Pane fx:id="otherHandPane" maxHeight="170.0" maxWidth="700.0" minHeight="170.0" minWidth="700.0" prefHeight="170.0" prefWidth="700.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
+         <children>
+            <ImageView fx:id="otherCardInHand1" fitHeight="110.0" fitWidth="166.0" layoutX="14.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true">
+               <viewport>
+                  <Rectangle2D height="605.0" minX="75.0" minY="75.0" width="875.0" />
+               </viewport>
+            </ImageView>
+            <ImageView fx:id="otherCardInHand2" fitHeight="110.0" fitWidth="159.0" layoutX="182.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true">
+               <viewport>
+                  <Rectangle2D height="605.0" minX="75.0" minY="75.0" width="875.0" />
+               </viewport>
+            </ImageView>
+            <ImageView fx:id="otherCardInHand3" fitHeight="110.0" fitWidth="159.0" layoutX="350.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true">
+               <viewport>
+                  <Rectangle2D height="605.0" minX="75.0" minY="75.0" width="875.0" />
+               </viewport>
+            </ImageView>
+            <ImageView fx:id="otherPrivateObjective" fitHeight="110.0" fitWidth="159.0" layoutX="534.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true">
+               <viewport>
+                  <Rectangle2D height="605.0" minX="75.0" minY="75.0" width="875.0" />
+               </viewport>
+               <image>
+                  <Image url="@images/card_backs/98.jpg" />
+               </image>
+            </ImageView>
+         </children>
+      </Pane>
+   </children>
+</GridPane>

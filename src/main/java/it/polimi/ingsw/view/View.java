@@ -21,6 +21,9 @@ public abstract class View extends Application {
         this.messages = new LinkedList<>();
     }
 
+    public String getUsername() { return username; }
+    public GameView getGameView() { return gameView; }
+
     public void addListener(ViewListener listener) {
         this.listeners.add(listener);
     }
@@ -29,7 +32,7 @@ public abstract class View extends Application {
         this.listeners.remove(listener);
     }
 
-    protected void notifyAllListeners(ClientToServerMessage message) {
+    public void notifyAllListeners(ClientToServerMessage message) {
         for (ViewListener listener : this.listeners) {
             listener.updateFromView(message);
         }

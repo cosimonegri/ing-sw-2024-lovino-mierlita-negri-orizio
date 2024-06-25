@@ -28,7 +28,7 @@
         <content>
           <AnchorPane fx:id="board" prefHeight="1000.0" prefWidth="385.0">
                <children>
-                  <ImageView fx:id="publicObjective11" fitHeight="110.0" fitWidth="159.0" layoutX="11.0" layoutY="580.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="goldDeckDepth" fitHeight="110.0" fitWidth="159.0" layoutX="11.0" layoutY="580.0" pickOnBounds="true" preserveRatio="true">
                      <viewport>
                         <Rectangle2D height="605.0" minX="75.0" minY="75.0" width="875.0" />
                      </viewport>
@@ -50,7 +50,7 @@
                         <Rectangle2D height="605.0" minX="75.0" minY="75.0" width="875.0" />
                      </viewport>
                   </ImageView>
-                  <ImageView fx:id="publicObjective21" fitHeight="110.0" fitWidth="159.0" layoutX="210.0" layoutY="580.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="resourceDeckDepth" fitHeight="110.0" fitWidth="159.0" layoutX="210.0" layoutY="580.0" pickOnBounds="true" preserveRatio="true">
                      <viewport>
                         <Rectangle2D height="605.0" minX="75.0" minY="75.0" width="875.0" />
                      </viewport>
@@ -93,6 +93,306 @@
                         <Rectangle2D height="605.0" minX="75.0" minY="75.0" width="875.0" />
                      </viewport>
                   </ImageView>
+                  <GridPane fx:id="s0" layoutX="128.0" layoutY="397.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                  </GridPane>
+                  <GridPane fx:id="s1" layoutX="178.0" layoutY="397.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane fx:id="s2" layoutX="228.0" layoutY="397.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane fx:id="s6" layoutX="103.0" layoutY="351.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane fx:id="s5" layoutX="153.0" layoutY="351.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane fx:id="s4" layoutX="203.0" layoutY="351.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane fx:id="s3" layoutX="253.0" layoutY="351.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane fx:id="s10" layoutX="253.0" layoutY="305.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane fx:id="s9" layoutX="203.0" layoutY="305.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane fx:id="s8" layoutX="153.0" layoutY="305.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane fx:id="s7" layoutX="103.0" layoutY="305.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane fx:id="s14" layoutX="103.0" layoutY="261.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane fx:id="s13" layoutX="153.0" layoutY="261.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane fx:id="s12" layoutX="203.0" layoutY="261.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane fx:id="s11" layoutX="253.0" layoutY="261.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane fx:id="s18" layoutX="253.0" layoutY="215.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane fx:id="s17" layoutX="203.0" layoutY="215.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane fx:id="s16" layoutX="153.0" layoutY="215.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane fx:id="s15" layoutX="103.0" layoutY="215.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane fx:id="s21" layoutX="103.0" layoutY="169.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane fx:id="s22" layoutX="103.0" layoutY="123.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane fx:id="s23" layoutX="103.0" layoutY="77.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane fx:id="s19" layoutX="253.0" layoutY="169.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane fx:id="s28" layoutX="253.0" layoutY="123.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane fx:id="s27" layoutX="253.0" layoutY="77.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane fx:id="s20" layoutX="178.0" layoutY="146.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane fx:id="s29" layoutX="178.0" layoutY="87.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane fx:id="s25" layoutX="178.0" layoutY="32.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane fx:id="s24" layoutX="132.0" layoutY="40.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane fx:id="s26" layoutX="224.0" layoutY="40.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="15.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
                </children>
             </AnchorPane>
         </content>
@@ -112,7 +412,7 @@
                      <children>
                         <ScrollPane id="playerFieldScrollpane" fx:id="playerFieldScrollpane" hvalue="0.493" pannable="true" prefHeight="470.0" prefWidth="700.0" vvalue="0.494">
                            <content>
-                              <AnchorPane fx:id="fieldAnchor" prefHeight="5440.0" prefWidth="10300.0" />
+                              <AnchorPane fx:id="fieldAnchor" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="5440.0" prefWidth="10300.0" />
                            </content>
                         </ScrollPane>
                         <Pane fx:id="handPane" maxHeight="170.0" maxWidth="700.0" minHeight="170.0" minWidth="700.0" prefHeight="170.0" prefWidth="700.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
@@ -137,7 +437,7 @@
                                     <Rectangle2D height="605.0" minX="75.0" minY="75.0" width="875.0" />
                                  </viewport>
                               </ImageView>
-                              <Label fx:id="playerMessages" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="700.0" text="messaggi per il player" />
+                              <Label fx:id="playerMessages" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="700.0" text="Messages for you" />
                            </children>
                         </Pane>
                      </children>
@@ -154,12 +454,12 @@
             <Label id="text" fx:id="lobbyID" layoutX="56.0" layoutY="7.0" prefHeight="17.0" prefWidth="47.0" text="nr" />
             <Label layoutX="183.0" layoutY="7.0" prefHeight="17.0" prefWidth="82.0" text="MyUserName:" />
             <Label fx:id="myUserName" layoutX="266.0" layoutY="7.0" prefHeight="17.0" prefWidth="106.0" />
-            <Label layoutX="400.0" prefHeight="30.0" prefWidth="300.0" text="Messaggi per il player" />
+            <Label fx:id="playersTurn" layoutX="400.0" prefHeight="30.0" prefWidth="300.0" text="Setup phase" />
          </children>
       </Pane>
       <Pane fx:id="topRightText" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="400.0" GridPane.columnIndex="1">
          <children>
-            <Label fx:id="playersTurn" layoutY="1.0" prefHeight="30.0" prefWidth="400.0" text="Messaggi per il player" />
+            <Label fx:id="phaseLabel" layoutY="1.0" prefHeight="30.0" prefWidth="400.0" text="Messages for you" />
          </children></Pane>
    </children>
 </GridPane>

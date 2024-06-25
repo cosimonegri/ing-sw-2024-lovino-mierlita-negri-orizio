@@ -1,14 +1,14 @@
 package it.polimi.ingsw.view.gui;
 
+import it.polimi.ingsw.model.TurnPhase;
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
+import it.polimi.ingsw.model.player.Coordinates;
 import it.polimi.ingsw.model.player.Marker;
 import it.polimi.ingsw.modelView.FieldView;
 import it.polimi.ingsw.modelView.PlayerView;
 import it.polimi.ingsw.network.message.clienttoserver.UsernameMessage;
-import it.polimi.ingsw.network.message.clienttoserver.gamecontroller.ChooseMarkerMessage;
-import it.polimi.ingsw.network.message.clienttoserver.gamecontroller.ChooseObjectiveMessage;
-import it.polimi.ingsw.network.message.clienttoserver.gamecontroller.PlayStarterMessage;
+import it.polimi.ingsw.network.message.clienttoserver.gamecontroller.*;
 import it.polimi.ingsw.network.message.clienttoserver.maincontroller.CreateGameMessage;
 import it.polimi.ingsw.network.message.clienttoserver.maincontroller.JoinGameMessage;
 import it.polimi.ingsw.network.message.servertoclient.*;
@@ -30,12 +30,16 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class GUI extends View {
     private StackPane root;
@@ -44,6 +48,7 @@ public class GUI extends View {
     private int starterId;
     private boolean starterFlipped;
     private GuiController controller;
+    private Map<String, OtherPlayerGuiController> otherPlayers;
 
     public GUI () {
         super();
@@ -51,13 +56,10 @@ public class GUI extends View {
     public void run() {
         Platform.startup(() -> {
             try {
-//                startGame();
                 start(new Stage());
             } catch (Exception e) {
                 System.err.println("Could not load GUI.");
-//                e.printStackTrace();
             }
-
         });
     }
 
@@ -65,7 +67,7 @@ public class GUI extends View {
     public void start(Stage window) throws Exception {
         this.window = window;
         // Set background
-        Background backgroundPane = getBackgroundPane();
+        Background backgroundPane = getBackground();
 
         VBox vbox = new VBox();
         vbox.getStyleClass().addAll("welcome-box");
@@ -243,7 +245,7 @@ public class GUI extends View {
         fadeNodeIn.setToValue(1);
         return fadeNodeIn;
     }
-    private Background getBackgroundPane() {
+    private Background getBackground() {
         String backgroundPath = "file:src/main/resources/images/codex-background.jpg";
         Image backgroundImage = new Image(backgroundPath);
         BackgroundImage background = new BackgroundImage(backgroundImage,
@@ -251,7 +253,7 @@ public class GUI extends View {
                 BackgroundRepeat.NO_REPEAT,
                 BackgroundPosition.CENTER,
                 new BackgroundSize(1.0,
-                        BackgroundSize.AUTO, true, true, false, false));
+                        BackgroundSize.AUTO, true, true, true, true));
         // set background image
         //Pane backgroundPane = new Pane();
         //backgroundPane.setBackground(new Background(background));
@@ -450,10 +452,6 @@ public class GUI extends View {
         this.gameId = gameId;
     }
 
-    private String getUsername() {
-        return this.username;
-    }
-
     private void createWaitingLobbyPage(LobbyMessage message) {
         System.out.println("Waiting page");
         VBox vbox = new VBox();
@@ -545,15 +543,25 @@ public class GUI extends View {
                             ServerToClientMessage newMessage = waitForMessage();
                             if (newMessage instanceof ViewUpdateMessage m) {
                                 this.gameView = m.getGameView();
+                                System.out.println("Update");
+                                if (controller != null) {
+                                    Platform.runLater(() -> {
+                                        controller.updateGui();
+                                        for(PlayerView p : gameView.getPlayers()) {
+                                            if(!this.username.equals(p.getUsername())) {
+                                                otherPlayers.get(p.getUsername()).updateOtherPlayer(p.getField(), p.getHand());
+                                            }
+                                        }
+                                    });
+                                }
                             } else {
                                 addMessage(newMessage);
                             }
                         }
-
-
                     });
                     updateThread.start();
                     startGame();
+                    break;
                 } catch (IOException e) {
                     System.err.println("Cannot start game interface");
                 }
@@ -567,15 +575,75 @@ public class GUI extends View {
         // objective phase
         objectivePhase();
         // game
+        Platform.runLater(() -> {
+            controller.updateGui();
+            for(PlayerView p : gameView.getPlayers()) {
+                if(!this.username.equals(p.getUsername())) {
+                    otherPlayers.get(p.getUsername()).updateOtherPlayer(p.getField(), p.getHand());
+                }
+            }
+            controller.setPhaseLabelText("Play a card!");
+            if (gameView.isCurrentPlayer(username)) {
+                controller.setPlayersTurnText("It's your turn!");
+            } else if (gameView.getCurrentPlayer().isPresent()) {
+                controller.setPlayersTurnText("It's " + gameView.getCurrentPlayer().get().getUsername() + "'s turn...");
+            }
+        });
         // choose action
+        Thread playableThread = new Thread(() -> {
+                while(true) {
+                    ServerToClientMessage response = waitForMessage();
+                    if(response instanceof PlayCardAckMessage) {
+                        if (gameView.isLastRound()) {
+                            gameView.resetCurrentPlayer();
+                        } else {
+                            Platform.runLater(() -> {
+                                controller.setPhaseLabelText("Draw a card!");
+                            });
+                        }
+                    } else if (response instanceof PlayCardErrorMessage r) {
+                        Platform.runLater(() -> {
+                            controller.setIsPlayPhase(true);
+                            controller.setPlayerMessagesText(r.getMessage() + " Choose another card to play", Color.RED);
+                        });
+                    } else if (response instanceof DrawCardAckMessage) {
+                        gameView.resetCurrentPlayer();
+                        Platform.runLater(() -> {
+                            controller.setIsPlayPhase(true);
+                            controller.setPhaseLabelText("You have finished your turn!");
+                        });
+                    } else if (response instanceof DrawCardErrorMessage r) {
+                        Platform.runLater(() -> {
+                            controller.setPlayerMessagesText(r.getMessage() + " Choose another card to draw", Color.RED);
+                        });
+                    } else {
+                        addMessage(response);
+                    }
+                }
+        });
+        playableThread.start();
+    }
 
+    public boolean isMyTurn() {
+        if (!this.gameView.isCurrentPlayer(this.username)) {
+            Platform.runLater(() -> {
+                if (gameView.getCurrentPlayer().isPresent()) {
+                    controller.setPlayerMessagesText("Wait for " + gameView.getCurrentPlayer().get().getUsername() + "'s turn", Color.RED);
+                } else {
+                    controller.setPlayerMessagesText("Wait for your turn", Color.RED);
+                }
+            });
+            return false;
+        }
+        return true;
     }
 
     private void objectivePhase() {
         VBox vbox = new VBox();
         vbox.getStyleClass().addAll("welcome-box");
-
-        Text chooseObjText = new Text("Choose your PERSONAL objective");
+        Platform.runLater(() -> {
+            controller.setPhaseLabelText("Choose your PERSONAL objective");
+        });
 
         VBox choice1 = new VBox(), choice2 = new VBox();
         choice1.getStyleClass().addAll("vbox");
@@ -612,7 +680,7 @@ public class GUI extends View {
         chooseObjButton.getStyleClass().addAll("button");
 
         hbox.getChildren().addAll(choice1, choice2);
-        vbox.getChildren().addAll(chooseObjText, hbox, errorLabel, chooseObjButton);
+        vbox.getChildren().addAll(hbox, errorLabel, chooseObjButton);
 
         chooseObjButton.setOnAction(event -> {
             chooseObjButton.setDisable(true);
@@ -640,7 +708,8 @@ public class GUI extends View {
                     Platform.runLater(() -> {
                         controller.setPersonalObjective(oc.getId());
                         controller.getBoard().getChildren().remove(vbox);
-                        controller.scoreBoard.visibleProperty().setValue(true);
+                        controller.setScoreBoardVisible(true);
+                        controller.startScores();
                     });
                     return null;
                 }
@@ -662,6 +731,30 @@ public class GUI extends View {
         Platform.runLater(() -> {
             controller.getBoard().getChildren().addAll(vbox);
         });
+
+        while (true) {
+            ServerToClientMessage response = waitForMessage();
+
+            if (response instanceof ChooseObjectiveAckMessage) {
+                Platform.runLater(() -> {
+                    controller.setPhaseLabelText("Waiting for the other players to choose their private objective...");
+                });
+            }
+            else if (response instanceof ObjectivePhaseEndedMessage) {
+                Platform.runLater(() -> {
+                    controller.setTurnNum(gameView.getCurrentTurn());
+                    if(gameView.getCurrentPlayer().isPresent()){
+                        controller.setPlayersTurnText("It's " +
+                                gameView.getCurrentPlayer().get().getUsername() + "'s turn...");
+                    }
+                    controller.setPhaseLabelText("Objective phase ended");
+                });
+                break;
+            }
+            else {
+                addMessage(response);
+            }
+        }
     }
 
     private void starterPhase() {
@@ -746,42 +839,53 @@ public class GUI extends View {
 
         try {
             loadBoard();
-        } catch (IOException ignored) {}
+        } catch (IOException ignore) {}
     }
 
     private void loadBoard() throws IOException {
         // load scene builder fxml
-
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/playingGui.fxml"));
         GridPane root = loader.load();
 
         controller = loader.getController();
+        controller.setGui(this);
+
+        otherPlayers = new HashMap<>();
+
+        for(PlayerView p : gameView.getPlayers()) {
+            if(!this.username.equals(p.getUsername())) {
+                FXMLLoader otherPlayerLoader = new FXMLLoader(getClass().getResource("/otherPlayersInfo.fxml"));
+                Tab tab = new Tab(p.getUsername());
+                tab.setContent(otherPlayerLoader.load());
+                controller.addFieldTab(tab);
+                OtherPlayerGuiController otherController = otherPlayerLoader.getController();
+                otherController.setHand(p.getHand());
+                otherController.setStarter(p.getStarterCard().getId(),
+                        p.getField().getPlacedCard(new Coordinates(40, 40)).flipped());
+                otherPlayers.put(p.getUsername(), otherController);
+            }
+        }
 
         //set text
-        controller.gridPane.setBackground(getBackgroundPane());
-        controller.lobbyID.setText(String.valueOf(gameId));
-        controller.turnNum.setText(String.valueOf(gameView.getCurrentTurn()));
+        controller.setLobbyID(gameId);
+        controller.setTurnNum(gameView.getCurrentTurn());
         if (gameView.isCurrentPlayer(this.username)) {
-            controller.playersTurn.setText("It's your turn!");
+            controller.setPlayersTurnText("It's your turn!");
         } else if (gameView.getCurrentPlayer().isPresent()) {
-            controller.playersTurn.setText("It's " + gameView.getCurrentPlayer().get().getUsername() + "'s turn...");
+            controller.setPlayersTurnText("It's " + gameView.getCurrentPlayer().get().getUsername() + "'s turn...");
         }
-        controller.myField.setText(this.username);
-        controller.myUserName.setText(this.username);
+        controller.setMyField(this.username);
 
         // set board;
         controller.setBoard(gameView.getBoard());
         controller.setPublicObjective(gameView.getObjectives());
 
         //set cards
-        controller.setHand( gameView.getPlayer(this.username).getHand().get(0).getId(),
-                            gameView.getPlayer(this.username).getHand().get(1).getId(),
-                            gameView.getPlayer(this.username).getHand().get(2).getId(),
-                            999);
+        controller.setHand(gameView.getPlayer(this.username).getHand(), 999);
         controller.setStarter(this.starterId, this.starterFlipped);
 
         FieldView myFieldView = this.gameView.getPlayer(this.username).getField();
-        controller.newPlayablePositionsFromCard(myFieldView);
+        controller.newPlayablePositions(myFieldView);
 
         Scene scene = new Scene(root);
         Platform.runLater(() -> {
@@ -845,8 +949,8 @@ public class GUI extends View {
                 protected Void call() throws Exception {
                     RadioButton selectedRadioButton = (RadioButton) starterGroup.getSelectedToggle();
                     boolean flipped;
-                    if (selectedRadioButton.getText().equals("FRONT")) flipped = true;
-                    else if (selectedRadioButton.getText().equals("BACK")) flipped = false;
+                    if (selectedRadioButton.getText().equals("FRONT")) flipped = false;
+                    else if (selectedRadioButton.getText().equals("BACK")) flipped = true;
                     else {
                         System.out.println("Invalid starter choice");
                         errorLabel.setText("Invalid choice");
