@@ -1,7 +1,5 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.controller.GameController;
-import it.polimi.ingsw.exceptions.CannotCreateGameException;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.model.player.Player;

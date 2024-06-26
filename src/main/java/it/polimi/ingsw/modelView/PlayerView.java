@@ -75,7 +75,7 @@ public class PlayerView implements Serializable, Comparable<PlayerView> {
     public int compareTo(PlayerView other) {
         if (other.getTotalScore() != this.getTotalScore()) {
             return Integer.compare(other.getTotalScore(), this.getTotalScore());
-        };
+        }
         return Integer.compare(other.objectiveScore, this.objectiveScore);
     }
 }

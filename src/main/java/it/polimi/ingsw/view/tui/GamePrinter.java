@@ -205,13 +205,6 @@ public class GamePrinter {
         }
     }
 
-    private static void printPlayerResources(FieldView field) {
-        System.out.println("Resources available:");
-        for (Symbol symbol : Symbol.values()) {
-            System.out.println(symbol.toString() + ": " + field.getSymbolCount(symbol));
-        }
-    }
-
     private static String getCornerRect(Symbol symbol) {
         return getCornerRect(symbol, true);
     }

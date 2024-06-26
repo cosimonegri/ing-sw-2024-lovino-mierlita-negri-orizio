@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.deck;
 
-import it.polimi.ingsw.exceptions.EmptyDeckException;
 import it.polimi.ingsw.model.deck.card.Card;
 
 import java.util.*;

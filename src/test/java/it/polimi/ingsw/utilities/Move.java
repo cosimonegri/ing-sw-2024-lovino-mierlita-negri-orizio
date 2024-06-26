@@ -8,18 +8,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * and its orientation
  */
 public class Move {
-
-
-    int id;
-    int x;
-    int y;
-    boolean flipped;
+    private final int id;
+    private final int x;
+    private final int y;
+    private final boolean flipped;
 
     @JsonCreator
-    public Move(@JsonProperty("id") int id,
-                @JsonProperty ("x")int  x,
-                @JsonProperty("y") int y,
-                @JsonProperty("flipped") boolean flipped){
+    public Move(
+            @JsonProperty("id") int id,
+            @JsonProperty ("x")int  x,
+            @JsonProperty("y") int y,
+            @JsonProperty("flipped") boolean flipped
+    ) {
         this.id = id;
         this.x = x;
         this.y = y;

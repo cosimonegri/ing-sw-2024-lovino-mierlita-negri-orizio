@@ -2,6 +2,7 @@ package it.polimi.ingsw;
 
 import it.polimi.ingsw.network.ConnectionType;
 import it.polimi.ingsw.network.client.Client;
+import it.polimi.ingsw.utilities.Config;
 import it.polimi.ingsw.view.tui.TUI;
 import it.polimi.ingsw.view.gui.GUI;
 import it.polimi.ingsw.view.View;
@@ -9,16 +10,10 @@ import it.polimi.ingsw.view.View;
 public class AppClient {
     private static final String IPV4_PATTERN = "^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\\.(?!$)|$)){4}$";
 
-    private void parseArgs(String[] args) {
-        // parse connection
-
-
-
-    }
     public static void main(String[] args) {
         ConnectionType connection = ConnectionType.SOCKET;
         View view = new GUI();
-        String serverIp = "127.0.0.1";
+        String serverIp = Config.DEFAULT_IP;
 
         for (int i = 0; i < args.length - 1; i++) {
             switch (args[i]) {

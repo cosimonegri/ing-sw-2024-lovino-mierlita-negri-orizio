@@ -33,7 +33,7 @@ public class TUI extends View {
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         System.exit(1);
     }
 

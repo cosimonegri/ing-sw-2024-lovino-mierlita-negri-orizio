@@ -28,10 +28,6 @@ public abstract class View extends Application {
         this.listeners.add(listener);
     }
 
-    public void removeListener(ViewListener listener) {
-        this.listeners.remove(listener);
-    }
-
     public void notifyAllListeners(ClientToServerMessage message) {
         for (ViewListener listener : this.listeners) {
             listener.updateFromView(message);

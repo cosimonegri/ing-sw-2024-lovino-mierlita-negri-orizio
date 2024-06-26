@@ -10,7 +10,6 @@ import java.io.Serializable;
 import java.util.*;
 
 public class GameView implements Serializable {
-    private final int playersCount;
     private final List<PlayerView> players = new ArrayList<>();
     private PlayerView currentPlayer;
     private final BoardView board;
@@ -21,7 +20,6 @@ public class GameView implements Serializable {
     private final TurnPhase turnPhase;
 
     public GameView(Game game) {
-        this.playersCount = game.getPlayersCount();
         this.currentTurn = game.getCurrentTurn();
         this.currentPlayer = game.getCurrentPlayer() != null ? game.getCurrentPlayer().getView() : null;
         for(Player p : game.getPlayers()){
@@ -32,10 +30,6 @@ public class GameView implements Serializable {
         this.isLastRound = game.isLastRound();
         this.isEnded = game.getGamePhase() == GamePhase.ENDED;
         this.turnPhase = game.getTurnPhase();
-    }
-
-    public int getPlayersCount() {
-        return playersCount;
     }
 
     public List<PlayerView> getPlayers() {

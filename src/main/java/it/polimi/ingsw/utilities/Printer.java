@@ -25,9 +25,6 @@ public class Printer {
     public static void printError(String string) {
         System.out.println(CONSOLE_ERROR + string + RESET);
     }
-    public static void printError(String string, Exception e) {
-        System.out.println(CONSOLE_ERROR + string + ": " + e.getMessage() + RESET);
-    }
 
     public static void printInfo(String string) {
         System.out.println(CYAN + string + RESET);

@@ -1,6 +1,5 @@
 package it.polimi.ingsw.modelView;
 
-import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Item;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Resource;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Symbol;
@@ -15,8 +14,7 @@ public class FieldView implements Serializable {
     private final PlacedCard[][] placedCards;
     private final Coordinates topLeftBound;
     private final Coordinates bottomRightBound;
-    private final List<Coordinates> allValidCoords = new ArrayList<>();
-    private final Map<Symbol, Integer> symbolCount = new HashMap<>();
+    private final List<Coordinates> allValidCoords;
 
     public FieldView(Field field){
         this.placedCards = new PlacedCard[field.size()][field.size()];
@@ -29,11 +27,7 @@ public class FieldView implements Serializable {
         }
         this.topLeftBound = field.getTopLeftBound();
         this.bottomRightBound = field.getBottomRightBound();
-        this.allValidCoords.addAll(field.getAllValidCoords());
-        for(Symbol symbol: Resource.values())
-            this.symbolCount.put(symbol, field.getSymbolCount(symbol));
-        for(Symbol symbol: Item.values())
-            this.symbolCount.put(symbol, field.getSymbolCount(symbol));
+        this.allValidCoords = new ArrayList<>(field.getAllValidCoords());
     }
 
     public int size() {
@@ -54,21 +48,6 @@ public class FieldView implements Serializable {
 
     public PlacedCard getPlacedCard(Coordinates coords) {
         return this.placedCards[coords.x()][coords.y()];
-    }
-
-    public Coordinates findCard(PlayableCard card) {
-        for (int x = 0; x < size(); x++) {
-            for (int y = 0; y < size(); y++) {
-                if (this.placedCards[x][y] != null && this.placedCards[x][y].card().equals(card)) {
-                    return new Coordinates(x, y);
-                }
-            }
-        }
-        return null;
-    }
-
-    public int getSymbolCount(Symbol symbol){
-        return this.symbolCount.get(symbol);
     }
 
     public Coordinates getTopLeftBound() {

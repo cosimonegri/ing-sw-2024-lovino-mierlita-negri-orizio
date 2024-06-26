@@ -41,7 +41,7 @@ public class Player {
     /**
      * Objective cards to choose from
      */
-    private List<ObjectiveCard> objOptions;
+    private final List<ObjectiveCard> objOptions;
     /**
      * Starter card of the player
      */

@@ -1,8 +1,6 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.deck.card.playablecard.GoldCard;
-import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +40,7 @@ public class BoardTest {
         //case: taking goldCard but GoldDeck is emtpy
         assertEquals(0, board.getGoldDeck().size());
         board.replaceVisibleCard(board.getVisibleCards()[0]);
-        assertInstanceOf(PlayableCard.class, board.getVisibleCards()[0]);
+        assertFalse(board.getVisibleCards()[0] instanceof GoldCard);
         assertEquals(36, board.getResourceDeck().size());
 
         for(int i = 0; i< 36; i++){
