@@ -859,9 +859,13 @@ public class GUI extends View {
                 tab.setContent(otherPlayerLoader.load());
                 controller.addFieldTab(tab);
                 OtherPlayerGuiController otherController = otherPlayerLoader.getController();
+                otherController.setGui(this);
                 otherController.setHand(p.getHand());
                 otherController.setStarter(p.getStarterCard().getId(),
                         p.getField().getPlacedCard(new Coordinates(40, 40)).flipped());
+                if(p.getMarker().isPresent()) {
+                    otherController.setMarkerOnField(p.getMarker().get());
+                }
                 otherPlayers.put(p.getUsername(), otherController);
             }
         }
@@ -883,6 +887,9 @@ public class GUI extends View {
         //set cards
         controller.setHand(gameView.getPlayer(this.username).getHand(), 999);
         controller.setStarter(this.starterId, this.starterFlipped);
+        if(gameView.getPlayer(username).getMarker().isPresent()) {
+            controller.setMarkerOnField(gameView.getPlayer(username).getMarker().get());
+        }
 
         FieldView myFieldView = this.gameView.getPlayer(this.username).getField();
         controller.newPlayablePositions(myFieldView);

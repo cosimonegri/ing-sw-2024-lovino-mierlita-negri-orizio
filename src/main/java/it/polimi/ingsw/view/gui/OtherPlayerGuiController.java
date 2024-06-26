@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.gui;
 
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
 import it.polimi.ingsw.model.player.Coordinates;
+import it.polimi.ingsw.model.player.Marker;
 import it.polimi.ingsw.model.player.PlacedCard;
 import it.polimi.ingsw.modelView.FieldView;
 import javafx.fxml.FXML;
@@ -10,12 +11,12 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 
 
 import java.util.List;
 
-import static it.polimi.ingsw.view.gui.GuiController.setCardImage;
-import static it.polimi.ingsw.view.gui.GuiController.translateToPath;
+import static it.polimi.ingsw.view.gui.GuiController.*;
 
 public class OtherPlayerGuiController {
     @FXML
@@ -43,6 +44,10 @@ public class OtherPlayerGuiController {
      * The length of the gridPane, it's two units longer to get some more margin near the edges, these are never populated
      */
     private final int numRows = 83;
+    /**
+     * The reference to the respective GUI
+     */
+    private GUI gui;
 
 
     /**
@@ -119,6 +124,8 @@ public class OtherPlayerGuiController {
         }
     }
 
+    public void setGui(GUI gui) { this.gui = gui; }
+
     /**
      * Sets the starter card on the player's field
      * @param starterId the id of the starter card
@@ -129,6 +136,14 @@ public class OtherPlayerGuiController {
         ImageView starterCard = new ImageView();
         setCardImage(starterCard, path + starterId + ".jpg");
         otherGridFieldPane.add(starterCard,41,41);
+    }
+
+    public void setMarkerOnField(Marker playersMarker) {
+        Circle circle = new Circle(7.0,
+                GuiController.getMarkerColor(playersMarker));
+        otherFieldAnchor.getChildren().add(circle);
+        circle.setLayoutX(5013.0);
+        circle.setLayoutY(2625.0);
     }
 
     /**

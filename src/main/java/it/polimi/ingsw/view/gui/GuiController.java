@@ -291,7 +291,7 @@ public class GuiController{
      * @param marker chosen by the player
      * @return the color corresponding to the given marker
      */
-    private Color getMarkerColor(Marker marker) {
+    public static Color getMarkerColor(Marker marker) {
         if(marker.equals(Marker.BLUE)) {
             return Color.BLUE;
         } else if(marker.equals(Marker.RED)) {
@@ -445,6 +445,14 @@ public class GuiController{
         ImageView starterCard = new ImageView();
         setCardImage(starterCard, path + starterId + ".jpg");
         gridFieldPane.add(starterCard,41,41);
+    }
+
+    public void setMarkerOnField(Marker marker) {
+        Circle circle = new Circle(7.0,
+                getMarkerColor(marker));
+        fieldAnchor.getChildren().add(circle);
+        circle.setLayoutX(5013.0);
+        circle.setLayoutY(2625.0);
     }
 
     public void setPersonalObjective(int id) {
