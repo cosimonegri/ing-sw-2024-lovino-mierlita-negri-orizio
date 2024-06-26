@@ -21,7 +21,6 @@ public class PlayerView implements Serializable, Comparable<PlayerView> {
     private final List<ObjectiveCard> objectiveOptions;
     private final List<PlayableCard> hand;
     private final FieldView field;
-    private final boolean winner;
 
     public PlayerView (Player player){
         this.username = player.getUsername();
@@ -33,7 +32,6 @@ public class PlayerView implements Serializable, Comparable<PlayerView> {
         this.objectiveOptions = new ArrayList<>(player.getObjOptions());
         this.hand = new ArrayList<>(player.getHand());
         this.field = player.getField().getView();
-        this.winner = player.getIsWinner();
     }
 
 
@@ -71,10 +69,6 @@ public class PlayerView implements Serializable, Comparable<PlayerView> {
 
     public FieldView getField() {
         return field;
-    }
-
-    public boolean isWinner() {
-        return winner;
     }
 
     @Override

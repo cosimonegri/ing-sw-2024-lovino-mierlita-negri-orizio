@@ -54,10 +54,6 @@ public class Player {
      * The field of the player where the cards are placed
      */
     private final Field field;
-    /**
-     * True if the player won the match
-     */
-    private boolean isWinner;
 
     /**
      * Create a new player
@@ -74,7 +70,6 @@ public class Player {
         this.starterCard = null;
         this.hand = new ArrayList<>();
         this.field = new Field();
-        this.isWinner = false;
     }
 
     public int getScore() {
@@ -136,14 +131,6 @@ public class Player {
 
     public Field getField() {
         return this.field;
-    }
-
-    public boolean getIsWinner() {
-        return this.isWinner;
-    }
-
-    public void setIsWinner(boolean isWinner) {
-        this.isWinner = isWinner;
     }
 
     public List<PlayableCard> getHand() {
