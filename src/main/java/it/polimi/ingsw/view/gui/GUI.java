@@ -58,6 +58,36 @@ public class GUI extends View {
     public void run() {
         Platform.startup(() -> {
             try {
+                // update view when new message arrives
+                Thread updateThread = new Thread(() -> {
+                    while (true) {
+                        ServerToClientMessage newMessage = waitForMessage();
+                        if (newMessage instanceof ViewUpdateMessage m) {
+                            if (this.gameView != null) {
+                                this.gameView = m.getGameView();
+                                if (this.gameView.isEnded()) {
+                                    Platform.runLater(this::loadScoreboard);
+                                } else if (controller != null) {
+                                    System.out.println("Update");
+
+                                    Platform.runLater(() -> {
+                                        controller.updateGui();
+                                        for (PlayerView p : gameView.getPlayers()) {
+                                            if (!this.username.equals(p.getUsername())) {
+                                                otherPlayers.get(p.getUsername()).updateOtherPlayer(p.getField(), p.getHand());
+                                            }
+                                        }
+                                    });
+                                }
+                            } else {
+                                addMessage(newMessage);
+                            }
+                        } else {
+                            addMessage(newMessage);
+                        }
+                    }
+                });
+                updateThread.start();
                 start(new Stage());
             } catch (Exception e) {
                 System.err.println("Could not load GUI.");
@@ -533,43 +563,15 @@ public class GUI extends View {
                     }
                     lobbyUsernamesFadeIn.play();
                 });
-
-            }
-            else if (response instanceof ViewUpdateMessage r) {
+            } else if (response instanceof ViewUpdateMessage r) {
                 System.out.println("Game started");
                 try {
-                    gameView = r.getGameView();
-                    // update view when new message arrives
-                    Thread updateThread = new Thread(() -> {
-                        while (true) {
-                            ServerToClientMessage newMessage = waitForMessage();
-                            if (newMessage instanceof ViewUpdateMessage m) {
-                                this.gameView = m.getGameView();
-                                System.out.println("Update");
-                                if (this.gameView.isEnded()) {
-                                    Platform.runLater(this::loadScoreboard);
-                                } else if (controller != null) {
-                                    Platform.runLater(() -> {
-                                        controller.updateGui();
-                                        for(PlayerView p : gameView.getPlayers()) {
-                                            if(!this.username.equals(p.getUsername())) {
-                                                otherPlayers.get(p.getUsername()).updateOtherPlayer(p.getField(), p.getHand());
-                                            }
-                                        }
-                                    });
-                                }
-                            } else {
-                                addMessage(newMessage);
-                            }
-                        }
-                    });
-                    updateThread.start();
+                    this.gameView = r.getGameView();
                     startGame();
                     break;
-                } catch (IOException e) {
-                    System.err.println("Cannot start game interface");
-                }
+                } catch (IOException ignored) {}
             }
+
         }
     }
 
