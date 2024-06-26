@@ -22,6 +22,24 @@
 | Chat           |                        :x:                        |
 
 ## How to use
+- In the [deliverables](deliverables) folder there are two jar files, one for the server and one for the client.
+
+- The server can be run with the following command:
+    ```shell
+    > java -jar CodexNaturalisServer.jar
+    ```
+  The RMI port is 1099 and the socket port is 6666.
+
+- The client can be run with the following command:
+    ```shell
+    > java -jar CodexNaturalisClient.jar
+    ```
+    By default this command runs the GUI and establishes a connection with the server on localhost using socket.
+  
+    You can change its behaviour by adding a combination of the following cli arguments:
+  - **-i**: followed by _gui_ (default) or by _tui_
+  - **-n**: followed by _socket_ (default) or by _rmi_
+  - **-h**: followed by the ip of the server
 
 ## Disclaimer
 [_Codex Naturalis_](https://www.craniocreations.it/prodotto/codex-naturalis) is property of [_Cranio Creations_](https://www.craniocreations.it) and all of the copyrighted graphical assets used in this project were supplied by [_Politecnico di Milano_](https://www.polimi.it) in collaboration with their rights' holders.
