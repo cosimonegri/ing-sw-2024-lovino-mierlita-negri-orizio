@@ -11,12 +11,9 @@ import it.polimi.ingsw.model.deck.card.playablecard.*;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.*;
 import static it.polimi.ingsw.model.deck.card.playablecard.corner.Resource.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 /**
  * Singleton class to read the cards from JSON files
@@ -28,10 +25,10 @@ public class CardsConfig {
     private static final int FIRST_OBJECTIVE_ID = 87;
     private static final int LAST_CARD_ID = 102;
 
-    private static final String GOLD_PATH = "src/main/resources/cards/GoldCards.json";
-    private static final String RESOURCE_PATH = "src/main/resources/cards/ResourceCards.json";
-    private static final String OBJECTIVE_PATH = "src/main/resources/cards/ObjectiveCards.json";
-    private static final String STARTER_PATH = "src/main/resources/cards/StarterCards.json";
+    private static final String GOLD_PATH = "cards/GoldCards.json";
+    private static final String RESOURCE_PATH = "cards/ResourceCards.json";
+    private static final String OBJECTIVE_PATH = "cards/ObjectiveCards.json";
+    private static final String STARTER_PATH = "cards/StarterCards.json";
 
     private static CardsConfig instance;
     private final List<GoldCard> goldCards;
@@ -144,9 +141,7 @@ public class CardsConfig {
      * @throws IOException when the file fails to open
      */
     private void parseGoldCards() throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        //The Json file is parsed in a list of ParsedCards
-        List<ParsedCard> parsedGoldCards = objectMapper.readValue(new File(GOLD_PATH), new TypeReference<>() {});
+        List<ParsedCard> parsedGoldCards = readCards(GOLD_PATH);
         for (ParsedCard parsedCard : parsedGoldCards ) {
             //Mapping back resources
             List<Resource> backResources = new ArrayList<>();
@@ -188,9 +183,7 @@ public class CardsConfig {
      * @throws IOException when the file fails to open
      */
     private void parseResourceCards() throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        //The Json file is parsed in a list of ParsedCards
-        List<ParsedCard> parsedResourceCards = objectMapper.readValue(new File(RESOURCE_PATH), new TypeReference<>() {});
+        List<ParsedCard> parsedResourceCards = readCards(RESOURCE_PATH);
         for (ParsedCard parsedCard : parsedResourceCards){
             //Mapping back resources
             List<Resource> backResources = new ArrayList<>();
@@ -210,10 +203,8 @@ public class CardsConfig {
      * @throws IOException when the file fails to open
      */
     private void parseObjectiveCards() throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        //The Json file is parsed in a list of ParsedCards
-        List<ParsedCard> ObjectiveCards = objectMapper.readValue(new File(OBJECTIVE_PATH), new TypeReference<>() {});
-        for (ParsedCard parsedCard : ObjectiveCards) {
+        List<ParsedCard> parsedObjectiveCards = readCards(OBJECTIVE_PATH);
+        for (ParsedCard parsedCard : parsedObjectiveCards) {
 
             //Construction differs on the type of objective card intended to build
             switch (parsedCard.getType()) {
@@ -254,9 +245,7 @@ public class CardsConfig {
      * @throws IOException when the file fails to open
      */
     private void parseStarterCards() throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        //The Json file is parsed in a list of ParsedCards
-        List<ParsedCard> parsedStarterCards = objectMapper.readValue(new File(STARTER_PATH), new TypeReference<>() {});
+        List<ParsedCard> parsedStarterCards = readCards(STARTER_PATH);
         for(ParsedCard parsedCard : parsedStarterCards) {
             //mapping frontCorners
             List<Corner> corners = buildFrontCorners(parsedCard);
@@ -319,6 +308,17 @@ public class CardsConfig {
                 ? stringToResource.get(symbolString)
                 : stringToItem.get(symbolString);
         return new Corner(CornerType.VISIBLE, symbol);
+    }
+
+    private List<ParsedCard> readCards(String path) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try (InputStream inputStream = CardsConfig.class.getClassLoader().getResourceAsStream(path);
+             Reader reader = new InputStreamReader(
+                     Objects.requireNonNull(inputStream, "Cannot find json file at: " + path), StandardCharsets.UTF_8
+             )
+        ) {
+            return objectMapper.readValue(reader, new TypeReference<>() {});
+        }
     }
 }
 

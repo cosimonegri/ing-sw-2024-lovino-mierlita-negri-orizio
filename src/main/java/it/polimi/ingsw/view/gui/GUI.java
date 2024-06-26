@@ -209,7 +209,7 @@ public class GUI extends View {
 
         // create a new scene
         Scene scene = new Scene(root);
-        scene.getStylesheets().add("file:src/main/resources/css/style.css");
+        scene.getStylesheets().add("style.css");
         window.setScene(scene);
         window.setFullScreen(true);
         window.setFullScreenExitHint("");
@@ -276,7 +276,7 @@ public class GUI extends View {
         return fadeNodeIn;
     }
     private Background getBackground() {
-        String backgroundPath = "file:src/main/resources/images/codex-background.jpg";
+        String backgroundPath = "images/codex-background.jpg";
         Image backgroundImage = new Image(backgroundPath);
         BackgroundImage background = new BackgroundImage(backgroundImage,
                 BackgroundRepeat.NO_REPEAT,
@@ -958,8 +958,8 @@ public class GUI extends View {
         setStarterId(pc.getId());
 
         ImageView frontView = new ImageView(), backView = new ImageView();
-        Image frontImage = new Image("file:src/main/resources/images/card_fronts/" + pc.getId() + ".jpg"),
-        backImage = new Image("file:src/main/resources/images/card_backs/" + pc.getId() + ".jpg");
+        Image frontImage = new Image("images/card_fronts/" + pc.getId() + ".jpg"),
+        backImage = new Image("images/card_backs/" + pc.getId() + ".jpg");
 
         GuiController.setCardImage(frontView, frontImage.getUrl());
         GuiController.setCardImage(backView, backImage.getUrl());
