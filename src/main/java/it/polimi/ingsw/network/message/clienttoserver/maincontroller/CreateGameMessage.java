@@ -15,8 +15,6 @@ public class CreateGameMessage extends MainControllerMessage {
         this.playersCount = playersCount;
     }
 
-    public int getPlayersCount() { return this.playersCount; }
-
     @Override
     public void execute(MainController controller) {
         try {

@@ -27,18 +27,6 @@ public class PlayCardMessage extends GameControllerMessage {
         this.coords = coords;
     }
 
-    public PlayableCard getCard() {
-        return card;
-    }
-
-    public boolean isFlipped() {
-        return flipped;
-    }
-
-    public Coordinates getCoords() {
-        return coords;
-    }
-
     @Override
     public void execute(GameController controller) {
         try {

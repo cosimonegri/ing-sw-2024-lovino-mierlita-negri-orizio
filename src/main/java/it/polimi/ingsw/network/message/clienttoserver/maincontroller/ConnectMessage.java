@@ -18,10 +18,6 @@ public class ConnectMessage extends MainControllerMessage {
         this.client = client;
     }
 
-    public ClientInterface getClient() {
-        return this.client;
-    }
-
     //TODO check RemoteException handling
     @Override
     public void execute(MainController controller) {

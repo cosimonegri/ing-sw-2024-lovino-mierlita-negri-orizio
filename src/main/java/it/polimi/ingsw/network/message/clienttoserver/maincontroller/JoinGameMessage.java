@@ -18,10 +18,6 @@ public class JoinGameMessage extends MainControllerMessage {
         this.gameId = gameId;
     }
 
-    public int getGameId() {
-        return gameId;
-    }
-
     @Override
     public void execute(MainController controller) {
         try {

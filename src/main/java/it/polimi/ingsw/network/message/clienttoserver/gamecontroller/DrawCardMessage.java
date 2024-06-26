@@ -21,14 +21,6 @@ public class DrawCardMessage extends GameControllerMessage {
         this.card = card;
     }
 
-    public DrawType getType() {
-        return type;
-    }
-
-    public PlayableCard getCard() {
-        return card;
-    }
-
     public void execute(GameController controller) {
         try {
             controller.drawCard(this.getUsername(), this.type, this.card);

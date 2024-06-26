@@ -18,10 +18,6 @@ public class ChooseObjectiveMessage extends GameControllerMessage {
         this.objective = objective;
     }
 
-    public ObjectiveCard getObjective() {
-        return objective;
-    }
-
     @Override
     public void execute(GameController controller) {
         try {

@@ -14,10 +14,6 @@ public class PlayStarterMessage extends GameControllerMessage {
         this.flipped = flipped;
     }
 
-    public boolean isFlipped() {
-        return flipped;
-    }
-
     @Override
     public void execute(GameController controller) {
         try {
