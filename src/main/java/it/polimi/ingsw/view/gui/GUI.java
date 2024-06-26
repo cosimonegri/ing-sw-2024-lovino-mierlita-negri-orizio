@@ -584,7 +584,7 @@ public class GUI extends View {
         score.setStyle("-fx-fill: white; -fx-font-size: 60px;");
         vbox.getChildren().addAll(score);
         String color = "white";
-        for (PlayerView p: this.gameView.getPlayers()) {
+        for (PlayerView p: this.gameView.getSortedPlayers()) {
             Marker m = null;
             if (p.getMarker().isPresent()) m = p.getMarker().get();
             color = switch (m) {
