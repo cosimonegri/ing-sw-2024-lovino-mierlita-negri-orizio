@@ -1,4 +1,7 @@
 # Codex Naturalis
+<div align="center">
+    <a href="https://www.craniocreations.it/prodotto/codex-naturalis"><img src="https://cdn.discordapp.com/attachments/1235868074163310634/1255514954052927498/codex-background.jpg?ex=667d68eb&is=667c176b&hm=4af60febb2514f499799c73f9a9343b3f87032539831ccba0f4a1656211c0950&" alt="Codex Naturalis" width="900"></a>
+</div>
 
 ## Team
 [Cosimo Giovanni Negri](https://github.com/cosimonegri)<br />
