@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-// TODO maybe substitute corners list with 2 maps
 /**
  * This card represent a resource, gold or starter card
  */
@@ -29,19 +28,12 @@ public class PlayableCard extends Card {
      *
      * @param points added if the card is played
      * @param id the card identifier
-     * @param frontImage path to front image
-     * @param backImage path to back image
      * @param corners list of 8 corners
      * @param backResources list of resources
      */
-    public PlayableCard(int points,
-                        int id,
-                        String frontImage,
-                        String backImage,
-                        List<Corner> corners,
-                        List<Resource> backResources) {
+    public PlayableCard(int points, int id, List<Corner> corners, List<Resource> backResources) {
         // call the parent constructor
-        super(points, id, frontImage, backImage);
+        super(points, id);
         this.corners = (corners != null) ? new ArrayList<>(corners) : new ArrayList<>();
         this.backResources = (backResources != null) ? new ArrayList<>(backResources) : new ArrayList<>();
     }

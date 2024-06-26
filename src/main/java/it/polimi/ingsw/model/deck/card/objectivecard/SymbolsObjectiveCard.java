@@ -21,19 +21,15 @@ public class SymbolsObjectiveCard extends ObjectiveCard {
      *
      * @param points the number of points obtained by completing the objective once
      * @param id the card identifier
-     * @param frontImage path to front image
-     * @param backImage path to back image
      * @param symbols a map of the symbols needed to complete the objective
      * @throws IllegalArgumentException if points is a negative number
      */
     public SymbolsObjectiveCard(
             int points,
             int id,
-            String frontImage,
-            String backImage,
             Map<Symbol, Integer> symbols
     ) {
-        super(points, id, frontImage, backImage);
+        super(points, id);
         this.symbols = new HashMap<>(symbols);
     }
 

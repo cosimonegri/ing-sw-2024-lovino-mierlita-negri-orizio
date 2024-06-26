@@ -32,9 +32,7 @@ public class PlayableCardTest {
     @Test
     public void CardConstructorTest() {
         assertThrows(IllegalArgumentException.class,
-                () -> new PlayableCard(-1, 1,
-                                        null, null,
-                                        null,null));
+                () -> new PlayableCard(-1, 1, null,null));
     }
 
     /**
@@ -45,15 +43,9 @@ public class PlayableCardTest {
     public void equalsTest() {
         int max = 15;
         int id = rand.nextInt(max);
-        PlayableCard c1 = new PlayableCard(rand.nextInt(max), id,
-                                            null,null,
-                                            null, null),
-                     c2 = new PlayableCard(rand.nextInt(max), id,
-                                            null, null,
-                                            null, null),
-                     c3 = new PlayableCard(rand.nextInt(max), id + 1,
-                                            null, null,
-                                            null, null);
+        PlayableCard c1 = new PlayableCard(rand.nextInt(max), id, null, null);
+        PlayableCard c2 = new PlayableCard(rand.nextInt(max), id, null, null);
+        PlayableCard c3 = new PlayableCard(rand.nextInt(max), id + 1, null, null);
         assertEquals(c1, c2);
         assertNotEquals(c1, c3);
         assertNotEquals(c2, c3);
@@ -81,9 +73,7 @@ public class PlayableCardTest {
             corners.add(corner);
         }
 
-        PlayableCard pc = new PlayableCard(1, 1,
-                null, null,
-                corners, null);
+        PlayableCard pc = new PlayableCard(1, 1, corners, null);
 
         for (int i = 0; i < 8; i++) {
             assertSame(pc.getCorner(Position.values()[(i < 4) ? i : i - 4], i >= 4),

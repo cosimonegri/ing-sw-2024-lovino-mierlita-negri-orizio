@@ -60,7 +60,7 @@ public class CardsConfigTest {
         resourcesNeededTest.put(Resource.ANIMAL, 3);
         resourcesNeededTest.put(Resource.INSECT, 0);
 
-        CornerGoldCard testCard = new CornerGoldCard(2, 66,null, null,cornersTestCard, resourcesTest, resourcesNeededTest);
+        CornerGoldCard testCard = new CornerGoldCard(2, 66, cornersTestCard, resourcesTest, resourcesNeededTest);
 
         CornerGoldCard card = (CornerGoldCard) cardsConfig.getCard(66);
 
@@ -86,7 +86,7 @@ public class CardsConfigTest {
         List<Resource> resourcesTest = new ArrayList<>();
         resourcesTest.add(Resource.FUNGI);
 
-        PlayableCard testCard = new PlayableCard(1,9, null, null, cornersTestCard, resourcesTest);
+        PlayableCard testCard = new PlayableCard(1,9, cornersTestCard, resourcesTest);
 
         PlayableCard card = (PlayableCard) cardsConfig.getCard(9);
         assertEquals(testCard.getId(), card.getId());
@@ -111,7 +111,7 @@ public class CardsConfigTest {
         resourcesTest.add(ANIMAL);
         resourcesTest.add(INSECT);
 
-        PlayableCard testCard = new PlayableCard(0,84, null, null, cornersTestCard, resourcesTest);
+        PlayableCard testCard = new PlayableCard(0,84, cornersTestCard, resourcesTest);
 
         PlayableCard card = (PlayableCard) cardsConfig.getCard(84);
 
@@ -125,7 +125,7 @@ public class CardsConfigTest {
 
         //manually creating Objective card id = 90
 
-        DiagonalPatternObjectiveCard testCard = new DiagonalPatternObjectiveCard(2, 90, null, null, INSECT, false);
+        DiagonalPatternObjectiveCard testCard = new DiagonalPatternObjectiveCard(2, 90, INSECT, false);
 
         DiagonalPatternObjectiveCard card = (DiagonalPatternObjectiveCard) cardsConfig.getCard(90);
 

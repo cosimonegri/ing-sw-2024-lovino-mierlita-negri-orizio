@@ -27,8 +27,6 @@ public class VerticalPatternObjectiveCard extends ObjectiveCard {
      *
      * @param points the number of points obtained by completing the objective once
      * @param id the card identifier
-     * @param frontImage path to front image
-     * @param backImage path to back image
      * @param mainColor color of the 2 vertical cards
      * @param thirdCardColor color of the third card
      * @param thirdCardPos position of the third card of the pattern, relatively to the other 2 cards
@@ -37,13 +35,11 @@ public class VerticalPatternObjectiveCard extends ObjectiveCard {
     public VerticalPatternObjectiveCard(
             int points,
             int id,
-            String frontImage,
-            String backImage,
             Resource mainColor,
             Resource thirdCardColor,
             Position thirdCardPos
     ) {
-        super(points, id, frontImage, backImage);
+        super(points, id);
         this.mainColor = mainColor;
         this.thirdCardColor = thirdCardColor;
         this.thirdCardPos = thirdCardPos;

@@ -161,19 +161,19 @@ public class CardsConfig {
             //Construction differs on the type of gold card intended to build (CornerGold, SimpleGold, ItemGold)
             switch (parsedCard.getType()) {
                 case "corner" -> {
-                    CornerGoldCard card = new CornerGoldCard(parsedCard.getPoints(), parsedCard.getId(), null, null,
+                    CornerGoldCard card = new CornerGoldCard(parsedCard.getPoints(), parsedCard.getId(),
                             buildCorners(parsedCard), backResources, resourcesNeeded
                     );
                     goldCards.add(card);
                 }
                 case "simple" -> {
-                    SimpleGoldCard card = new SimpleGoldCard(parsedCard.getPoints(), parsedCard.getId(), null, null,
+                    SimpleGoldCard card = new SimpleGoldCard(parsedCard.getPoints(), parsedCard.getId(),
                             buildCorners(parsedCard), backResources, resourcesNeeded
                     );
                     goldCards.add(card);
                 }
                 case "item" -> {
-                    ItemGoldCard card = new ItemGoldCard(parsedCard.getPoints(), parsedCard.getId(), null, null,
+                    ItemGoldCard card = new ItemGoldCard(parsedCard.getPoints(), parsedCard.getId(),
                             buildCorners(parsedCard), backResources, resourcesNeeded, stringToItem.get(parsedCard.getItem())
                     );
                     goldCards.add(card);
@@ -197,7 +197,7 @@ public class CardsConfig {
             backResources.add(stringToResource.get(parsedCard.getColor()));
 
             //The resource card is created and added to the list
-            PlayableCard card = new PlayableCard(parsedCard.getPoints(), parsedCard.getId(), null, null,
+            PlayableCard card = new PlayableCard(parsedCard.getPoints(), parsedCard.getId(),
                     buildCorners(parsedCard), backResources
             );
             resourceCards.add(card);
@@ -226,20 +226,20 @@ public class CardsConfig {
                         else
                             symbols.put(stringToItem.get(k), parsedCard.getSymbols().get(k));
                     }
-                    SymbolsObjectiveCard card = new SymbolsObjectiveCard(parsedCard.getPoints(), parsedCard.getId(),
-                            null, null, symbols
+                    SymbolsObjectiveCard card = new SymbolsObjectiveCard(
+                            parsedCard.getPoints(), parsedCard.getId(), symbols
                     );
                     objectiveCards.add(card);
                 }
                 case "diagonal" -> {
                     DiagonalPatternObjectiveCard card = new DiagonalPatternObjectiveCard(parsedCard.getPoints(), parsedCard.getId(),
-                            null, null, stringToResource.get((parsedCard.getColor())), parsedCard.getMainDiagonal()
+                            stringToResource.get((parsedCard.getColor())), parsedCard.getMainDiagonal()
                     );
                     objectiveCards.add(card);
                 }
                 case "vertical" -> {
-                    VerticalPatternObjectiveCard card = new VerticalPatternObjectiveCard(parsedCard.getPoints(), parsedCard.getId(),
-                            null, null, stringToResource.get(parsedCard.getMainColor()),
+                    VerticalPatternObjectiveCard card = new VerticalPatternObjectiveCard(parsedCard.getPoints(),
+                            parsedCard.getId(), stringToResource.get(parsedCard.getMainColor()),
                             stringToResource.get(parsedCard.getThirdCardColor()), stringToPosition.get(parsedCard.getThirdCardPos())
                     );
                     objectiveCards.add(card);
@@ -274,9 +274,7 @@ public class CardsConfig {
             }
 
             //The new card is created and added to the list
-            PlayableCard card = new PlayableCard(parsedCard.getPoints(), parsedCard.getId(), null, null,
-                    corners, backResources
-            );
+            PlayableCard card = new PlayableCard(parsedCard.getPoints(), parsedCard.getId(), corners, backResources);
             starterCards.add(card);
         }
     }

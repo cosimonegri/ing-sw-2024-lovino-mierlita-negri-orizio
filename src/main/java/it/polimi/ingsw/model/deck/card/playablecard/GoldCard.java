@@ -23,22 +23,14 @@ public abstract class GoldCard extends PlayableCard{
      *
      * @param points added if the card is played
      * @param id identifier number of the card
-     * @param frontImage path to front image
-     * @param backImage path to back image
      * @param corners list of 8 corners
      * @param backResources list of resources
      * @param resourcesNeeded map of type and amount of the cost's resources
      * @throws IllegalArgumentException if value of points is negative
      */
 
-    public GoldCard(int points,
-                    int id,
-                    String frontImage,
-                    String backImage,
-                    List<Corner> corners,
-                    List<Resource> backResources,
-                    Map<Resource, Integer> resourcesNeeded){
-        super(points, id, frontImage, backImage, corners, backResources);
+    public GoldCard(int points, int id, List<Corner> corners, List<Resource> backResources, Map<Resource, Integer> resourcesNeeded) {
+        super(points, id, corners, backResources);
         this.resourcesNeeded = new HashMap<>(resourcesNeeded);  // TODO: check resourcesNeeded
     }
 

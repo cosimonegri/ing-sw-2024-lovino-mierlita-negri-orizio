@@ -21,8 +21,6 @@ public class ItemGoldCard extends GoldCard{
     /**
      * @param points added if the card is played
      * @param id identifier number of the card
-     * @param frontImage path to front image
-     * @param backImage path to back image
      * @param corners list of 8 corners
      * @param backResources list of resources
      * @param resourcesNeeded map of type and amount of the cost's resources
@@ -30,13 +28,12 @@ public class ItemGoldCard extends GoldCard{
      */
     public ItemGoldCard(int points,
                         int id,
-                        String frontImage,
-                        String backImage,
                         List<Corner> corners,
                         List<Resource> backResources,
                         Map<Resource, Integer> resourcesNeeded,
-                        Item item){
-        super(points, id, frontImage, backImage, corners, backResources, resourcesNeeded);
+                        Item item
+    ) {
+        super(points, id, corners, backResources, resourcesNeeded);
         this.item = item;
     }
 
