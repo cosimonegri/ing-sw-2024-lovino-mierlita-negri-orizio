@@ -44,11 +44,6 @@ public class OtherPlayerGuiController {
      * The length of the gridPane, it's two units longer to get some more margin near the edges, these are never populated
      */
     private final int numRows = 83;
-    /**
-     * The reference to the respective GUI
-     */
-    private GUI gui;
-
 
     /**
      * Initializes the grid containing the field ande the colors, positions and effects of the other elements
@@ -84,7 +79,7 @@ public class OtherPlayerGuiController {
      * @param fieldView contains the updated fieldView
      * @param hand contains the updated hand of the playerView
      */
-    public void updateOtherPlayer(FieldView fieldView, List<PlayableCard> hand) {
+    protected void updateOtherPlayer(FieldView fieldView, List<PlayableCard> hand) {
         //update field
         for (int y = fieldView.getBottomRightBound().y(); y <= fieldView.getTopLeftBound().y(); y++) {
             for (int x = fieldView.getTopLeftBound().x(); x <= fieldView.getBottomRightBound().x(); x++) {
@@ -105,7 +100,6 @@ public class OtherPlayerGuiController {
                 }
             }
         }
-
         //update hand
         setHand(hand);
     }
@@ -114,7 +108,7 @@ public class OtherPlayerGuiController {
      * Sets the player's hand with the cards in the list
      * @param hand list containing the cards to be put, max 3
      */
-    public void setHand(List<PlayableCard> hand){
+    protected void setHand(List<PlayableCard> hand){
         setCardImage(otherCardInHand1, translateToPath(hand.getFirst().getId(), true));
         setCardImage(otherCardInHand2, translateToPath(hand.get(1).getId(), true));
         if(hand.size() == 3) {
@@ -124,21 +118,19 @@ public class OtherPlayerGuiController {
         }
     }
 
-    public void setGui(GUI gui) { this.gui = gui; }
-
     /**
      * Sets the starter card on the player's field
      * @param starterId the id of the starter card
      * @param starterFlipped the flipped attribute of the card
      */
-    public void setStarter(int starterId, boolean starterFlipped) {
+    protected void setStarter(int starterId, boolean starterFlipped) {
         String path = "file:src/main/resources/images/" + ((!starterFlipped) ? "card_backs/" : "card_fronts/");
         ImageView starterCard = new ImageView();
         setCardImage(starterCard, path + starterId + ".jpg");
         otherGridFieldPane.add(starterCard,41,41);
     }
 
-    public void setMarkerOnField(Marker playersMarker) {
+    protected void setMarkerOnField(Marker playersMarker) {
         Circle circle = new Circle(7.0,
                 GuiController.getMarkerColor(playersMarker));
         otherFieldAnchor.getChildren().add(circle);

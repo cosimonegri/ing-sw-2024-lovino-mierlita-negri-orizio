@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view.gui;
 
-import it.polimi.ingsw.model.TurnPhase;
 import it.polimi.ingsw.model.deck.card.objectivecard.ObjectiveCard;
 import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
 import it.polimi.ingsw.model.player.Coordinates;
@@ -41,7 +40,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class GUI extends View {
     private StackPane root;
@@ -265,13 +263,13 @@ public class GUI extends View {
         });
         errorShow.play();
     }
-    private FadeTransition fadeOut(Node node, int sec) {
+    protected FadeTransition fadeOut(Node node, int sec) {
         FadeTransition fadeNodeOut = new FadeTransition(Duration.seconds(sec), node);
         fadeNodeOut.setFromValue(1);
         fadeNodeOut.setToValue(0);
         return fadeNodeOut;
     }
-    private FadeTransition fadeIn(Node node, int sec) {
+    protected FadeTransition fadeIn(Node node, int sec) {
         FadeTransition fadeNodeIn = new FadeTransition(Duration.seconds(sec), node);
         fadeNodeIn.setFromValue(0);
         fadeNodeIn.setToValue(1);
@@ -286,9 +284,6 @@ public class GUI extends View {
                 BackgroundPosition.CENTER,
                 new BackgroundSize(1.0,
                         BackgroundSize.AUTO, true, true, true, true));
-        // set background image
-        //Pane backgroundPane = new Pane();
-        //backgroundPane.setBackground(new Background(background));
         return new Background(background);
     }
 
@@ -652,7 +647,7 @@ public class GUI extends View {
                     } else if (response instanceof PlayCardErrorMessage r) {
                         Platform.runLater(() -> {
                             controller.setIsPlayPhase(true);
-                            controller.setPlayerMessagesText(r.getMessage() + " Choose another card to play", Color.RED);
+                            controller.setPlayerMessagesText(r.getMessage() + " Choose another card to play");
                         });
                     } else if (response instanceof DrawCardAckMessage) {
                         gameView.resetCurrentPlayer();
@@ -662,7 +657,7 @@ public class GUI extends View {
                         });
                     } else if (response instanceof DrawCardErrorMessage r) {
                         Platform.runLater(() -> {
-                            controller.setPlayerMessagesText(r.getMessage() + " Choose another card to draw", Color.RED);
+                            controller.setPlayerMessagesText(r.getMessage() + " Choose another card to draw");
                         });
                     } else {
                         addMessage(response);
@@ -672,13 +667,13 @@ public class GUI extends View {
         playableThread.start();
     }
 
-    public boolean isMyTurn() {
+    protected boolean isMyTurn() {
         if (!this.gameView.isCurrentPlayer(this.username)) {
             Platform.runLater(() -> {
                 if (gameView.getCurrentPlayer().isPresent()) {
-                    controller.setPlayerMessagesText("Wait for " + gameView.getCurrentPlayer().get().getUsername() + "'s turn", Color.RED);
+                    controller.setPlayerMessagesText("Wait for " + gameView.getCurrentPlayer().get().getUsername() + "'s turn");
                 } else {
-                    controller.setPlayerMessagesText("Wait for your turn", Color.RED);
+                    controller.setPlayerMessagesText("Wait for your turn");
                 }
             });
             return false;
@@ -865,7 +860,6 @@ public class GUI extends View {
             switch (response) {
                 case ChooseMarkerAckMessage chooseMarkerAckMessage:
                     System.out.println("Marker taken");
-//                        printBoard(true, false);
                     chooseStarter();
                     break;
                 case ChooseMarkerErrorMessage chooseMarkerErrorMessage:
@@ -907,7 +901,6 @@ public class GUI extends View {
                 tab.setContent(otherPlayerLoader.load());
                 controller.addFieldTab(tab);
                 OtherPlayerGuiController otherController = otherPlayerLoader.getController();
-                otherController.setGui(this);
                 otherController.setHand(p.getHand());
                 otherController.setStarter(p.getStarterCard().getId(),
                         p.getField().getPlacedCard(new Coordinates(40, 40)).flipped());
@@ -927,6 +920,7 @@ public class GUI extends View {
             controller.setPlayersTurnText("It's " + gameView.getCurrentPlayer().get().getUsername() + "'s turn...");
         }
         controller.setMyField(this.username);
+        controller.setMyUserName(this.username);
 
         // set board;
         controller.setBoard(gameView.getBoard());

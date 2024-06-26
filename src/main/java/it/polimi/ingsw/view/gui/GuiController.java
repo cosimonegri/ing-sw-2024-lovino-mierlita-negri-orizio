@@ -12,6 +12,8 @@ import it.polimi.ingsw.modelView.FieldView;
 import it.polimi.ingsw.modelView.PlayerView;
 import it.polimi.ingsw.network.message.clienttoserver.gamecontroller.DrawCardMessage;
 import it.polimi.ingsw.network.message.clienttoserver.gamecontroller.PlayCardMessage;
+import javafx.animation.FadeTransition;
+import javafx.animation.PauseTransition;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -28,6 +30,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
+import javafx.util.Duration;
 
 import java.util.List;
 
@@ -86,6 +89,8 @@ public class GuiController{
     private ImageView scoreBoard;
     @FXML
     private Label phaseLabel;
+    @FXML
+    private Label myUserName;
     @FXML
     private GridPane s0;
     @FXML
@@ -197,8 +202,7 @@ public class GuiController{
         //todo messages text: for player messages red text for errors
         topLeftText.setBackground(new Background(new BackgroundFill(Color.LIMEGREEN, null, null)));
         topRightText.setBackground(new Background(new BackgroundFill(Color.LIMEGREEN, null, null)));
-        playerMessages.setBackground(new Background(new BackgroundFill(Color.valueOf("#A0A0A0"), null, null)));
-        playerMessages.setTextFill(Color.BLUE);
+        playerMessages.setOpacity(0.0);
         fieldAnchor.setBackground(new Background(new BackgroundFill(Color.WHEAT, null, null)));
         board.setBackground(new Background(new BackgroundFill(Color.WHEAT, null, null)));
         gridPanePlayer.setBackground(new Background(new BackgroundFill(Color.WHEAT, null, null)));
@@ -230,11 +234,14 @@ public class GuiController{
         isPlayPhase = true;
     }
 
+    protected void setMyUserName(String text) {
+        myUserName.setText(text);
+    }
 
     /**
      * Initializes the scoreBoard if not already initialized
      */
-    public void startScores() {
+    protected void startScores() {
         if(this.gui != null) {
             initScoreBoard();
         } else {
@@ -291,7 +298,7 @@ public class GuiController{
      * @param marker chosen by the player
      * @return the color corresponding to the given marker
      */
-    public static Color getMarkerColor(Marker marker) {
+    protected static Color getMarkerColor(Marker marker) {
         if(marker.equals(Marker.BLUE)) {
             return Color.BLUE;
         } else if(marker.equals(Marker.RED)) {
@@ -344,8 +351,7 @@ public class GuiController{
                         }
                     }
                 } else {
-                    playerMessages.setTextFill(Color.RED);
-                    playerMessages.setText("You cannot draw now!");
+                    setPlayerMessagesText("You cannot draw now!");
                 }
             }
         };
@@ -377,9 +383,9 @@ public class GuiController{
         visibleResource2.setEffect(new DropShadow());
     }
 
-    public void setGui(GUI gui) { this.gui = gui; }
+    protected void setGui(GUI gui) { this.gui = gui; }
 
-    public void loadScoreBoard(){
+    protected void loadScoreBoard(){
         Image i = new Image("file:src/main/resources/images/PLATEAU-SCORE-IMP/plateau.jpg");
         scoreBoard.setImage(i);
         scoreBoard.setFitHeight(431);
@@ -389,11 +395,11 @@ public class GuiController{
         scoreBoard.visibleProperty().setValue(false);
     }
 
-    public AnchorPane getBoard() {
+    protected AnchorPane getBoard() {
         return board;
     }
 
-    public void setBoard(BoardView bv) {
+    protected void setBoard(BoardView bv) {
         if(bv.getGoldTopCard() != null) {
             setCardImage(goldDeck, translateToPath(bv.getGoldTopCard().getId(), true));
         } else {
@@ -429,7 +435,7 @@ public class GuiController{
         }
     }
 
-    public void setHand(List<PlayableCard> hand, int objective){
+    protected void setHand(List<PlayableCard> hand, int objective){
         setCardImage(cardInHand1, translateToPath(hand.getFirst().getId(), false));
         setCardImage(cardInHand2, translateToPath(hand.get(1).getId(), false));
         if(hand.size() == 3) {
@@ -440,14 +446,14 @@ public class GuiController{
         setCardImage(privateObjective, translateToPath(objective, false));
     }
 
-    public void setStarter(int starterId, boolean starterFlipped) {
+    protected void setStarter(int starterId, boolean starterFlipped) {
         String path = "file:src/main/resources/images/" + ((!starterFlipped) ? "card_backs/" : "card_fronts/");
         ImageView starterCard = new ImageView();
         setCardImage(starterCard, path + starterId + ".jpg");
         gridFieldPane.add(starterCard,41,41);
     }
 
-    public void setMarkerOnField(Marker marker) {
+    protected void setMarkerOnField(Marker marker) {
         Circle circle = new Circle(7.0,
                 getMarkerColor(marker));
         fieldAnchor.getChildren().add(circle);
@@ -455,18 +461,18 @@ public class GuiController{
         circle.setLayoutY(2625.0);
     }
 
-    public void setPersonalObjective(int id) {
+    protected void setPersonalObjective(int id) {
         setCardImage(privateObjective, translateToPath(id, false));
     }
 
-    public void setPublicObjective(List<ObjectiveCard> oc) {
+    protected void setPublicObjective(List<ObjectiveCard> oc) {
         setCardImage(publicObjective1, translateToPath(oc.get(0).getId(), false));
         setCardImage(publicObjective2, translateToPath(oc.get(1).getId(), false));
         setCardImage(goldDeckDepth, "file:src/main/resources/images/card_backs/100.jpg");
         setCardImage(resourceDeckDepth, "file:src/main/resources/images/card_backs/100.jpg");
     }
 
-    public static void setCardImage(ImageView imageView, String s) {
+    protected static void setCardImage(ImageView imageView, String s) {
         Image image = new Image(s);
         imageView.setImage(image);
         imageView.setFitHeight(110);
@@ -478,7 +484,7 @@ public class GuiController{
     /**
      *
      */
-    public void updateGui() {
+    protected void updateGui() {
         FieldView fieldView = gui.getGameView().getPlayer(gui.getUsername()).getField();
         //update field
         for(int y = fieldView.getBottomRightBound().y(); y <= fieldView.getTopLeftBound().y(); y++) {
@@ -531,7 +537,7 @@ public class GuiController{
      * Scans the fieldView to finds playable positions and to put interractable rectangles to play the selected card
      * @param fieldView of the player's field
      */
-    public void newPlayablePositions(FieldView fieldView){
+    protected void newPlayablePositions(FieldView fieldView){
         for(int y = fieldView.getBottomRightBound().y(); y <= fieldView.getTopLeftBound().y(); y++) {
             for(int x = fieldView.getTopLeftBound().x(); x <= fieldView.getBottomRightBound().x(); x++) {
                 Coordinates cell = new Coordinates(x, y);
@@ -582,12 +588,10 @@ public class GuiController{
                                         );
                                     }
                                 } else {
-                                    playerMessages.setTextFill(Color.RED);
-                                    playerMessages.setText("Select a card first!");
+                                    setPlayerMessagesText("Select a card first!");
                                 }
                             } else {
-                                playerMessages.setTextFill(Color.RED);
-                                playerMessages.setText("You cannot play a card now!");
+                                setPlayerMessagesText("You cannot play a card now!");
                             }
                         }
                     }
@@ -596,7 +600,7 @@ public class GuiController{
         return playableCell;
     }
 
-    public void setIsPlayPhase(boolean isPlayPhase) { this.isPlayPhase = isPlayPhase; }
+    protected void setIsPlayPhase(boolean isPlayPhase) { this.isPlayPhase = isPlayPhase; }
 
     /**
      * Translates a given card ID to the card's image path
@@ -604,7 +608,7 @@ public class GuiController{
      * @param flipped state of the card
      * @return the image path of the card
      */
-    public static String translateToPath(int id, boolean flipped){
+    protected static String translateToPath(int id, boolean flipped){
         if(!flipped) {
             return "file:src/main/resources/images/card_fronts/" + id + ".jpg";
         } else {
@@ -656,8 +660,7 @@ public class GuiController{
                     }
                 }
             } else {
-                playerMessages.setTextFill(Color.RED);
-                playerMessages.setText("You must draw a card now!");
+                setPlayerMessagesText("You must draw a card now!");
             }
         }
     }
@@ -688,36 +691,45 @@ public class GuiController{
         }
     }
 
-    public void setPlayersTurnText(String text) {
+    protected void setPlayersTurnText(String text) {
         playersTurn.setText(text);
     }
 
-    public void setPlayerMessagesText(String text, Color color) {
+    protected void setPlayerMessagesText(String text) {
         playerMessages.setText(text);
-        playerMessages.setTextFill(color);
+        playerMessages.setTextFill(Color.RED);
+        playerMessages.setOpacity(1);
+        setPlayerMessagesEffect();
     }
 
-    public void addFieldTab(Tab tab) {
+    private void setPlayerMessagesEffect() {
+        PauseTransition showError = new PauseTransition(Duration.seconds(2.0));
+        FadeTransition errorFadeOut = gui.fadeOut(playerMessages, 2);
+        showError.setOnFinished(e -> errorFadeOut.play());
+        showError.play();
+    }
+
+    protected void addFieldTab(Tab tab) {
         tabFieldsPane.getTabs().add(tab);
     }
 
-    public void setMyField(String text) {
+    protected void setMyField(String text) {
         myField.setText(text);
     }
 
-    public void setLobbyID(int id) {
+    protected void setLobbyID(int id) {
         lobbyID.setText(String.valueOf(id));
     }
 
-    public void setTurnNum(int turn) {
+    protected void setTurnNum(int turn) {
         turnNum.setText(String.valueOf(turn));
     }
 
-    public void setScoreBoardVisible(boolean boardVisible) {
+    protected void setScoreBoardVisible(boolean boardVisible) {
         scoreBoard.visibleProperty().setValue(boardVisible);
     }
 
-    public void setPhaseLabelText(String text) {
+    protected void setPhaseLabelText(String text) {
         phaseLabel.setText(text);
     }
 }
