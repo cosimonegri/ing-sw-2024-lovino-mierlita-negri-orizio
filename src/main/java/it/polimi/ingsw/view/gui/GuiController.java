@@ -386,7 +386,7 @@ public class GuiController{
     protected void setGui(GUI gui) { this.gui = gui; }
 
     protected void loadScoreBoard(){
-        Image i = new Image("file:src/main/resources/images/PLATEAU-SCORE-IMP/plateau.jpg");
+        Image i = new Image("images/PLATEAU-SCORE-IMP/plateau.jpg");
         scoreBoard.setImage(i);
         scoreBoard.setFitHeight(431);
         scoreBoard.setFitWidth(265);
@@ -435,7 +435,7 @@ public class GuiController{
         }
     }
 
-    protected void setHand(List<PlayableCard> hand, int objective){
+    protected void setHand(List<PlayableCard> hand){
         setCardImage(cardInHand1, translateToPath(hand.getFirst().getId(), false));
         setCardImage(cardInHand2, translateToPath(hand.get(1).getId(), false));
         if(hand.size() == 3) {
@@ -443,11 +443,10 @@ public class GuiController{
         } else {
             cardInHand3.setImage(null);
         }
-        setCardImage(privateObjective, translateToPath(objective, false));
     }
 
     protected void setStarter(int starterId, boolean starterFlipped) {
-        String path = "file:src/main/resources/images/" + ((!starterFlipped) ? "card_backs/" : "card_fronts/");
+        String path = "images/" + ((!starterFlipped) ? "card_backs/" : "card_fronts/");
         ImageView starterCard = new ImageView();
         setCardImage(starterCard, path + starterId + ".jpg");
         gridFieldPane.add(starterCard,41,41);
@@ -468,8 +467,8 @@ public class GuiController{
     protected void setPublicObjective(List<ObjectiveCard> oc) {
         setCardImage(publicObjective1, translateToPath(oc.get(0).getId(), false));
         setCardImage(publicObjective2, translateToPath(oc.get(1).getId(), false));
-        setCardImage(goldDeckDepth, "file:src/main/resources/images/card_backs/100.jpg");
-        setCardImage(resourceDeckDepth, "file:src/main/resources/images/card_backs/100.jpg");
+        setCardImage(goldDeckDepth, "images/card_backs/100.jpg");
+        setCardImage(resourceDeckDepth, "images/card_backs/100.jpg");
     }
 
     protected static void setCardImage(ImageView imageView, String s) {
@@ -515,9 +514,7 @@ public class GuiController{
         }
         newPlayablePositions(gui.getGameView().getPlayer(gui.getUsername()).getField());
         //update hand
-        if(gui.getGameView().getPlayer(gui.getUsername()).getObjective().isPresent()) {
-            setHand(gui.getGameView().getPlayer(gui.getUsername()).getHand(), gui.getGameView().getPlayer(gui.getUsername()).getObjective().get().getId());
-        }
+        setHand(gui.getGameView().getPlayer(gui.getUsername()).getHand());
         //update board
         setBoard(gui.getGameView().getBoard());
         updateScores();
@@ -610,9 +607,9 @@ public class GuiController{
      */
     protected static String translateToPath(int id, boolean flipped){
         if(!flipped) {
-            return "file:src/main/resources/images/card_fronts/" + id + ".jpg";
+            return "images/card_fronts/" + id + ".jpg";
         } else {
-            return "file:src/main/resources/images/card_backs/" + id + ".jpg";
+            return "images/card_backs/" + id + ".jpg";
         }
     }
 

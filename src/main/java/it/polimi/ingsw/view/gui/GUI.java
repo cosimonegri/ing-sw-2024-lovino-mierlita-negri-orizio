@@ -695,7 +695,7 @@ public class GUI extends View {
         hbox.getStyleClass().addAll("hbox");
 
         ImageView view1 = new ImageView(), view2 = new ImageView();
-        String path = "file:src/main/resources/images/card_fronts/";
+        String path = "images/card_fronts/";
         List<ObjectiveCard> oc = gameView.getPlayer(this.username).getObjectiveOptions();
         System.out.println("ObjChoce " + oc.get(0) + " " + oc.get(1));
         Image image1 = new Image(path + oc.get(0).getId() + ".jpg"),
@@ -927,7 +927,7 @@ public class GUI extends View {
         controller.setPublicObjective(gameView.getObjectives());
 
         //set cards
-        controller.setHand(gameView.getPlayer(this.username).getHand(), 999);
+        controller.setHand(gameView.getPlayer(this.username).getHand());
         controller.setStarter(this.starterId, this.starterFlipped);
         if(gameView.getPlayer(username).getMarker().isPresent()) {
             controller.setMarkerOnField(gameView.getPlayer(username).getMarker().get());

@@ -124,7 +124,7 @@ public class OtherPlayerGuiController {
      * @param starterFlipped the flipped attribute of the card
      */
     protected void setStarter(int starterId, boolean starterFlipped) {
-        String path = "file:src/main/resources/images/" + ((!starterFlipped) ? "card_backs/" : "card_fronts/");
+        String path = "images/" + ((!starterFlipped) ? "card_backs/" : "card_fronts/");
         ImageView starterCard = new ImageView();
         setCardImage(starterCard, path + starterId + ".jpg");
         otherGridFieldPane.add(starterCard,41,41);
