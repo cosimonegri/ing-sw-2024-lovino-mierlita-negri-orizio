@@ -12,6 +12,7 @@ import it.polimi.ingsw.network.message.clienttoserver.gamecontroller.*;
 import it.polimi.ingsw.network.message.clienttoserver.maincontroller.CreateGameMessage;
 import it.polimi.ingsw.network.message.clienttoserver.maincontroller.JoinGameMessage;
 import it.polimi.ingsw.network.message.servertoclient.*;
+import it.polimi.ingsw.utilities.Config;
 import it.polimi.ingsw.utilities.Printer;
 import it.polimi.ingsw.view.View;
 import javafx.animation.FadeTransition;
@@ -21,6 +22,7 @@ import javafx.concurrent.Task;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.*;
 import javafx.scene.control.*;
@@ -544,7 +546,9 @@ public class GUI extends View {
                             if (newMessage instanceof ViewUpdateMessage m) {
                                 this.gameView = m.getGameView();
                                 System.out.println("Update");
-                                if (controller != null) {
+                                if (this.gameView.isEnded()) {
+                                    Platform.runLater(this::loadScoreboard);
+                                } else if (controller != null) {
                                     Platform.runLater(() -> {
                                         controller.updateGui();
                                         for(PlayerView p : gameView.getPlayers()) {
@@ -567,6 +571,48 @@ public class GUI extends View {
                 }
             }
         }
+    }
+
+    private void loadScoreboard() {
+        StackPane root = new StackPane();
+        Background backgroundPane = getBackground();
+
+        VBox vbox = new VBox();
+//        vbox.getStyleClass().addAll("welcome-box");
+        vbox.setStyle("-fx-background-color: rgb(0,0,0,0.8);");
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setPadding(new Insets(15));
+
+        Text score = new Text("Final ScoreBoard");
+        score.setStyle("-fx-fill: white; -fx-font-size: 60px;");
+        vbox.getChildren().addAll(score);
+        String color = "white";
+        for (PlayerView p: this.gameView.getPlayers()) {
+            Marker m = null;
+            if (p.getMarker().isPresent()) m = p.getMarker().get();
+            color = switch (m) {
+                case RED -> "red";
+                case BLUE -> "blue";
+                case GREEN -> "green";
+                case YELLOW -> "yellow";
+                case null, default -> "white";
+            };
+
+            Text playerName = new Text(p.getUsername() + ": " + Config.pluralize(p.getTotalScore(), "point")
+                    + " (" + p.getObjectiveScore() + " from objectives)");
+//            playerName.getStyleClass().addAll("lobby-text");
+            playerName.setStyle("-fx-fill: " + color + "; -fx-font-size: 40px;");
+            vbox.getChildren().addAll(playerName);
+        }
+
+        root.setBackground(backgroundPane);
+        root.getChildren().addAll(vbox);
+
+        Scene scene = new Scene(root);
+        Platform.runLater(() -> {
+            window.setScene(scene);
+            window.setMinHeight(750);
+            window.setMinWidth(1100);});
     }
 
     private void startGame() throws IOException {
@@ -773,7 +819,7 @@ public class GUI extends View {
 
         for (Marker m : Marker.values()) {
             RadioButton radioButton = new RadioButton(m.toString());
-            radioButton.getStyleClass().addAll("label");
+            radioButton.getStyleClass().addAll("text");
             radioButton.setToggleGroup(radioGroup);
             vbox.getChildren().addAll(radioButton);
         }
