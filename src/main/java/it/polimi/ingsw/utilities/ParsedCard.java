@@ -4,33 +4,36 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@JsonIgnoreProperties(ignoreUnknown = true) //ignores unknown fields while parsing if not present in the java class
+// ignores unknown fields while parsing if not present in the java class
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ParsedCard {
-    private int id;
-    private String color;
+    private final int id;
+    private final String color;
 
-    private List<String> colors;
-    private int points;
+    private final List<String> colors;
+    private final int points;
 
-    private String backTopLeft;
-    private String backTopRight;
-    private String backBottomLeft;
-    private String backBottomRight;
-    private String topLeft;
-    private String topRight;
-    private String bottomLeft;
-    private String bottomRight;
-    private Map<String, Integer> resourcesNeeded;
-    private String type;
-    private String item;
-    private Map<String, Integer> symbols;
-    private String mainColor;
-    private String thirdCardColor;
-    private String thirdCardPos;
-    private Boolean mainDiagonal;
+    private final String backTopLeft;
+    private final String backTopRight;
+    private final String backBottomLeft;
+    private final String backBottomRight;
+    private final String topLeft;
+    private final String topRight;
+    private final String bottomLeft;
+    private final String bottomRight;
+    private final Map<String, Integer> resourcesNeeded;
+    private final String type;
+    private final String item;
+    private final Map<String, Integer> symbols;
+    private final String mainColor;
+    private final String thirdCardColor;
+    private final String thirdCardPos;
+    private final Boolean mainDiagonal;
 
     /**
      * constructor of the class, for parameters not specified, see the attributes of {@link it.polimi.ingsw.model.deck.card.Card}
@@ -105,159 +108,79 @@ public class ParsedCard {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getColor() {
         return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
     }
 
     public int getPoints() {
         return points;
     }
 
-    public void setPoints(int points) {
-        this.points = points;
-    }
-
     public String getTopLeft() {
         return topLeft;
-    }
-
-    public void setTopLeft(String topLeft) {
-        this.topLeft = topLeft;
     }
 
     public String getTopRight() {
         return topRight;
     }
 
-    public void setTopRight(String topRight) {
-        this.topRight = topRight;
-    }
-
     public String getBottomLeft() {
         return bottomLeft;
-    }
-
-    public void setBottomLeft(String bottomLeft) {
-        this.bottomLeft = bottomLeft;
     }
 
     public String getBottomRight() {
         return bottomRight;
     }
 
-    public void setBottomRight(String bottomRight) {
-        this.bottomRight = bottomRight;
-    }
-
     public Map<String, Integer> getResourcesNeeded() {
-        return resourcesNeeded;
-    }
-
-    public void setResourcesNeeded(Map<String, Integer> resourcesNeeded) {
-        this.resourcesNeeded = resourcesNeeded;
+        return new HashMap<>(resourcesNeeded);
     }
 
     public String getType() {
         return type;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public String getItem() {
         return item;
-    }
-
-    public void setItem(String item) {
-        this.item = item;
     }
 
     public Boolean getMainDiagonal() {
         return mainDiagonal;
     }
 
-    public void setMainDiagonal(Boolean mainDiagonal) {
-        this.mainDiagonal = mainDiagonal;
-    }
-
     public Map<String, Integer> getSymbols() {
-        return symbols;
-    }
-
-    public void setSymbols(Map<String, Integer> symbols) {
-        this.symbols = symbols;
+        return new HashMap<>(symbols);
     }
 
     public String getMainColor() {
         return mainColor;
     }
 
-    public void setMainColor(String mainColor) {
-        this.mainColor = mainColor;
-    }
-
     public String getThirdCardColor() {
         return thirdCardColor;
-    }
-
-    public void setThirdCardColor(String thirdCardColor) {
-        this.thirdCardColor = thirdCardColor;
     }
 
     public String getThirdCardPos() {
         return thirdCardPos;
     }
 
-    public void setThirdCardPos(String thirdCardPos) {
-        this.thirdCardPos = thirdCardPos;
-    }
-
     public List<String> getColors() {
-        return colors;
-    }
-
-    public void setColors(List<String> colors) {
-        this.colors = colors;
+        return new ArrayList<>(colors);
     }
 
     public String getBackTopLeft() {
         return backTopLeft;
     }
 
-    public void setBackTopLeft(String backTopLeft) {
-        this.backTopLeft = backTopLeft;
-    }
-
     public String getBackTopRight() {
         return backTopRight;
-    }
-
-    public void setBackTopRight(String backTopRight) {
-        this.backTopRight = backTopRight;
     }
 
     public String getBackBottomLeft() {
         return backBottomLeft;
     }
 
-    public void setBackBottomLeft(String backBottomLeft) {
-        this.backBottomLeft = backBottomLeft;
-    }
-
     public String getBackBottomRight() {
         return backBottomRight;
-    }
-
-    public void setBackBottomRight(String backBottomRight) {
-        this.backBottomRight = backBottomRight;
     }
 }
