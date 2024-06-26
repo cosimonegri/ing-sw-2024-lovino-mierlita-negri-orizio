@@ -149,12 +149,12 @@ public class GUI extends View {
         //root.getChildren().addAll(backgroundPane, vbox);
 
         // add transition
-        PauseTransition stageShow = new PauseTransition(Duration.seconds(2));
-        FadeTransition vboxFadeIn = fadeIn(vbox, 2);
-        PauseTransition vboxShow = new PauseTransition(Duration.seconds(1));
-        FadeTransition welcomeTextFadeIn = fadeIn(welcomeText, 2);
-        PauseTransition welcomeTestShow = new PauseTransition(Duration.seconds(1));
-        FadeTransition connectFormFadeIn = fadeIn(connectForm, 2);
+        PauseTransition stageShow = new PauseTransition(Duration.seconds(0.1));
+        FadeTransition vboxFadeIn = fadeIn(vbox, 0.5);
+        PauseTransition vboxShow = new PauseTransition(Duration.seconds(0.1));
+        FadeTransition welcomeTextFadeIn = fadeIn(welcomeText, 0.5);
+        PauseTransition welcomeTestShow = new PauseTransition(Duration.seconds(0.1));
+        FadeTransition connectFormFadeIn = fadeIn(connectForm, 0.5);
 
         stageShow.setOnFinished(e -> vboxFadeIn.play());
         vboxFadeIn.setOnFinished(e -> vboxShow.play());
@@ -253,8 +253,8 @@ public class GUI extends View {
         errorLabel.setText(message);
         errorLabel.setVisible(true);
         errorLabel.setManaged(true);
-        PauseTransition errorShow = new PauseTransition(Duration.seconds(3));
-        FadeTransition errorFadeOut = fadeOut(errorLabel, 5);
+        PauseTransition errorShow = new PauseTransition(Duration.seconds(5));
+        FadeTransition errorFadeOut = fadeOut(errorLabel, 3);
 
         errorShow.setOnFinished(e -> errorFadeOut.play());
         errorFadeOut.setOnFinished(e -> {
@@ -269,7 +269,7 @@ public class GUI extends View {
         fadeNodeOut.setToValue(0);
         return fadeNodeOut;
     }
-    protected FadeTransition fadeIn(Node node, int sec) {
+    protected FadeTransition fadeIn(Node node, double sec) {
         FadeTransition fadeNodeIn = new FadeTransition(Duration.seconds(sec), node);
         fadeNodeIn.setFromValue(0);
         fadeNodeIn.setToValue(1);
@@ -438,12 +438,12 @@ public class GUI extends View {
         } );
 
         // add transition
-        PauseTransition stageShow = new PauseTransition(Duration.seconds(0.5));
-        FadeTransition lobbyTextFadeIn = fadeIn(lobbyText, 2);
-        PauseTransition lobbyTextShow = new PauseTransition(Duration.seconds(1));
-        FadeTransition createGameChoiceFadeIn = fadeIn(createGameBox, 2);
-        PauseTransition showCreateGameChoice = new PauseTransition(Duration.seconds(1));
-        FadeTransition joinGameChoiceFadeIn = fadeIn(joinGameBox, 2);
+        PauseTransition stageShow = new PauseTransition(Duration.seconds(0.1));
+        FadeTransition lobbyTextFadeIn = fadeIn(lobbyText, 0.5);
+        PauseTransition lobbyTextShow = new PauseTransition(Duration.seconds(0.1));
+        FadeTransition createGameChoiceFadeIn = fadeIn(createGameBox, 0.5);
+        PauseTransition showCreateGameChoice = new PauseTransition(Duration.seconds(0.1));
+        FadeTransition joinGameChoiceFadeIn = fadeIn(joinGameBox, 0.5);
 
         stageShow.setOnFinished(e -> lobbyTextFadeIn.play());
         lobbyTextFadeIn.setOnFinished(e -> lobbyTextShow.play());
@@ -511,12 +511,12 @@ public class GUI extends View {
             root.getChildren().addAll(vbox);
         });
 
-        PauseTransition showPage = new PauseTransition(Duration.seconds(0.5));
-        FadeTransition usernameFadeIn = fadeIn(playerUsername, 2);
-        PauseTransition showUsername = new PauseTransition(Duration.seconds(1));
-        FadeTransition waitingTextFadeIn = fadeIn(waitingLobbyText, 2);
-        PauseTransition showWaitingText = new PauseTransition(Duration.seconds(1));
-        FadeTransition lobbyUsernamesFadeIn = fadeIn(lobbyUsernames, 2);
+        PauseTransition showPage = new PauseTransition(Duration.seconds(0.1));
+        FadeTransition usernameFadeIn = fadeIn(playerUsername, 0.5);
+        PauseTransition showUsername = new PauseTransition(Duration.seconds(0.1));
+        FadeTransition waitingTextFadeIn = fadeIn(waitingLobbyText, 0.5);
+        PauseTransition showWaitingText = new PauseTransition(Duration.seconds(0.1));
+        FadeTransition lobbyUsernamesFadeIn = fadeIn(lobbyUsernames, 0.5);
 
         showPage.setOnFinished(e -> usernameFadeIn.play());
         usernameFadeIn.setOnFinished(e -> showUsername.play());
