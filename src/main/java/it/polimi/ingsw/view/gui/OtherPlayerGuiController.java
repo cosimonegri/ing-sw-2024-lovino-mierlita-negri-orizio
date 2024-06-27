@@ -81,24 +81,20 @@ public class OtherPlayerGuiController {
      */
     protected void updateOtherPlayer(FieldView fieldView, List<PlayableCard> hand) {
         //update field
-        for (int y = fieldView.getBottomRightBound().y(); y <= fieldView.getTopLeftBound().y(); y++) {
-            for (int x = fieldView.getTopLeftBound().x(); x <= fieldView.getBottomRightBound().x(); x++) {
-                Coordinates cell = new Coordinates(x, y);
-                if (fieldView.getPlacedCard(cell) != null) {
-                    PlacedCard thisPlacedCard = fieldView.getPlacedCard(cell);
-                    Node node = getNodeFromGridPane(x + 1, numRows - 2 - y);
-                    if (node != null) {
-                        otherGridFieldPane.getChildren().remove(node);
-                    }
-                    ImageView imageView = new ImageView();
-                    if (x == 40 && y == 40) {
-                        setCardImage(imageView, translateToPath(thisPlacedCard.card().getId(), !thisPlacedCard.flipped()));
-                    } else {
-                        setCardImage(imageView, translateToPath(thisPlacedCard.card().getId(), thisPlacedCard.flipped()));
-                    }
-                    otherGridFieldPane.add(imageView, x + 1, numRows - 2 - y);
-                }
+        for (int placementIndex = 0; placementIndex < fieldView.getCardsCount(); placementIndex++) {
+            Coordinates coords = fieldView.getCoords(placementIndex);
+            PlacedCard placedCard = fieldView.getPlacedCard(coords);
+            Node node = getNodeFromGridPane(coords.x() + 1, numRows - 2 - coords.y());
+            if (node != null) {
+                otherGridFieldPane.getChildren().remove(node);
             }
+            ImageView imageView = new ImageView();
+            if (placementIndex == 0) {
+                setCardImage(imageView, translateToPath(placedCard.card().getId(), !placedCard.flipped()));
+            } else {
+                setCardImage(imageView, translateToPath(placedCard.card().getId(), placedCard.flipped()));
+            }
+            otherGridFieldPane.add(imageView, coords.x() + 1, numRows - 2 - coords.y());
         }
         //update hand
         setHand(hand);

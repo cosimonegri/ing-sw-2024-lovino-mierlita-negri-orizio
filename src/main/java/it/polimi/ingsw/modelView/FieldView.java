@@ -62,15 +62,15 @@ public class FieldView implements Serializable {
      * This method must be called with a valid placementIndex (from 0 to cardsCount - 1)
      *
      * @param placementIndex placementIndex of a card
-     * @return the PlacedCard in the field with the given placement index
+     * @return the coordinates of the field in which there is the card with the given placement index
      */
-    public PlacedCard getPlacedCard(int placementIndex) {
+    public Coordinates getCoords(int placementIndex) {
         for (int x = 0; x < size(); x++) {
             for (int y = 0; y < size(); y++) {
                 Coordinates coords = new Coordinates(x, y);
                 PlacedCard placedCard = getPlacedCard(coords);
-                if (placedCard.placementIndex() == placementIndex) {
-                    return placedCard;
+                if (placedCard != null && placedCard.placementIndex() == placementIndex) {
+                    return coords;
                 }
             }
         }
