@@ -412,7 +412,7 @@ public class GuiController{
             setCardImage(resourceDeck, translateToPath(bv.getResourceTopCard().getId(), true));
         } else {
             resourceDeck.setImage(null);
-            resourceDeck.setImage(null);
+            resourceDeckDepth.setImage(null);
         }
 
         if(bv.getVisibleCards()[0] != null) {
@@ -487,25 +487,22 @@ public class GuiController{
      */
     protected void updateGui() {
         FieldView fieldView = gui.getGameView().getPlayer(gui.getUsername()).getField();
+
         //update field
-        for (int placementIndex = 0; placementIndex < fieldView.getCardsCount(); placementIndex++) {
-            Coordinates coords = fieldView.getCoords(placementIndex);
-            PlacedCard placedCard = fieldView.getPlacedCard(coords);
-            Node node = getNodeFromGridPane(coords.x() + 1,numRows - 2 - coords.y());
-            if(node != null) {
-                gridFieldPane.getChildren().remove(node);
-            }
-            ImageView imageView = new ImageView();
-            // if the card is the starter card
-            if (placementIndex == 0) {
-                setCardImage(imageView, translateToPath(placedCard.card().getId(), !placedCard.flipped()));
-            } else {
-                setCardImage(imageView, translateToPath(placedCard.card().getId(), placedCard.flipped()));
-            }
-            //The coordinates are adjusted to be correctly converted between the view matrix and the gridPane matrix
-            //the gridPane is bigger by 1 row and 1 column, the y orientation is inverted
-            gridFieldPane.add(imageView, coords.x() + 1, numRows - 2 - coords.y());
+        int placementIndex = fieldView.getCardsCount() - 1;
+        Coordinates coords = fieldView.getCoords(placementIndex);
+        PlacedCard placedCard = fieldView.getPlacedCard(coords);
+
+        ImageView imageView = new ImageView();
+        if (placementIndex == 0) {
+            setCardImage(imageView, translateToPath(placedCard.card().getId(), !placedCard.flipped()));
+        } else {
+            setCardImage(imageView, translateToPath(placedCard.card().getId(), placedCard.flipped()));
         }
+        //The coordinates are adjusted to be correctly converted between the view matrix and the gridPane matrix
+        //the gridPane is bigger by 1 row and 1 column, the y orientation is inverted
+        gridFieldPane.add(imageView, coords.x() + 1, numRows - 2 - coords.y());
+
         for (int y = fieldView.getBottomRightBound().y(); y <= fieldView.getTopLeftBound().y(); y++) {
             for (int x = fieldView.getTopLeftBound().x(); x <= fieldView.getBottomRightBound().x(); x++) {
                 Coordinates cell = new Coordinates(x, y);

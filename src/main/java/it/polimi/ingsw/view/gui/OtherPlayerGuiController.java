@@ -81,21 +81,17 @@ public class OtherPlayerGuiController {
      */
     protected void updateOtherPlayer(FieldView fieldView, List<PlayableCard> hand) {
         //update field
-        for (int placementIndex = 0; placementIndex < fieldView.getCardsCount(); placementIndex++) {
-            Coordinates coords = fieldView.getCoords(placementIndex);
-            PlacedCard placedCard = fieldView.getPlacedCard(coords);
-            Node node = getNodeFromGridPane(coords.x() + 1, numRows - 2 - coords.y());
-            if (node != null) {
-                otherGridFieldPane.getChildren().remove(node);
-            }
-            ImageView imageView = new ImageView();
-            if (placementIndex == 0) {
-                setCardImage(imageView, translateToPath(placedCard.card().getId(), !placedCard.flipped()));
-            } else {
-                setCardImage(imageView, translateToPath(placedCard.card().getId(), placedCard.flipped()));
-            }
-            otherGridFieldPane.add(imageView, coords.x() + 1, numRows - 2 - coords.y());
+        int placementIndex = fieldView.getCardsCount() - 1;
+        Coordinates coords = fieldView.getCoords(placementIndex);
+        PlacedCard placedCard = fieldView.getPlacedCard(coords);
+
+        ImageView imageView = new ImageView();
+        if (placementIndex == 0) {
+            setCardImage(imageView, translateToPath(placedCard.card().getId(), !placedCard.flipped()));
+        } else {
+            setCardImage(imageView, translateToPath(placedCard.card().getId(), placedCard.flipped()));
         }
+        otherGridFieldPane.add(imageView, coords.x() + 1, numRows - 2 - coords.y());
         //update hand
         setHand(hand);
     }
