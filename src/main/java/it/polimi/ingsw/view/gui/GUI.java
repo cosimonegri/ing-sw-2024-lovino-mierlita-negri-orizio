@@ -624,7 +624,7 @@ public class GUI extends View {
     /**
      * Prints the final score board for the game
      */
-    private void loadScoreboard() {
+    private void loadScoreboard(String message) {
         StackPane root = new StackPane();
         Background backgroundPane = getBackground();
 
@@ -633,6 +633,13 @@ public class GUI extends View {
         vbox.setStyle("-fx-background-color: rgb(0,0,0,0.8);");
         vbox.setAlignment(Pos.CENTER);
         vbox.setPadding(new Insets(15));
+
+        if (message != null) {
+            Text updateMessage = new Text(message);
+            updateMessage.setStyle("-fx-fill: white; -fx-font-size: 30px");
+            vbox.getChildren().addAll(updateMessage);
+        }
+
 
         Text score = new Text("Final ScoreBoard");
         score.setStyle("-fx-fill: white; -fx-font-size: 60px;");
