@@ -70,7 +70,7 @@ public class GUI extends View {
                                 this.gameView = m.getGameView();
                                 // the game is ended
                                 if (this.gameView.isEnded()) {
-                                    Platform.runLater(this::loadScoreboard);
+                                    Platform.runLater(() -> loadScoreboard(m.getMessage()));
                                 } else if (controller != null) {
                                     System.out.println("Update");
                                     // update view for every player
