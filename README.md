@@ -25,7 +25,7 @@
 | Chat           |                        :x:                        |
 
 ## How to use
-- In the [jar](jar) folder there are two jar files, one for the server and one for the client.
+- In the [deliverables/jar](deliverables/jar) folder there are two jar files, one for the server and one for the client.
 
 - The server can be run with the following command:
     ```shell
