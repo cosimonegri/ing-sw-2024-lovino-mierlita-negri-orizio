@@ -31,16 +31,17 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ *  Controls the game flow using a graphical user interface
+ */
 public class GUI extends View {
     private StackPane root;
     private Stage window;
@@ -53,6 +54,10 @@ public class GUI extends View {
     public GUI () {
         super();
     }
+
+    /**
+     * Start the GUI thread
+     */
     public void run() {
         Platform.startup(() -> {
             try {
@@ -63,10 +68,12 @@ public class GUI extends View {
                         if (newMessage instanceof ViewUpdateMessage m) {
                             if (this.gameView != null) {
                                 this.gameView = m.getGameView();
+                                // the game is ended
                                 if (this.gameView.isEnded()) {
                                     Platform.runLater(this::loadScoreboard);
                                 } else if (controller != null) {
                                     System.out.println("Update");
+                                    // update view for every player
                                     Platform.runLater(() -> {
                                         controller.updateGui();
                                         controller.setUpdateMessage(m.getMessage());
@@ -78,9 +85,11 @@ public class GUI extends View {
                                     });
                                 }
                             } else {
+                                // gameView is null, pass the first view
                                 addMessage(newMessage);
                             }
                         } else {
+                            // not a ViewUpdateMessage
                             addMessage(newMessage);
                         }
                     }
@@ -93,8 +102,13 @@ public class GUI extends View {
         });
     }
 
+    /**
+     * Shows the welcome screen, asks for the player's username
+     * and connects to the server.
+     * @param window the current screen
+     */
     @Override
-    public void start(Stage window) throws Exception {
+    public void start(Stage window) {
         this.window = window;
         // Set background
         Background backgroundPane = getBackground();
@@ -249,6 +263,11 @@ public class GUI extends View {
         window.show();
     }
 
+    /**
+     * Show the given message in the given label object with animations.
+     * @param message the String to be showed
+     * @param errorLabel the object that contains the message
+     */
     private void showErrorMessage(String message, Label errorLabel) {
         errorLabel.setText(message);
         errorLabel.setVisible(true);
@@ -263,18 +282,37 @@ public class GUI extends View {
         });
         errorShow.play();
     }
+
+    /**
+     * Fade out transition for a generic node
+     * @param node the node to fade out
+     * @param sec the duration of the transition
+     * @return the complete transition
+     */
     protected FadeTransition fadeOut(Node node, int sec) {
         FadeTransition fadeNodeOut = new FadeTransition(Duration.seconds(sec), node);
         fadeNodeOut.setFromValue(1);
         fadeNodeOut.setToValue(0);
         return fadeNodeOut;
     }
+
+    /**
+     * Fade in transition for a generic node
+     * @param node the node to fade in
+     * @param sec the duration of the transition
+     * @return the complete transition
+     */
     protected FadeTransition fadeIn(Node node, double sec) {
         FadeTransition fadeNodeIn = new FadeTransition(Duration.seconds(sec), node);
         fadeNodeIn.setFromValue(0);
         fadeNodeIn.setToValue(1);
         return fadeNodeIn;
     }
+
+    /**
+     * Create a background element
+     * @return the background object
+     */
     private Background getBackground() {
         String backgroundPath = "images/codex-background.jpg";
         Image backgroundImage = new Image(backgroundPath);
@@ -290,6 +328,12 @@ public class GUI extends View {
     private void setUsername(String username) {
         this.username = username;
     }
+
+    /**
+     * Asks the player how he want to play. The options are
+     * 1) Create a new game with [2-4] players
+     * 2) Join an existing game with a game id
+     */
     private void createJoinCreateGame() {
         Text lobbyText = new Text("Welcome " +  this.username);
         lobbyText.getStyleClass().addAll("welcome-text");
@@ -359,7 +403,7 @@ public class GUI extends View {
                         if (response instanceof CreateGameAckMessage r) {
                             System.out.println("Created game with ID " + r.getGameId() + ". Waiting for players to join...");
                             setGameId(r.getGameId());
-                            new Thread(() -> createWaitingLobbyPage(null)).start();
+                            new Thread(() -> createWaitingLobbyPage(null, count)).start();
                         } else if (response instanceof CreateGameErrorMessage) {
                             // cannot read json files in the server
                             Printer.printError("Cannot create a game. Try again later...");
@@ -399,7 +443,7 @@ public class GUI extends View {
                         if (response instanceof LobbyMessage r) {
                             System.out.println("Entered lobby");
                             setGameId(id);
-                            new Thread(() -> createWaitingLobbyPage(r)).start();
+                            new Thread(() -> createWaitingLobbyPage(r, 0)).start();
                         }
                         else if (response instanceof LobbyNotValidMessage r) {
                             Printer.printError(r.getMessage());
@@ -479,7 +523,14 @@ public class GUI extends View {
         this.gameId = gameId;
     }
 
-    private void createWaitingLobbyPage(LobbyMessage message) {
+    /**
+     * Shows the waiting page while the lobby isn't full.
+     * At the first ViewUpdateMessage the setup phase is started.
+     *
+     * @param message contains the list of players in the current lobby
+     * @param count
+     */
+    private void createWaitingLobbyPage(LobbyMessage message, int count) {
         System.out.println("Waiting page");
         VBox vbox = new VBox();
         vbox.getStyleClass().addAll("welcome-box");
@@ -487,8 +538,8 @@ public class GUI extends View {
         Text playerUsername = new Text(getUsername());
         playerUsername.setOpacity(0);
         playerUsername.getStyleClass().addAll("welcome-text");
+        Text waitingLobbyText = new Text("Lobby " + getGameId() + ": waiting for other players [" + ((message != null) ? message.getUsernames().size() + "/" + message.getSize() +"]" : "1/" + count + "]"));
 
-        Text waitingLobbyText = new Text("Lobby " + getGameId() + ": waiting for other players");
         waitingLobbyText.setOpacity(0);
         waitingLobbyText.getStyleClass().addAll("lobby-text");
 
@@ -549,6 +600,8 @@ public class GUI extends View {
             System.out.println("New message " + response.getClass());
             if (response instanceof LobbyMessage r) {
                 Platform.runLater(() -> {
+                    waitingLobbyText.setText("Lobby " + getGameId() + ": waiting for other players [" + r.getUsernames().size() + "/" + r.getSize() + "]");
+
                     lobbyUsernames.getChildren().clear();
                     lobbyUsernames.setOpacity(0);
                     for (String s : r.getUsernames()) {
@@ -560,16 +613,17 @@ public class GUI extends View {
                 });
             } else if (response instanceof ViewUpdateMessage r) {
                 System.out.println("Game started");
-                try {
-                    this.gameView = r.getGameView();
-                    startGame();
-                    break;
-                } catch (IOException ignored) {}
+                this.gameView = r.getGameView();
+                startGame();
+                break;
             }
 
         }
     }
 
+    /**
+     * Prints the final score board for the game
+     */
     private void loadScoreboard() {
         StackPane root = new StackPane();
         Background backgroundPane = getBackground();
@@ -612,7 +666,11 @@ public class GUI extends View {
             window.setMinWidth(1100);});
     }
 
-    private void startGame() throws IOException {
+    /**
+     * Controls the flow of the game. Asks for the marker, the starter, the objective.
+     * Finally, starts a thread that asks the user to play/draw a card for every turn.
+     */
+    private void startGame() {
         // starter phase
         starterPhase();
         // objective phase
@@ -670,6 +728,10 @@ public class GUI extends View {
         playableThread.start();
     }
 
+    /**
+     * Controls if this player is the current player
+     * @return a boolean if it's this player turn
+     */
     protected boolean isMyTurn() {
         if (!this.gameView.isCurrentPlayer(this.username)) {
             Platform.runLater(() -> {
@@ -684,6 +746,9 @@ public class GUI extends View {
         return true;
     }
 
+    /**
+     * Asks the player for the personal objective
+     */
     private void objectivePhase() {
         VBox vbox = new VBox();
         vbox.getStyleClass().addAll("welcome-box");
@@ -803,6 +868,9 @@ public class GUI extends View {
         }
     }
 
+    /**
+     * Asks for the marker and how to play the starter card
+     */
     private void starterPhase() {
         Text actionText = new Text("Choose your marker");
         actionText.getStyleClass().addAll("lobby-text");
@@ -884,9 +952,15 @@ public class GUI extends View {
 
         try {
             loadBoard();
-        } catch (IOException ignore) {}
+        } catch (IOException e) {
+            System.err.println("Could not load the board");
+        }
     }
 
+    /**
+     * Loads a new screen with the game board
+     * @throws IOException when the file fxml can't be loaded
+     */
     private void loadBoard() throws IOException {
         // load scene builder fxml
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/playingGui.fxml"));
@@ -946,6 +1020,9 @@ public class GUI extends View {
             window.setMinWidth(1100);});
     }
 
+    /**
+     * Asks how to play the starter card (front/back)
+     */
     private void chooseStarter() {
         System.out.println("Choose starter");
         Text starterText = new Text("Choose how to play your starter card");
