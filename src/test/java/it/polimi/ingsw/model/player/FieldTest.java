@@ -11,7 +11,6 @@ import it.polimi.ingsw.model.deck.card.playablecard.corner.Position;
 import it.polimi.ingsw.model.deck.card.playablecard.corner.Resource;
 import it.polimi.ingsw.utilities.CardsConfig;
 import it.polimi.ingsw.utilities.Move;
-import it.polimi.ingsw.view.tui.GamePrinter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -164,19 +163,15 @@ public class FieldTest {
         assertEquals(3281, field.getCardsCount());
         assertEquals(0, field.getAllValidCoords().size());
     }
+
     @Test
     @DisplayName("Test vertical pattern on a specific instance of field")
     public void testVerticalPattern() throws IOException, CoordinatesNotValidException, NotEnoughResourcesException {
        addMovesToField("src/test/resources/VerticalPatternTestMoves.json", field);
-       GamePrinter.printField(field.getView());
-       System.out.println(field.getAllValidCoords());
 
        assertEquals(field.numOfVerticalPatterns(Resource.ANIMAL,Resource.FUNGI, Position.TOPRIGHT),20);
        assertEquals(field.numOfVerticalPatterns(Resource.FUNGI,Resource.PLANT, Position.BOTTOMRIGHT),20);
        assertEquals(field.numOfVerticalPatterns(Resource.PLANT,Resource.INSECT, Position.BOTTOMLEFT),20);
-
-
-
     }
 
     private void assertSymbolsCount(
@@ -203,7 +198,6 @@ public class FieldTest {
         addMovesToField("src/test/resources/FieldTest.json", this.field);
         //checking the total symbolCount in this instance of field
         assertSymbolsCount(6, 6, 4, 4, 0, 0, 1);
-        GamePrinter.printField(this.field.getView());
 
         //checking diagonalPatterns of different resources
         assertEquals(field.numOfDiagonalPatterns(Resource.INSECT, false), 1);
