@@ -155,12 +155,12 @@ public class Server implements ServerInterface {
                     this.usernameToTimer.get(username).cancel();
                     // wait some time before sending another ping request
                     usernameToTimer.wait(Config.PING_TIME_MS);
-                    sendPing(username);
                 }
             } catch (InterruptedException e) {
                 System.err.println("Cannot find timer of user " + username);
             }
         }
+        sendPing(username);
     }
 
     /**
@@ -171,35 +171,35 @@ public class Server implements ServerInterface {
     public void sendPing(String username) {
         synchronized (usernameToTimer) {
             Timer timer = new Timer();
-            controller.notifyListener(username, new PingRequest(username));
 
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
+                    // if the player doesn't respond leave the game
                     synchronized (usernameToTimer) {
-                        // if the player doesn't respond leave the game
-                        try {
-                            usernameToTimer.remove(username);
-                            GameController game = controller.leaveGame(username);
-                            if (game.getPhase() == GamePhase.WAITING) {
-                                game.notifyAllListeners(new LobbyMessage(
-                                        game.getPlayersCount(),
-                                        game.getPlayers().stream().map(Player::getUsername).toList(),
-                                        username + " has left."
-                                ));
-                            } else {
-                                game.notifyAllListeners(new ViewUpdateMessage(
-                                        game.getModelView(), username + " has left. The game has ended."
-                                ));
-                            }
-                        } catch (UsernameNotPlayingException e) {
-                            System.err.println(e.getMessage());
+                        usernameToTimer.remove(username);
+                    }
+                    try {
+                        GameController game = controller.leaveGame(username);
+                        if (game.getPhase() == GamePhase.WAITING) {
+                            game.notifyAllListeners(new LobbyMessage(
+                                    game.getPlayersCount(),
+                                    game.getPlayers().stream().map(Player::getUsername).toList(),
+                                    username + " has left."
+                            ));
+                        } else {
+                            game.notifyAllListeners(new ViewUpdateMessage(
+                                    game.getModelView(), username + " has left. The game has ended."
+                            ));
                         }
+                    } catch (UsernameNotPlayingException e) {
+                        System.err.println(e.getMessage());
                     }
                 }
             }, Config.PING_TIME_MS);
 
             usernameToTimer.put(username, timer);
         }
+        controller.notifyListener(username, new PingRequest(username));
     }
 }

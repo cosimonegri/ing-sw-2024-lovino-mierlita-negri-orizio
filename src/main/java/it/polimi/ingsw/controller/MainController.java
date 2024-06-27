@@ -43,7 +43,9 @@ public class MainController {
         if (this.isUsernameConnected(username)) {
             throw new UsernameAlreadyTakenException();
         }
-        this.usernameToListener.put(username, listener);
+        synchronized(usernameToListener) {
+            this.usernameToListener.put(username, listener);
+        }
     }
 
     /**
@@ -51,9 +53,15 @@ public class MainController {
      * @param username the username of the player to be notified
      * @param message the message to send
      */
-    synchronized public void notifyListener(String username, ServerToClientMessage message) {
-        if (this.isUsernameConnected(username)) {
-            usernameToListener.get(username).updateFromModel(message);
+    public void notifyListener(String username, ServerToClientMessage message) {
+        GameListener listener = null;
+        synchronized (usernameToListener) {
+            if (this.isUsernameConnected(username)) {
+                listener = usernameToListener.get(username);
+            }
+        }
+        if (listener != null) {
+            listener.updateFromModel(message);
         }
     }
 
@@ -74,7 +82,9 @@ public class MainController {
         int gameId = this.generateGameId();
         try {
             GameController game = new GameController(gameId, playersCount);
-            game.addPlayer(username, this.usernameToListener.get(username));
+            synchronized (usernameToListener) {
+                game.addPlayer(username, this.usernameToListener.get(username));
+            }
             this.games.put(gameId, game);
             System.out.println("[GAME] Created game " + game.getId());
             return game;
@@ -99,7 +109,9 @@ public class MainController {
             throw new LobbyNotValidException();
         }
         GameController game = games.get(gameId);
-        game.addPlayer(username, this.usernameToListener.get(username));
+        synchronized (usernameToListener) {
+            game.addPlayer(username, this.usernameToListener.get(username));
+        }
         return game;
     }
 
@@ -113,7 +125,9 @@ public class MainController {
         if (!this.isUsernameConnected(username)) {
             throw new UsernameNotPlayingException(username);
         }
-        this.usernameToListener.remove(username);
+        synchronized (usernameToListener) {
+            this.usernameToListener.remove(username);
+        }
         GameController game = getGameOfPlayer(username);
         game.removePlayer(username);
         // remove game if the game has ended or if the lobby is empty during the waiting phase
@@ -138,7 +152,9 @@ public class MainController {
     }
 
     private boolean isUsernameConnected(String username) {
-        return this.usernameToListener.containsKey(username);
+        synchronized (usernameToListener) {
+            return this.usernameToListener.containsKey(username);
+        }
     }
 
     /**
