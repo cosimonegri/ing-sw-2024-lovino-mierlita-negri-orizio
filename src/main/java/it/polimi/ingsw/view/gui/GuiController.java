@@ -206,6 +206,9 @@ public class GuiController{
         board.setBackground(new Background(new BackgroundFill(Color.WHEAT, null, null)));
         gridPanePlayer.setBackground(new Background(new BackgroundFill(Color.WHEAT, null, null)));
         selectedCardImage = null;
+        selectedCardPath = null;
+        selectedCardID = -1;
+        cardSelectedInHandNum = -1;
         loadScoreBoard();
 
         gridFieldPane = new GridPane();
@@ -574,7 +577,8 @@ public class GuiController{
                     if (e instanceof MouseEvent) {
                         if (gui.isMyTurn()){
                             if(isPlayPhase) {
-                                if (selectedCardImage != null && selectedCardPath != null && selectedCardID > 0) {
+                                if (selectedCardImage != null && selectedCardPath != null && selectedCardID > 0
+                                        && cardSelectedInHandNum >= 0 && cardSelectedInHandNum < 4) {
                                     boolean flipped = ((MouseEvent) e).isSecondaryButtonDown();
                                     if (e.getSource() instanceof Rectangle r) { addDrawEventHandlers();
                                         isPlayPhase = false;
@@ -584,6 +588,10 @@ public class GuiController{
                                                 gui.getUsername(), gui.getGameView().getPlayer(gui.getUsername()).getHand().get(cardSelectedInHandNum),
                                                 flipped, new Coordinates(x - 1, numRows - 2 - y))
                                         );
+                                        cardSelectedInHandNum = -1;
+                                        selectedCardID = -1;
+                                        selectedCardPath = null;
+                                        selectedCardImage = null;
                                     }
                                 } else {
                                     setPlayerMessagesText("Select a card first!");
