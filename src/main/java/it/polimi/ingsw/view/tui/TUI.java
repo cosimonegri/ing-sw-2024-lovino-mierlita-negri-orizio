@@ -26,10 +26,12 @@ import java.util.*;
 public class TUI extends View {
     private final Scanner scanner;
     private Map<Integer, Coordinates> numToCoordinates;
+    private boolean isPlaying;
 
     public TUI() {
         super();
         this.scanner = new Scanner(System.in);
+        this.isPlaying = false;
     }
 
     @Override
@@ -58,12 +60,14 @@ public class TUI extends View {
                 switch (message) {
                     case ViewUpdateMessage m -> {
                         this.gameView = m.getGameView();
-                        Printer.printInfo(m.getMessage());
+                        if (!this.isPlaying) {
+                            Printer.printInfo(m.getMessage());
+                        }
                         if (this.gameView.isEnded()) {
                             printLeaderboard(true);
                             System.exit(0);
                         }
-                        if (this.gameView.isCurrentPlayer(this.username)) {
+                        if (!this.isPlaying && this.gameView.isCurrentPlayer(this.username)) {
                             Printer.printInfo("It's your turn");
                         }
                     }
@@ -275,17 +279,19 @@ public class TUI extends View {
     }
 
     private void playTurn() {
+        this.isPlaying = true;
         playCard();
 
         while (true) {
             ServerToClientMessage response = waitForMessage();
 
             if (response instanceof PlayCardAckMessage) {
-                printBoard(true, true);
-                if (gameView.isLastRound()) {
+                if (gameView.isLastRound() || gameView.isEnded()) {
                     gameView.resetCurrentPlayer();
+                    this.isPlaying = false;
                     break;
                 }
+                printBoard(true, true);
                 drawCard();
             }
             else if (response instanceof PlayCardErrorMessage r) {
@@ -294,6 +300,7 @@ public class TUI extends View {
             }
             else if (response instanceof DrawCardAckMessage) {
                 gameView.resetCurrentPlayer();
+                this.isPlaying = false;
                 break;
             }
             else if (response instanceof DrawCardErrorMessage r) {
