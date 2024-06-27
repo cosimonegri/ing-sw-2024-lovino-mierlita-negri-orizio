@@ -1,8 +1,5 @@
 package it.polimi.ingsw.modelView;
 
-import it.polimi.ingsw.model.deck.card.playablecard.corner.Item;
-import it.polimi.ingsw.model.deck.card.playablecard.corner.Resource;
-import it.polimi.ingsw.model.deck.card.playablecard.corner.Symbol;
 import it.polimi.ingsw.model.player.Coordinates;
 import it.polimi.ingsw.model.player.Field;
 import it.polimi.ingsw.model.player.PlacedCard;
@@ -12,19 +9,20 @@ import java.util.*;
 
 public class FieldView implements Serializable {
     private final PlacedCard[][] placedCards;
+    private final int cardsCount;
     private final Coordinates topLeftBound;
     private final Coordinates bottomRightBound;
     private final List<Coordinates> allValidCoords;
 
-    public FieldView(Field field){
+    public FieldView(Field field) {
         this.placedCards = new PlacedCard[field.size()][field.size()];
         for (int x = 0; x < field.size(); x++) {
             for (int y = 0; y < field.size(); y++) {
                 Coordinates coords = new Coordinates(x, y);
                 this.placedCards[x][y] = field.getPlacedCard(coords);
             }
-
         }
+        this.cardsCount = field.getCardsCount();
         this.topLeftBound = field.getTopLeftBound();
         this.bottomRightBound = field.getBottomRightBound();
         this.allValidCoords = new ArrayList<>(field.getAllValidCoords());
@@ -32,6 +30,10 @@ public class FieldView implements Serializable {
 
     public int size() {
         return placedCards.length;
+    }
+
+    public int getCardsCount() {
+        return this.cardsCount;
     }
 
     public List<Coordinates> getAllValidCoords(){
@@ -46,8 +48,33 @@ public class FieldView implements Serializable {
         return coords.x() < 0 || coords.x() >= size() || coords.y() < 0 || coords.y() >= size();
     }
 
+    /**
+     * This method must be called with valid coordinates
+     *
+     * @param coords cooridnates of a card
+     * @return the PlacedCard at the given coordinates
+     */
     public PlacedCard getPlacedCard(Coordinates coords) {
         return this.placedCards[coords.x()][coords.y()];
+    }
+
+    /**
+     * This method must be called with a valid placementIndex (from 0 to cardsCount - 1)
+     *
+     * @param placementIndex placementIndex of a card
+     * @return the PlacedCard in the field with the given placement index
+     */
+    public PlacedCard getPlacedCard(int placementIndex) {
+        for (int x = 0; x < size(); x++) {
+            for (int y = 0; y < size(); y++) {
+                Coordinates coords = new Coordinates(x, y);
+                PlacedCard placedCard = getPlacedCard(coords);
+                if (placedCard.placementIndex() == placementIndex) {
+                    return placedCard;
+                }
+            }
+        }
+        return null;
     }
 
     public Coordinates getTopLeftBound() {
