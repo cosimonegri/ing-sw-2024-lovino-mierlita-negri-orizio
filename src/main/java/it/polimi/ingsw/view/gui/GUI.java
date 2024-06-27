@@ -639,6 +639,9 @@ public class GUI extends View {
                     if(response instanceof PlayCardAckMessage) {
                         if (gameView.isLastRound()) {
                             gameView.resetCurrentPlayer();
+                            Platform.runLater(() -> {
+                                controller.setPhaseLabelText("You have finished your turn!");
+                            });
                         } else {
                             Platform.runLater(() -> {
                                 controller.setPhaseLabelText("Draw a card!");
