@@ -483,7 +483,7 @@ public class GuiController{
     }
 
     /**
-     *
+     * Update the field, the hand, the board and the texts, and redraw the playable positions
      */
     protected void updateGui() {
         FieldView fieldView = gui.getGameView().getPlayer(gui.getUsername()).getField();
@@ -535,7 +535,7 @@ public class GuiController{
     }
 
     /**
-     * Scans the fieldView to finds playable positions and to put interractable rectangles to play the selected card
+     * Scans the fieldView to find playable positions and to put interractable rectangles to play the selected card
      * @param fieldView of the player's field
      */
     protected void newPlayablePositions(FieldView fieldView){
@@ -580,7 +580,7 @@ public class GuiController{
                                 if (selectedCardImage != null && selectedCardPath != null && selectedCardID > 0
                                         && cardSelectedInHandNum >= 0 && cardSelectedInHandNum < 4) {
                                     boolean flipped = ((MouseEvent) e).isSecondaryButtonDown();
-                                    if (e.getSource() instanceof Rectangle r) { addDrawEventHandlers();
+                                    if (e.getSource() instanceof Rectangle r) {
                                         isPlayPhase = false;
                                         int x = GridPane.getColumnIndex(r);
                                         int y = GridPane.getRowIndex(r);
