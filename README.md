@@ -29,13 +29,13 @@
 
 - The server can be run with the following command:
     ```shell
-    > java -jar CodexNaturalisServer.jar
+    java -jar CodexNaturalisServer.jar
     ```
   The RMI port is 1099 and the socket port is 6666.
 
 - The client can be run with the following command:
     ```shell
-    > java -jar CodexNaturalisClient.jar
+    java -jar CodexNaturalisClient.jar
     ```
     By default this command runs the GUI and establishes a connection with the server on localhost using socket.
   
