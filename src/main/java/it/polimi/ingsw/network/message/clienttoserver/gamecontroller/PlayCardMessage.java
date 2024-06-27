@@ -43,7 +43,8 @@ public class PlayCardMessage extends GameControllerMessage {
                 controller.notifyAllListeners(new ViewUpdateMessage(controller.getModelView(), message));
             } else {
                 //todo verify if causes bugs in tui
-                controller.notifyAllListeners(new ViewUpdateMessage(controller.getModelView(), "Card Played"));
+                String playMessage = this.getUsername() + " has played a card.";
+                controller.notifyAllListeners(new ViewUpdateMessage(controller.getModelView(), playMessage));
             }
         } catch (CardNotInHandException | CoordinatesNotValidException | NotEnoughResourcesException e) {
             controller.notifyListener(this.getUsername(), new PlayCardErrorMessage(e.getMessage()));
