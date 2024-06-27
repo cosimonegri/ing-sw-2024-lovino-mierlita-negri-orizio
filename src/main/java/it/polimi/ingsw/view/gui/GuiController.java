@@ -272,14 +272,15 @@ public class GuiController{
             Circle circle;
             if (playerView.getMarker().isPresent()) {
                 circle = new Circle(7.0, getMarkerColor(playerView.getMarker().get()));
+                int clampedScore = Math.min(playerView.getTotalScore(), 29);
                 if(i == 0) {
-                    points[playerView.getTotalScore()].add(circle, 0, 0);
+                    points[clampedScore].add(circle, 0, 0);
                 } else if(i == 1) {
-                    points[playerView.getTotalScore()].add(circle, 1, 0);
+                    points[clampedScore].add(circle, 1, 0);
                 } else if(i == 2) {
-                    points[playerView.getTotalScore()].add(circle, 0, 1);
+                    points[clampedScore].add(circle, 0, 1);
                 } else if(i == 3) {
-                    points[playerView.getTotalScore()].add(circle, 1, 1);
+                    points[clampedScore].add(circle, 1, 1);
                 }
             } else {
                 return;
