@@ -67,9 +67,9 @@ public class GUI extends View {
                                     Platform.runLater(this::loadScoreboard);
                                 } else if (controller != null) {
                                     System.out.println("Update");
-
                                     Platform.runLater(() -> {
                                         controller.updateGui();
+                                        controller.setUpdateMessage(m.getMessage());
                                         for (PlayerView p : gameView.getPlayers()) {
                                             if (!this.username.equals(p.getUsername())) {
                                                 otherPlayers.get(p.getUsername()).updateOtherPlayer(p.getField(), p.getHand());

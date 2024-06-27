@@ -664,6 +664,10 @@ public class GuiController{
                     } else if (imageView.equals(cardInHand3)) {
                         cardSelectedInHandNum = 2;
                     }
+
+                    playerMessages.setText("You have selected card: " + cardSelectedInHandNum);
+                    playerMessages.setTextFill(Color.BLUE);
+                    playerMessages.setOpacity(1);
                 }
             } else {
                 setPlayerMessagesText("You must draw a card now!");
@@ -695,6 +699,12 @@ public class GuiController{
             glow.setInput(dropShadow);
             imageView.setEffect(glow);
         }
+    }
+
+    protected void setUpdateMessage(String text) {
+        playerMessages.setText(text);
+        playerMessages.setTextFill(Color.BLUEVIOLET);
+        playerMessages.setOpacity(1);
     }
 
     protected void setPlayersTurnText(String text) {
