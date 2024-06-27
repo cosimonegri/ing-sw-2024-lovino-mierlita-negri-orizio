@@ -88,13 +88,6 @@ public class FieldTest {
     }
 
     @Test
-    @DisplayName("Test Field add gold card")
-    public void testAddGoldCard() {
-
-    }
-
-    // controllare
-    @Test
     @DisplayName("Test Field valid coordinates")
     public void testValidCoordinates() {
         List<Coordinates> coords = field.getAllValidCoords();
@@ -104,7 +97,7 @@ public class FieldTest {
         assertDoesNotThrow(() -> field.addCard((PlayableCard) cardsConfig.getCard(8), false, new Coordinates(39, 39)));
         assertDoesNotThrow(() -> field.addCard((PlayableCard) cardsConfig.getCard(11), false, new Coordinates(38, 40)));
         assertDoesNotThrow(() -> field.addCard((PlayableCard) cardsConfig.getCard(26), true, new Coordinates(39, 41)));
-        // assertEquals(7, field.getAllValidCoords().size());
+        assertEquals(7, field.getAllValidCoords().size());
     }
 
     @Test
@@ -133,18 +126,6 @@ public class FieldTest {
         assertDoesNotThrow(() -> field.addCard(card7, false, coords7));
         assertEquals(coords7, field.findCard(card7));
         assertEquals(coords84, field.findCard(card84));
-    }
-
-    //todo finire
-    @Test
-    @DisplayName("Test Field num of neighbors")
-    public void testNumOfNeighbors() {
-    }
-
-    //todo finire
-    @Test
-    @DisplayName("Test Field intermediate states")
-    public void testIntermediateStates() {
     }
 
     @Test

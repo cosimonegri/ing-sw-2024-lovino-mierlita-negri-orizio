@@ -54,7 +54,6 @@ public class CardsConfig {
      * @throws IOException when the file cannot be opened
      */
     private CardsConfig() throws IOException {
-        //TODO maybe move string maps to the relative enumeration
         goldCards = new ArrayList<>();
         resourceCards = new ArrayList<>();
         objectiveCards = new ArrayList<>();

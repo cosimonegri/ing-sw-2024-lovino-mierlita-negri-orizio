@@ -57,7 +57,6 @@ public class Game {
      */
     private TurnPhase turnPhase;
 
-    //todo handle illlegal players count in controller
     /**
      * Constructor of the class
      *
@@ -198,7 +197,6 @@ public class Game {
         }
     }
 
-    //todo check again if we will add disconnections
     /**
      * Takes the game to the next turn, setting the last turn if necessary
      * and changing the current player to the next one

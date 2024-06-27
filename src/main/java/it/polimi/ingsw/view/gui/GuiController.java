@@ -199,7 +199,6 @@ public class GuiController{
      */
     @FXML
     public void initialize() {
-        //todo messages text: for player messages red text for errors
         topLeftText.setBackground(new Background(new BackgroundFill(Color.LIMEGREEN, null, null)));
         topRightText.setBackground(new Background(new BackgroundFill(Color.LIMEGREEN, null, null)));
         playerMessages.setOpacity(0.0);
