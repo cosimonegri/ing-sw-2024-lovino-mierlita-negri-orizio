@@ -483,7 +483,7 @@ public class GuiController{
     }
 
     /**
-     * Update the field, the hand, the board and the texts, and redraw the playable positions
+     * Update the hand, the board and the texts, draw the last card placed on the field and redraw the playable positions
      */
     protected void updateGui() {
         FieldView fieldView = gui.getGameView().getPlayer(gui.getUsername()).getField();

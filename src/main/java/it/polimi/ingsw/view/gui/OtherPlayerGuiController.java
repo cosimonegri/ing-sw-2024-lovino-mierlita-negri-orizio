@@ -75,7 +75,7 @@ public class OtherPlayerGuiController {
     }
 
     /**
-     * Updates the player's field and hand
+     * Updates the player's hand and draw the last card placed on his field
      * @param fieldView contains the updated fieldView
      * @param hand contains the updated hand of the playerView
      */
