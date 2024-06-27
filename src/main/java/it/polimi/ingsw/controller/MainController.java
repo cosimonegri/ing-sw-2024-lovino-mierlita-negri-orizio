@@ -8,6 +8,9 @@ import it.polimi.ingsw.utilities.Config;
 
 import java.util.*;
 
+/**
+ * Control the creation and deletion of new games
+ */
 public class MainController {
     private static MainController instance;
     private final Map<Integer, GameController> games;
@@ -26,6 +29,13 @@ public class MainController {
         return instance;
     }
 
+    /**
+     * Add the new player to the map of listeners
+     * @param username the new player's username
+     * @param listener the new player's game listener
+     * @throws UsernameNotValidException when the username is not valid
+     * @throws UsernameAlreadyTakenException when a player with this username already exists
+     */
     synchronized public void connect(String username, GameListener listener) throws UsernameNotValidException, UsernameAlreadyTakenException {
         if (!Config.isUsernameValid(username)) {
             throw new UsernameNotValidException();
@@ -36,12 +46,25 @@ public class MainController {
         this.usernameToListener.put(username, listener);
     }
 
+    /**
+     * Send a message to the specified client
+     * @param username the username of the player to be notified
+     * @param message the message to send
+     */
     synchronized public void notifyListener(String username, ServerToClientMessage message) {
         if (this.isUsernameConnected(username)) {
             usernameToListener.get(username).updateFromModel(message);
         }
     }
 
+    /**
+     * Create a new game
+     * @param username the player requesting the new game
+     * @param playersCount the number of players in the game
+     * @return a controller for the new game
+     * @throws PlayersCountNotValidException when the players count is not valid
+     * @throws CannotCreateGameException when the game controller can't be created
+     */
     synchronized public GameController createGame(String username, int playersCount)
             throws PlayersCountNotValidException, CannotCreateGameException
     {
@@ -61,6 +84,14 @@ public class MainController {
         }
     }
 
+    /**
+     * Add a player to an existing game
+     * @param username the player to be joined
+     * @param gameId the game to join
+     * @return the game controller for the game joined
+     * @throws LobbyNotValidException if the id is not valid
+     * @throws LobbyFullException if the game lobby is full
+     */
     synchronized public GameController joinGame(String username, int gameId) throws LobbyNotValidException, LobbyFullException {
         if (!this.isUsernameConnected(username)) {
             //todo maybe handle this case
@@ -75,6 +106,12 @@ public class MainController {
         return game;
     }
 
+    /**
+     * Remove a player from a lobby/game
+     * @param username the player to be removed
+     * @return the game controller from which the player is removed
+     * @throws UsernameNotPlayingException when the player is not in a game/lobby
+     */
     synchronized public GameController leaveGame(String username) throws UsernameNotPlayingException {
         if (!this.isUsernameConnected(username)) {
             throw new UsernameNotPlayingException(username);
@@ -88,7 +125,6 @@ public class MainController {
         }
         return game;
     }
-
     synchronized public GameController getGameOfPlayer(String username) throws UsernameNotPlayingException {
         for (int gameId : this.games.keySet()) {
             GameController game = this.games.get(gameId);
@@ -108,6 +144,10 @@ public class MainController {
         return this.usernameToListener.containsKey(username);
     }
 
+    /**
+     * Create a new random id for a game
+     * @return the new id
+     */
     private int generateGameId() {
         Random random = new Random();
         int generatedId;
