@@ -42,7 +42,6 @@ public class PlayCardMessage extends GameControllerMessage {
                         : turnMessage;
                 controller.notifyAllListeners(new ViewUpdateMessage(controller.getModelView(), message));
             } else {
-                //todo verify if causes bugs in tui
                 String playMessage = this.getUsername() + " has played a card.";
                 controller.notifyAllListeners(new ViewUpdateMessage(controller.getModelView(), playMessage));
             }

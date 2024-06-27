@@ -248,7 +248,6 @@ public class TUI extends View {
                 System.out.println("Waiting for the other players to choose their private objective...");
             }
             else if (response instanceof ChooseObjectiveErrorMessage) {
-                //todo this error should never happen
                 Printer.printError("You cannot choose this objective");
                 chooseObjective();
             }
