@@ -2,6 +2,7 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.GameListener;
+import it.polimi.ingsw.model.GamePhase;
 import it.polimi.ingsw.network.message.servertoclient.ServerToClientMessage;
 import it.polimi.ingsw.utilities.Config;
 
@@ -53,6 +54,7 @@ public class MainController {
             GameController game = new GameController(gameId, playersCount);
             game.addPlayer(username, this.usernameToListener.get(username));
             this.games.put(gameId, game);
+            System.out.println("[GAME] Created game " + game.getId());
             return game;
         } catch (LobbyFullException ignored) {
             return null;
@@ -80,11 +82,11 @@ public class MainController {
         this.usernameToListener.remove(username);
         GameController game = getGameOfPlayer(username);
         game.removePlayer(username);
+        // remove game if the game has ended or if the lobby is empty during the waiting phase
+        if (game.getPhase() == GamePhase.ENDED || game.getPlayers().isEmpty()) {
+            deleteGame(game);
+        }
         return game;
-    }
-
-    synchronized public void deleteGame(GameController game) {
-        this.games.remove(game.getId());
     }
 
     synchronized public GameController getGameOfPlayer(String username) throws UsernameNotPlayingException {
@@ -95,6 +97,11 @@ public class MainController {
             }
         }
         throw new UsernameNotPlayingException(username);
+    }
+
+    private void deleteGame(GameController game) {
+        System.out.println("[GAME] Deleted game " + game.getId());
+        this.games.remove(game.getId());
     }
 
     private boolean isUsernameConnected(String username) {

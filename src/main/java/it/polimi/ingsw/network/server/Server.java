@@ -120,29 +120,26 @@ public class Server implements ServerInterface {
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                synchronized (usernameToTimer) {
-                    // if the player doesn't respond leave the game
-                    try {
-                        usernameToTimer.remove(username);
-                        GameController game = controller.leaveGame(username);
-                        if (game.getPhase() == GamePhase.WAITING) {
-                            game.notifyAllListeners(new LobbyMessage(
-                                    game.getPlayersCount(),
-                                    game.getPlayers().stream().map(Player::getUsername).toList(),
-                                    username + " has left."
-                            ));
-                        } else {
-                            game.notifyAllListeners(new ViewUpdateMessage(
-                                    game.getModelView(), username + " has left. The game has ended."
-                            ));
+                    synchronized (usernameToTimer) {
+                        // if the player doesn't respond leave the game
+                        try {
+                            usernameToTimer.remove(username);
+                            GameController game = controller.leaveGame(username);
+                            if (game.getPhase() == GamePhase.WAITING) {
+                                game.notifyAllListeners(new LobbyMessage(
+                                        game.getPlayersCount(),
+                                        game.getPlayers().stream().map(Player::getUsername).toList(),
+                                        username + " has left."
+                                ));
+                            } else {
+                                game.notifyAllListeners(new ViewUpdateMessage(
+                                        game.getModelView(), username + " has left. The game has ended."
+                                ));
+                            }
+                        } catch (UsernameNotPlayingException e) {
+                            System.err.println(e.getMessage());
                         }
-                        //todo maybe delete also when game ends
-                        controller.deleteGame(game);
                     }
-                    catch (UsernameNotPlayingException e) {
-                        System.err.println(e.getMessage());
-                    }
-                }
                 }
             }, Config.PING_TIME_MS);
 
