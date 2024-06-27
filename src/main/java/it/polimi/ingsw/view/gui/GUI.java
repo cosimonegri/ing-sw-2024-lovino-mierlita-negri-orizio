@@ -443,7 +443,7 @@ public class GUI extends View {
                         if (response instanceof LobbyMessage r) {
                             System.out.println("Entered lobby");
                             setGameId(id);
-                            new Thread(() -> createWaitingLobbyPage(r, 0)).start();
+                            new Thread(() -> createWaitingLobbyPage(r, r.getSize())).start();
                         }
                         else if (response instanceof LobbyNotValidMessage r) {
                             Printer.printError(r.getMessage());
@@ -528,9 +528,9 @@ public class GUI extends View {
      * At the first ViewUpdateMessage the setup phase is started.
      *
      * @param message contains the list of players in the current lobby
-     * @param count
+     * @param size size of the lobby
      */
-    private void createWaitingLobbyPage(LobbyMessage message, int count) {
+    private void createWaitingLobbyPage(LobbyMessage message, int size) {
         System.out.println("Waiting page");
         VBox vbox = new VBox();
         vbox.getStyleClass().addAll("welcome-box");
@@ -538,7 +538,7 @@ public class GUI extends View {
         Text playerUsername = new Text(getUsername());
         playerUsername.setOpacity(0);
         playerUsername.getStyleClass().addAll("welcome-text");
-        Text waitingLobbyText = new Text("Lobby " + getGameId() + ": waiting for other players [" + ((message != null) ? message.getUsernames().size() + "/" + message.getSize() +"]" : "1/" + count + "]"));
+        Text waitingLobbyText = new Text("Lobby " + getGameId() + ": waiting for other players [" + ((message != null) ? message.getUsernames().size() + "/" + size +"]" : "1/" + size + "]"));
 
         waitingLobbyText.setOpacity(0);
         waitingLobbyText.getStyleClass().addAll("lobby-text");
@@ -600,7 +600,7 @@ public class GUI extends View {
             System.out.println("New message " + response.getClass());
             if (response instanceof LobbyMessage r) {
                 Platform.runLater(() -> {
-                    waitingLobbyText.setText("Lobby " + getGameId() + ": waiting for other players [" + r.getUsernames().size() + "/" + r.getSize() + "]");
+                    waitingLobbyText.setText("Lobby " + getGameId() + ": waiting for other players [" + r.getUsernames().size() + "/" + size + "]");
 
                     lobbyUsernames.getChildren().clear();
                     lobbyUsernames.setOpacity(0);
