@@ -24,18 +24,18 @@
 | Persistence    |                        :x:                        |
 | Chat           |                        :x:                        |
 
-## How to use
+## How to run
 - In the [deliverables/jar](deliverables/jar) folder there are two jar files, one for the server and one for the client.
 
 - The server can be run with the following command:
     ```shell
-        java -jar CodexNaturalisServer.jar
+    java -jar CodexNaturalisServer.jar
     ```
   The RMI port is 1099 and the socket port is 6666.
 
 - The client can be run with the following command:
     ```shell 
-        java -jar CodexNaturalisClient.jar
+    java -jar CodexNaturalisClient.jar
     ```
     
   Options:
@@ -45,14 +45,16 @@
     
   Examples:
   ```shell 
-      java -jar CodexNaturalisClient.jar -i tui -n rmi
+  java -jar CodexNaturalisClient.jar -i tui -n rmi
   ```
   ```shell 
-      java -jar CodexNaturalisClient.jar -n socket -h 127.0.0.1 -i gui
+  java -jar CodexNaturalisClient.jar -n socket -h 127.0.0.1 -i gui
   ```
 
   By default this command runs the GUI and establishes a connection with the server on localhost using socket.
-  
+
+## How to play
+In the GUI, after you have selected a card in your hand, you can play it face up by left-clicking or face down by right-clicking.
 
 ## Disclaimers
 We have tested the jar files on windows and fedora linux.
