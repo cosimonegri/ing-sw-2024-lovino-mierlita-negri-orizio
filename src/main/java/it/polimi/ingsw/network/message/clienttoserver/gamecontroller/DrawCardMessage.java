@@ -11,8 +11,17 @@ import it.polimi.ingsw.network.message.servertoclient.DrawCardErrorMessage;
 import it.polimi.ingsw.network.message.servertoclient.ViewUpdateMessage;
 import it.polimi.ingsw.utilities.Config;
 
+/**
+ * Message sent to the server to draw a card.
+ */
 public class DrawCardMessage extends GameControllerMessage {
+    /**
+     * Wheter to draw a resource, a gold or a visible card
+     */
     private final DrawType type;
+    /**
+     * The card to be drawn in case the player is drawing a visible card.
+     */
     private final PlayableCard card;
 
     public DrawCardMessage(String username, DrawType type, PlayableCard card){
@@ -21,6 +30,11 @@ public class DrawCardMessage extends GameControllerMessage {
         this.card = card;
     }
 
+    /**
+     * Execute the message.
+     *
+     * @param controller reference to a game controller
+     */
     public void execute(GameController controller) {
         try {
             controller.drawCard(this.getUsername(), this.type, this.card);

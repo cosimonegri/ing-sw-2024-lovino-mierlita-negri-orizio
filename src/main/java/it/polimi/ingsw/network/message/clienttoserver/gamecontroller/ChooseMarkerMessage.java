@@ -10,7 +10,13 @@ import it.polimi.ingsw.network.message.servertoclient.ChooseMarkerErrorMessage;
 import it.polimi.ingsw.network.message.servertoclient.StarterPhaseEndedMessage;
 import it.polimi.ingsw.network.message.servertoclient.ViewUpdateMessage;
 
+/**
+ * Message sent to the server to choose the marker.
+ */
 public class ChooseMarkerMessage extends GameControllerMessage {
+    /**
+     * Maker choosen.
+     */
     private final Marker marker;
 
     public ChooseMarkerMessage(String username, Marker marker) {
@@ -18,6 +24,11 @@ public class ChooseMarkerMessage extends GameControllerMessage {
         this.marker = marker;
     }
 
+    /**
+     * Execute the message.
+     *
+     * @param controller reference to a game controller
+     */
     @Override
     public void execute(GameController controller) {
         try {

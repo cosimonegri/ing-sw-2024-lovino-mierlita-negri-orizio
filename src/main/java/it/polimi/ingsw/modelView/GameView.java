@@ -9,6 +9,10 @@ import it.polimi.ingsw.model.player.Player;
 import java.io.Serializable;
 import java.util.*;
 
+/**
+ * Immutable version of the {@link Game} class of the model, except for the method {@link #resetCurrentPlayer()}
+ * used to set the current player to null
+ */
 public class GameView implements Serializable {
     private final List<PlayerView> players = new ArrayList<>();
     private PlayerView currentPlayer;

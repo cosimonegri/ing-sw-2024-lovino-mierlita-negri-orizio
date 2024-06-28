@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *  Controls the game flow using a graphical user interface
+ * Class that controls the game flow using a graphical user interface
  */
 public class GUI extends View {
     private StackPane root;

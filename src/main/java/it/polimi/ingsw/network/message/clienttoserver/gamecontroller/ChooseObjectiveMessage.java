@@ -10,7 +10,13 @@ import it.polimi.ingsw.network.message.servertoclient.ChooseObjectiveErrorMessag
 import it.polimi.ingsw.network.message.servertoclient.ObjectivePhaseEndedMessage;
 import it.polimi.ingsw.network.message.servertoclient.ViewUpdateMessage;
 
+/**
+ * Message sent to the server to choose the private objective.
+ */
 public class ChooseObjectiveMessage extends GameControllerMessage {
+    /**
+     * Private objective choosen.
+     */
     private final ObjectiveCard objective;
 
     public ChooseObjectiveMessage(String username, ObjectiveCard objective){
@@ -18,6 +24,11 @@ public class ChooseObjectiveMessage extends GameControllerMessage {
         this.objective = objective;
     }
 
+    /**
+     * Execute the message.
+     *
+     * @param controller reference to a game controller
+     */
     @Override
     public void execute(GameController controller) {
         try {

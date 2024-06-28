@@ -7,7 +7,13 @@ import it.polimi.ingsw.exceptions.PlayersCountNotValidException;
 import it.polimi.ingsw.network.message.servertoclient.CreateGameErrorMessage;
 import it.polimi.ingsw.network.message.servertoclient.CreateGameAckMessage;
 
+/**
+ * Message sent to the server to create a new game.
+ */
 public class CreateGameMessage extends MainControllerMessage {
+    /**
+     * Number of players in the new game.
+     */
     private final int playersCount;
 
     public CreateGameMessage(String username, int playersCount) {
@@ -15,6 +21,11 @@ public class CreateGameMessage extends MainControllerMessage {
         this.playersCount = playersCount;
     }
 
+    /**
+     * Execute the message.
+     *
+     * @param controller reference to the main controller
+     */
     @Override
     public void execute(MainController controller) {
         try {

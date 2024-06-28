@@ -7,6 +7,9 @@ import it.polimi.ingsw.model.player.PlacedCard;
 import java.io.Serializable;
 import java.util.*;
 
+/**
+ * Immutable version of the {@link Field} class of the model
+ */
 public class FieldView implements Serializable {
     private final PlacedCard[][] placedCards;
     private final int cardsCount;

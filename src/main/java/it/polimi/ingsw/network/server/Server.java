@@ -20,13 +20,38 @@ import it.polimi.ingsw.utilities.Config;
 import java.rmi.RemoteException;
 import java.util.*;
 
+/**
+ * Class that represents the server.
+ * <br/>
+ * <br/>
+ * This class is exported as a remote object in {@link it.polimi.ingsw.AppServer}.
+ * <br/>
+ * The clients that use RMI communicate directly with this class, and the ones that use socket communicate with
+ * {@link it.polimi.ingsw.network.server.SocketServerStub}.
+ */
 public class Server implements ServerInterface {
+    /**
+     * Singletone instance of the server.
+     */
     private static Server instance;
+    /**
+     * Reference to the main controller, used to handle all the games
+     */
     private final MainController controller;
+    /**
+     * Queue of messages received from all clients
+     */
     private final Queue<ClientToServerMessage> messages;
-
+    /**
+     * Object to map a username to its timer.
+     * The timer is used to disconnect a client if the server doesn't receive a ping from it.
+     */
     private final Map<String, Timer> usernameToTimer;
 
+    /**
+     * Construtor of the class.
+     * Start a thread to handle the messages received from all clients.
+     */
     private Server() {
         this.controller = MainController.getInstance();
         this.messages = new LinkedList<>();
@@ -53,6 +78,9 @@ public class Server implements ServerInterface {
         messagesThread.start();
     }
 
+    /**
+     * @return the singletone instance of the server
+     */
     public static Server getInstance() {
         if (instance == null) {
             instance = new Server();
@@ -60,6 +88,15 @@ public class Server implements ServerInterface {
         return instance;
     }
 
+    /**
+     * Add a {@link ConnectMessage} to the messages queue of the server
+     * in order to register a client and its username in the server.
+     * The client must call this method once at the beginning of the communication.
+     *
+     * @param message the message containing the username of the client
+     * @param client the client that is sending the message
+     * @throws RemoteException if there is an error during the communication
+     */
     @Override
     public void connectClient(UsernameMessage message, ClientInterface client) throws RemoteException {
         synchronized (messages) {
@@ -70,6 +107,12 @@ public class Server implements ServerInterface {
         }
     }
 
+    /**
+     * Add a message to the messages queue of the server.
+     *
+     * @param message the message to update the server
+     * @throws RemoteException if there is an error during the communication
+     */
     @Override
     public void messageFromClient(ClientToServerMessage message) throws RemoteException {
         synchronized (messages) {
@@ -80,6 +123,11 @@ public class Server implements ServerInterface {
         }
     }
 
+    /**
+     * Wait until there is a message in the queue and return it.
+     *
+     * @return the oldest message received from the client
+     */
     private ClientToServerMessage waitForMessage() {
         synchronized (messages) {
             while (this.messages.isEmpty()) {
@@ -94,6 +142,11 @@ public class Server implements ServerInterface {
         }
     }
 
+    /**
+     * Handle the ping received from a client.
+     *
+     * @param username username of the client that sent the ping
+     */
     private void respondToPing(String username) {
         synchronized (usernameToTimer) {
             try {
@@ -110,6 +163,11 @@ public class Server implements ServerInterface {
         }
     }
 
+    /**
+     * Send a ping to a client.
+     *
+     * @param username username of the client to ping
+     */
     public void sendPing(String username) {
         synchronized (usernameToTimer) {
             Timer timer = new Timer();

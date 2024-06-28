@@ -1,6 +1,9 @@
 package it.polimi.ingsw.controller;
 
-public enum DrawType{
+/**
+ * Enum representing the 3 different ways a user can draw a card.
+ */
+public enum DrawType {
     RESOURCE,
     GOLD,
     VISIBLE

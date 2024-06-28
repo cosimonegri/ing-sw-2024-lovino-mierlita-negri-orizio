@@ -7,6 +7,9 @@ import it.polimi.ingsw.view.tui.TUI;
 import it.polimi.ingsw.view.gui.GUI;
 import it.polimi.ingsw.view.View;
 
+/**
+ * Main class of the client application.
+ */
 public class AppClient {
     private static final String IPV4_PATTERN = "^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\\.(?!$)|$)){4}$";
 

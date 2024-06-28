@@ -21,14 +21,49 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.TimerTask;
 
+/**
+ * Class that represents a client.
+ * <br/>
+ * <br/>
+ * When RMI is used, this class is exported as a remote object in the constructor
+ * and the server communicates directly with it.
+ * <br/>
+ * When socket is used, the server communicates with {@link it.polimi.ingsw.network.client.SocketClientSkeleton}.
+ */
 public class Client implements ClientInterface {
+    /**
+     * Reference ot the view.
+     */
     private final View view;
+    /**
+     * The network protocol that is being used.
+     */
     private final ConnectionType connection;
+    /**
+     * The ip of the server.
+     */
     private final String serverIp;
+    /**
+     * Reference to this class exported as a remote object.
+     * Only used by the server when the network protocol choosen is RMI.
+     */
     private ClientInterface skeleton = null;
+    /**
+     * Reference ot the server
+     */
     private ServerInterface server = null;
+    /**
+     * Timer used to stop the application if the client doesn't receive a ping form the server.
+     */
     private Timer timer;
 
+    /**
+     * Constructor of the class
+     *
+     * @param view reference to the view
+     * @param connection the network protocol that is being used
+     * @param serverIp the ip of the server
+     */
     public Client(View view, ConnectionType connection, String serverIp) {
         this.view = view;
         this.connection = connection;
@@ -43,6 +78,10 @@ public class Client implements ClientInterface {
         }
     }
 
+    /**
+     * Connect to the server using the choosen network protocol, and keep a reference to it.
+     * Then add the server as a listener in the view and run the view.
+     */
     public void run() {
         if (connection == ConnectionType.RMI) {
             try {
@@ -65,7 +104,6 @@ public class Client implements ClientInterface {
             try {
                 if (message instanceof UsernameMessage m) {
                     this.server.connectClient(m, this.skeleton);
-                    // this.server.messageFromClient(new PingResponse(m.getUsername()));
                 } else {
                     this.server.messageFromClient(message);
                 }
@@ -78,6 +116,13 @@ public class Client implements ClientInterface {
         this.view.run();
     }
 
+    /**
+     * Set up an RMI connection with the server.
+     *
+     * @return a reference to the server
+     * @throws RemoteException if the remote communication with the registry fails
+     * @throws NotBoundException if in the registry there isn't a remote object bound to the specified name
+     */
     private ServerInterface setupRmiConnection() throws RemoteException, NotBoundException {
         try {
             System.setProperty("java.rmi.server.hostname", InetAddress.getLocalHost().getHostAddress());
@@ -92,6 +137,12 @@ public class Client implements ClientInterface {
         return stub;
     }
 
+    /**
+     * Set up a socket connection with the server.
+     *
+     * @return a reference to the server
+     * @throws IOException if the connection cannot be established
+     */
     private ServerInterface setupSocketConnection() throws IOException {
         System.out.println("Connecting to the socket server...");
         SocketServerStub stub = new SocketServerStub(this.serverIp);
@@ -110,6 +161,10 @@ public class Client implements ClientInterface {
         return stub;
     }
 
+    /**
+     * @param message the message to update the client
+     * @throws RemoteException if there is an error during the communication
+     */
     @Override
     public void messageFromServer(ServerToClientMessage message) throws RemoteException {
         if (message instanceof PingRequest m) {

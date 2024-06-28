@@ -6,6 +6,9 @@ import it.polimi.ingsw.model.deck.card.playablecard.PlayableCard;
 
 import java.io.Serializable;
 
+/**
+ * Immutable version of the {@link Board} class in the model
+ */
 public class BoardView implements Serializable {
     private final PlayableCard resourceTopCard;
     private final GoldCard goldTopCard;

@@ -10,7 +10,13 @@ import it.polimi.ingsw.network.message.servertoclient.ViewUpdateMessage;
 import it.polimi.ingsw.network.message.servertoclient.LobbyMessage;
 import it.polimi.ingsw.network.message.servertoclient.LobbyNotValidMessage;
 
+/**
+ * Message sent to the server to join an existing game.
+ */
 public class JoinGameMessage extends MainControllerMessage {
+    /**
+     * ID of the existing game.
+     */
     private final int gameId;
 
     public JoinGameMessage(String username, int gameId){
@@ -18,6 +24,11 @@ public class JoinGameMessage extends MainControllerMessage {
         this.gameId = gameId;
     }
 
+    /**
+     * Execute the message.
+     *
+     * @param controller reference to the main controller
+     */
     @Override
     public void execute(MainController controller) {
         try {

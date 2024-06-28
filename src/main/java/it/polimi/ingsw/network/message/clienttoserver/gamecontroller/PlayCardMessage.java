@@ -13,11 +13,21 @@ import it.polimi.ingsw.network.message.servertoclient.PlayCardErrorMessage;
 import it.polimi.ingsw.network.message.servertoclient.ViewUpdateMessage;
 import it.polimi.ingsw.utilities.Config;
 
+/**
+ * Message sent to the server to play a card.
+ */
 public class PlayCardMessage extends GameControllerMessage {
+    /**
+     * Card to be played.
+     */
     private final PlayableCard card;
-
+    /**
+     * Whether to play the starter card flipped or not.
+     */
     private final boolean flipped;
-
+    /**
+     * Coordinates where the card has to be placed.
+     */
     private final Coordinates coords;
 
     public PlayCardMessage (String username, PlayableCard card, boolean flipped, Coordinates coords) {
@@ -27,6 +37,11 @@ public class PlayCardMessage extends GameControllerMessage {
         this.coords = coords;
     }
 
+    /**
+     * Execute the message.
+     *
+     * @param controller reference to a game controller
+     */
     @Override
     public void execute(GameController controller) {
         try {

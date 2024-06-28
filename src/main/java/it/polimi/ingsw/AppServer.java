@@ -18,6 +18,9 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * Main class of the server application.
+ */
 public class AppServer {
     public static void main(String[] args) {
         try {
@@ -51,6 +54,12 @@ public class AppServer {
         }
     }
 
+    /**
+     * Start the RMI server by exporting {@link Server} as a rmeote object.
+     *
+     * @param serverIp ip of the server
+     * @throws RemoteException if there is an error when starting the RMI server
+     */
     private static void initRmiServer(String serverIp) throws RemoteException {
         System.setProperty("java.rmi.server.hostname", serverIp);
         ServerInterface stub = (ServerInterface) UnicastRemoteObject.exportObject(
@@ -61,6 +70,11 @@ public class AppServer {
         System.out.println("RMI server started successfully");
     }
 
+    /**
+     * Start the socket server to accept socket connections.
+     *
+     * @throws RemoteException if there is an error when starting the RMI server
+     */
     private static void initSocketServer() throws IOException {
         try (ExecutorService executor = Executors.newCachedThreadPool()) {
             try (ServerSocket serverSocket = new ServerSocket(Config.SOCKET_PORT)) {

@@ -10,7 +10,14 @@ import it.polimi.ingsw.network.server.Server;
 
 import java.rmi.RemoteException;
 
+/**
+ * Message used in the server to enrich a {@link it.polimi.ingsw.network.message.clienttoserver.UsernameMessage}
+ * in order to register a client and its username.
+ */
 public class ConnectMessage extends MainControllerMessage {
+    /**
+     * Reference to the client.
+     */
     private final ClientInterface client;
 
     public ConnectMessage(String username, ClientInterface client) {
@@ -18,6 +25,11 @@ public class ConnectMessage extends MainControllerMessage {
         this.client = client;
     }
 
+    /**
+     * Execute the message.
+     *
+     * @param controller reference to the main controller
+     */
     @Override
     public void execute(MainController controller) {
         try {

@@ -6,7 +6,13 @@ import it.polimi.ingsw.model.GamePhase;
 import it.polimi.ingsw.network.message.servertoclient.StarterPhaseEndedMessage;
 import it.polimi.ingsw.network.message.servertoclient.ViewUpdateMessage;
 
+/**
+ * Message sent to the server to play the starter card.
+ */
 public class PlayStarterMessage extends GameControllerMessage {
+    /**
+     * Whether to play the starter card flipped or not.
+     */
     private final boolean flipped;
 
     public PlayStarterMessage(String username, boolean flipped){
@@ -14,6 +20,11 @@ public class PlayStarterMessage extends GameControllerMessage {
         this.flipped = flipped;
     }
 
+    /**
+     * Execute the message.
+     *
+     * @param controller reference to a game controller
+     */
     @Override
     public void execute(GameController controller) {
         try {

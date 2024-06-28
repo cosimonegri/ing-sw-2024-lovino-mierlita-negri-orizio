@@ -11,6 +11,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Immutable version of the {@link Player} class of the model.
+ */
 public class PlayerView implements Serializable, Comparable<PlayerView> {
     private final String username;
     private final Marker marker;

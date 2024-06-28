@@ -23,6 +23,9 @@ import javafx.stage.Stage;
 
 import java.util.*;
 
+/**
+ * Class that controls the game flow using a textual user interface.
+ */
 public class TUI extends View {
     private final Scanner scanner;
     private Map<Integer, Coordinates> numToCoordinates;
