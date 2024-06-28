@@ -76,6 +76,7 @@ public class GameController {
             model.removePlayer(username);
         } else {
             model.setGamePhase(GamePhase.ENDED);
+            model.calculateObjectivePoints();
         }
     }
 
