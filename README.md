@@ -54,5 +54,7 @@
   By default this command runs the GUI and establishes a connection with the server on localhost using socket.
   
 
-## Disclaimer
+## Disclaimers
+We have tested the jar files on windows and fedora linux.
+
 [_Codex Naturalis_](https://www.craniocreations.it/prodotto/codex-naturalis) is property of [_Cranio Creations_](https://www.craniocreations.it) and all of the copyrighted graphical assets used in this project were supplied by [_Politecnico di Milano_](https://www.polimi.it) in collaboration with their rights' holders.
