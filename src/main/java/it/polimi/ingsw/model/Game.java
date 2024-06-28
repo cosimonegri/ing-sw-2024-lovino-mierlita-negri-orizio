@@ -192,7 +192,9 @@ public class Game {
             for (ObjectiveCard objective : this.objectives) {
                 objectiveScore += objective.getTotalPoints(player.getField());
             }
-            objectiveScore += player.getObjCard().getTotalPoints(player.getField());
+            if (player.getObjCard() != null) {
+                objectiveScore += player.getObjCard().getTotalPoints(player.getField());
+            }
             player.setObjectiveScore(objectiveScore);
         }
     }
