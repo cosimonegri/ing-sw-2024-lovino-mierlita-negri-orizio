@@ -58,7 +58,6 @@ public class GameControllerTest {
 
     @Test
     public void addPlayerTest() {
-        //TODO error when username already in use
         assertEquals(controller.getPhase(), GamePhase.WAITING);
 
         // add first player

@@ -18,7 +18,6 @@ public class ConnectMessage extends MainControllerMessage {
         this.client = client;
     }
 
-    //TODO check RemoteException handling
     @Override
     public void execute(MainController controller) {
         try {
@@ -26,7 +25,7 @@ public class ConnectMessage extends MainControllerMessage {
                 try {
                     this.client.messageFromServer(message);
                 } catch (RemoteException e) {
-                    System.err.println("Cannot send message to the client");
+                    System.err.println("Cannot send message to " + this.getUsername());
                 }
             });
             controller.notifyListener(this.getUsername(), new UsernameAckMessage());
@@ -36,7 +35,7 @@ public class ConnectMessage extends MainControllerMessage {
             try {
                 this.client.messageFromServer(new UsernameNotValidMessage(error.getMessage()));
             } catch (RemoteException e) {
-                System.err.println("Cannot send message to the client");
+                System.err.println("Cannot send message to " + this.getUsername());
             }
         }
     }

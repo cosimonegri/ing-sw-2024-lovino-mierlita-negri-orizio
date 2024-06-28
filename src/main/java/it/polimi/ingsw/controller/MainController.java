@@ -69,7 +69,6 @@ public class MainController {
             throws PlayersCountNotValidException, CannotCreateGameException
     {
         if (!this.isUsernameConnected(username)) {
-            //todo maybe handle this case
             return null;
         }
         int gameId = this.generateGameId();
@@ -94,8 +93,6 @@ public class MainController {
      */
     synchronized public GameController joinGame(String username, int gameId) throws LobbyNotValidException, LobbyFullException {
         if (!this.isUsernameConnected(username)) {
-            //todo maybe handle this case
-            // check where the pings start
             return null;
         }
         if (!this.games.containsKey(gameId)) {

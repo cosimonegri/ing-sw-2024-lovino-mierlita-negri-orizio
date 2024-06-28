@@ -51,7 +51,6 @@ public class GameView implements Serializable {
                 return p;
             }
         }
-        //todo maybe raise exception
         return null;
     }
 

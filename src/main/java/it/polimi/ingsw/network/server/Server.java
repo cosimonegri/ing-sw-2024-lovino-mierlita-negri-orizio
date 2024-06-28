@@ -44,9 +44,7 @@ public class Server implements ServerInterface {
                         try {
                             GameController game = this.controller.getGameOfPlayer(m.getUsername());
                             m.execute(game);
-                        } catch (UsernameNotPlayingException ignored) {
-                            //TODO ignore or catch exception?
-                        }
+                        } catch (UsernameNotPlayingException ignored) {}
                     }
                     default -> System.err.println("Message not valid");
                 }
