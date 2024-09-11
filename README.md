@@ -1,5 +1,8 @@
 # Codex Naturalis
 
+Software implementation of the board game ***Codex Naturalis***. Rules available in italian on the
+[official website](https://www.craniocreations.it/storage/media/product_downloads/126/1516/CODEX_ITA_Rules_compressed.pdf).
+
 ## Team
 [Cosimo Giovanni Negri](https://github.com/cosimonegri)<br />
 [Alexandru Cezar Mierlita](https://github.com/cezarmierlita)<br />
